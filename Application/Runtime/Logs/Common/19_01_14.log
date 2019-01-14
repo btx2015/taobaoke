@@ -1,0 +1,12 @@
+[ 2019-01-14T14:46:21+08:00 ] 127.0.0.1 /favicon.ico
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000006s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000027s ]
+ERR: 无法加载模块:Favicon
+
+[ 2019-01-14T15:41:29+08:00 ] 127.0.0.1 /admin.php%EF%BC%9Fsystem/basicinfo
+INFO: [ app_init ] --START--
+INFO: Run Behavior\BuildLiteBehavior [ RunTime:0.000006s ]
+INFO: [ app_init ] --END-- [ RunTime:0.000027s ]
+ERR: 无法加载模块:Admin.php？system
+

@@ -20,16 +20,17 @@ class UserController extends CommonController
 
     public function records(){
         $where = validate([
-            'username'  =>  [[],false,true,'like'],
-            'phone'     =>  [['phone'],false,false],
-            'status'    =>  [['in'=>[1,2]],false,true,['eq','state']],
+            'usa'       =>  [[],false,true,'like'],
+            'phone'     =>  [['phone'],false,true],
+            'state'     =>  [['in'=>[1,2]],false,true,'eq'],
             'from_time' =>  [['time'],false,true,['egt','created_at']],
             'to_time'   =>  [['time'],false,true,['elt','created_at']],
         ]);
         if(!is_array($where))
             showError(10006);
+        $where['id'] = ['neq',1];
         returnResult([
-            'list' => M(self::T_ADMIN)->where($where)->find(),
+            'list' => M(self::T_ADMIN)->where($where)->select(),
             'total' =>M(self::T_ADMIN)->where($where)->count()
         ]);
 

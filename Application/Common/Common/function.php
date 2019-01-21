@@ -39,8 +39,11 @@ function validate(array $paramRules = []){
             if(isset($rules[2]) && !$rules[2])
                 return false;
             //是否为必须参数
-            if(isset($rules[1]) && $rules[1])
+            if(isset($rules[1]) && $rules[1]){
                 return false;
+            }else{
+                continue;
+            }
         }
         //参数验证和处理
         if(isset($rules[0])){

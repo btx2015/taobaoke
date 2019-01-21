@@ -41,6 +41,54 @@ class UserController extends CommonController
     }
 
     public function save(){
+        $id = I('post.id');
+        $rule = [
+            'email' => [['email']],
+            'name'  => []
+        ];
+        $model = M(self::T_ADMIN);
+        if($id){
+            $where = 'id ='.$id;
+            $user = $model->where($where)->find();
+            if(!$user)
+                showError(20004);
+            $rule = array_merge([
+                'usa'     => [],
+                'pswd'    => [],
+                'phone'   => [['phone']],
+                'rold_id' => [['num']],
+                'state'   => [['in'=>[1,2,3]]]
+            ],$rule);
+        }else{
+            $rule = array_merge([
+                'usa'     => [[],true],
+                'pswd'    => [[],true],
+                'phone'   => [['phone'],true],
+                'rold_id' => [['num'],true]
+            ],$rule);
+        }
+        $data = validate($rule);
+        if(!is_array($data))
+            showError(10006);
 
+        $field = ['role_id','state'];
+        foreach($field as $v)
+            if(isset($data[$v]) && $id == $_SESSION['userInfo']['id'])
+                showError(10110);
+
+        if(isset($data['usa'])){
+            $user = $model->where('usa ='.$data['usa'])->find();
+            if($user && $user['id'] != $id)
+                showError(20000);
+        }
+
+        if($id)
+            if($model->where($where)->save($data) === false)
+                showError(20002);
+        else
+            if(!$model->create($data))
+                showError(20001);
+
+        returnResult();
     }
 }

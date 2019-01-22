@@ -14,26 +14,54 @@ class UserController extends CommonController
 {
     const T_ADMIN = 'sys_admin';
 
+    const T_ROLE = 'sys_role';
+
     public function index(){
         $this->display();
     }
 
     public function records(){
         $where = validate([
-            'usa'       =>  [[],false,true,'like'],
-            'phone'     =>  [['phone'],false,true],
-            'state'     =>  [['in'=>[1,2]],false,true,'eq'],
-            'from_time' =>  [['time'],false,true,['egt','created_at']],
-            'to_time'   =>  [['time'],false,true,['elt','created_at']],
+            'page_no'     => [['num'],1],
+            'page_size'   => [['num'],10],
+            'id'          => [['num'],false,true,['eq','a.id']],
+            'usa'         => [[],false,true,['like','a.usa']],
+            'phone'       => [['phone'],false,true,['like','a.phone']],
+            'email'       => [['email'],false,true,['like','a.email']],
+            'role_id'     => [['num'],false,true,['eq','a.role_id']],
+            'state'       => [['in'=>[1,2]],false,true,['eq','a.state']],
+            'login_ip'    => [[],false,true,['like','a.login_ip']],
+            'create_from' => [['time'],false,true,['egt','a.created_at']],
+            'create_to'   => [['time'],false,true,['elt','a.created_at']],
+            'login_from'  => [['time'],false,true,['egt','a.login_time']],
+            'login_to'    => [['time'],false,true,['elt','a.login_time']],
         ]);
         if(!is_array($where))
             showError(10006);
-        $where['id'] = ['neq',1];
-        returnResult([
-            'list' => M(self::T_ADMIN)->where($where)->select(),
-            'total' =>M(self::T_ADMIN)->where($where)->count()
-        ]);
+        if(!isset($where['a.id']))
+            $where['a.id'] = ['neq',1];
+        else if($where['a.id'] == 1)
+            returnResult(['list'=>[],'total'=>0]);
 
+        if(!isset($where['a.state']))
+            $where['a.state'] = ['neq',3];
+        $pageNo = $where['page_no'];
+        unset($where['page_no']);
+        $pageSize = $where['page_size'] > 1000 ? 1000 : $where['page_size'];
+        unset($where['page_size']);
+        $list = M(self::T_ADMIN)->alias('a')
+            ->join('left join sys_role b on a.role_id = b.id')
+            ->field('a.*,b.name as role_id_str')
+            ->where($where)->page($pageNo,$pageSize)->select();
+        returnResult([
+            'list' => handleRecords([
+                'state'           => ['translate','state','state_str'],
+                'created_at'      => ['time','Y-m-d H:i:s','created_at_str'],
+                'login_time'      => ['time','Y-m-d H:i:s','login_time_str'],
+                'last_login_time' => ['time','Y-m-d H:i:s','last_login_time_str'],
+            ],$list),
+            'total' =>M(self::T_ADMIN)->alias('a')->where($where)->count()
+        ]);
     }
 
     public function edit(){
@@ -48,15 +76,17 @@ class UserController extends CommonController
         ];
         $model = M(self::T_ADMIN);
         if($id){
-            $where = 'id ='.$id;
-            $user = $model->where($where)->find();
+            //非超级管理员不能编辑超级管理员
+            if($id == 1 && $_SESSION['userInfo']['id'] != 1)
+                showError(10110);
+            $user = $model->where('id ='.$id)->find();
             if(!$user)
-                showError(20004);
+                showError(20004);//管理员不存在
             $rule = array_merge([
                 'usa'     => [],
                 'pswd'    => [],
                 'phone'   => [['phone']],
-                'rold_id' => [['num']],
+                'role_id' => [['num']],
                 'state'   => [['in'=>[1,2,3]]]
             ],$rule);
         }else{
@@ -64,30 +94,30 @@ class UserController extends CommonController
                 'usa'     => [[],true],
                 'pswd'    => [[],true],
                 'phone'   => [['phone'],true],
-                'rold_id' => [['num'],true]
+                'role_id' => [['num'],true]
             ],$rule);
         }
         $data = validate($rule);
         if(!is_array($data))
-            showError(10006);
+            showError(10006);//参数错误
 
         $field = ['role_id','state'];
         foreach($field as $v)
             if(isset($data[$v]) && $id == $_SESSION['userInfo']['id'])
-                showError(10110);
+                showError(10110);//操作人不能修改自己的状态和角色
 
         if(isset($data['usa'])){
             $user = $model->where('usa ='.$data['usa'])->find();
             if($user && $user['id'] != $id)
-                showError(20000);
+                showError(20000);//存在同名管理员
         }
 
         if($id)
-            if($model->where($where)->save($data) === false)
-                showError(20002);
+            if($model->where('id ='.$id)->save($data) === false)
+                showError(20002);//更新失败
         else
             if(!$model->create($data))
-                showError(20001);
+                showError(20001);//创建失败
 
         returnResult();
     }

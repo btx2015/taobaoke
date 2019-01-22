@@ -9,6 +9,7 @@
 /**
  * 参数验证方法
  * @param array $paramRules
+ * @param string $type 请求类型
  * [
  *    array [
  *              array | string 验证规则1，
@@ -29,23 +30,30 @@
  * ]
  * @return array|bool
  */
-function validate(array $paramRules = []){
+function validate(array $paramRules = [],$type = 'post'){
     $params = [];
     $flag = true;//重复参数标识
     foreach($paramRules as $paramName => $rules){
-        $paramValue = I('post.'.$paramName);
+        $paramValue = I($type.'.'.$paramName);
         if(!$paramValue){
-            //是否可以为空或者为0
-            if(isset($rules[2]) && !$rules[2])
-                return false;
             //是否为必须参数
-            if(isset($rules[1]) && $rules[1]){
-                return false;
+            if(isset($rules[1])){
+                if($rules[1] === true)
+                    return false;
+                else{
+                    if($rules[1] !== false)
+                        $params[$paramName] = $rules[1];//默认值
+                    continue;
+                }
             }else{
-                continue;
+                //是否可以为空或者为0
+                if(isset($rules[2]) && !$rules[2])
+                    return false;
+                else
+                    continue;
             }
         }
-        //参数验证和处理
+        //参数验证
         if(isset($rules[0])){
             //验证规则必须是数组
             if(!is_array($rules[0]))
@@ -80,10 +88,6 @@ function validate(array $paramRules = []){
                         if(!preg_match($email,$paramValue))
                             return false;
                         break;
-                    case 'range':
-                        break;
-                    case 'not range':
-                        break;
                     case 'time':
                         $paramValue = strtotime($paramValue);
                         break;
@@ -110,15 +114,53 @@ function validate(array $paramRules = []){
                             $paramValue
                         ]
                     ];
-                }else
-                    $params[$rules[3][1]] = [$rules[3][0],$paramValue];
-            }else
-                $params[$paramName] = [$rules[3],$paramValue];
+                }else{
+                    if($rules[3][0] === 'eq'){
+                        $params[$rules[3][1]] = $paramValue;
+                    }else{
+                        $params[$rules[3][1]] = [$rules[3][0],$paramValue];
+                    }
+                }
+            }else{
+                if($rules[3] === 'eq'){
+                    $params[$paramName] = $paramValue;
+                }else{
+                    $params[$paramName] = [$rules[3],$paramValue];
+                }
+            }
         }else
             $params[$paramName] = $paramValue;
     }
     return $params;
 }
+
+function handleRecords($rules,$records){
+    if($rules && $records){
+        $translate = C('TRANSLATE');
+        array_walk($records,function(&$v) use($rules,$translate){
+            foreach($rules as $field => $rule){
+                if(!isset($rule[0]) || !isset($rule[1]))
+                    showError(10008);
+                if(isset($v[$field])){
+                    $key = isset($rule[2]) ? $rule[2] : $field;
+                    switch($rule[0]){
+                        case 'translate':
+                            if(isset($translate[$rule[1]]))
+                                $v[$key] = $translate[$rule[1]][$v[$field]];
+                            break;
+                        case 'time':
+                            $v[$key] = date($rule[1],$v[$field]);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        });
+    }
+    return $records;
+}
+
 
 function returnResult($data = []){
     $result = [

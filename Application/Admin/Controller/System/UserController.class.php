@@ -69,10 +69,12 @@ class UserController extends CommonController
     }
 
     public function save(){
+        $_SESSION['userInfo']['id'] = 1;
         $id = I('post.id');
         $rule = [
+            'phone' => [['phone']],
+            'name'  => [],
             'email' => [['email']],
-            'name'  => []
         ];
         $model = M(self::T_ADMIN);
         if($id){
@@ -84,40 +86,39 @@ class UserController extends CommonController
                 showError(20004);//管理员不存在
             $rule = array_merge([
                 'usa'     => [],
-                'pswd'    => [],
-                'phone'   => [['phone']],
+                'pswd'    => [['password']],
                 'role_id' => [['num']],
                 'state'   => [['in'=>[1,2,3]]]
             ],$rule);
         }else{
             $rule = array_merge([
                 'usa'     => [[],true],
-                'pswd'    => [[],true],
-                'phone'   => [['phone'],true],
+                'pswd'    => [['password'],true],
                 'role_id' => [['num'],true]
             ],$rule);
         }
         $data = validate($rule);
         if(!is_array($data))
             showError(10006);//参数错误
-
         $field = ['role_id','state'];
         foreach($field as $v)
             if(isset($data[$v]) && $id == $_SESSION['userInfo']['id'])
                 showError(10110);//操作人不能修改自己的状态和角色
 
         if(isset($data['usa'])){
-            $user = $model->where('usa ='.$data['usa'])->find();
+            $user = $model->where("usa ='".$data['usa']."'")->find();
             if($user && $user['id'] != $id)
                 showError(20000);//存在同名管理员
         }
 
-        if($id)
+        if($id){
             if($model->where('id ='.$id)->save($data) === false)
                 showError(20002);//更新失败
-        else
-            if(!$model->create($data))
+        }else{
+            $insertId = $model->add($data);
+            if(!$insertId)
                 showError(20001);//创建失败
+        }
 
         returnResult();
     }

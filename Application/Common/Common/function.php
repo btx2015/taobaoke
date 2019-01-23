@@ -9,7 +9,7 @@
 /**
  * 参数验证方法
  * @param array $paramRules
- * @param string $type 请求类型
+ * @param string $way 请求类型
  * [
  *    array [
  *              array | string 验证规则1，
@@ -30,16 +30,16 @@
  * ]
  * @return array|bool
  */
-function validate(array $paramRules = [],$type = 'post'){
+function validate(array $paramRules = [],$way = 'post'){
     $params = [];
     $flag = true;//重复参数标识
     foreach($paramRules as $paramName => $rules){
-        $paramValue = I($type.'.'.$paramName);
+        $paramValue = I($way.'.'.$paramName);
         if(!$paramValue){
             //是否为必须参数
             if(isset($rules[1])){
                 if($rules[1] === true)
-                    return false;
+                    showError(10006,$paramName.' is required.');
                 else{
                     if($rules[1] !== false)
                         $params[$paramName] = $rules[1];//默认值
@@ -48,7 +48,7 @@ function validate(array $paramRules = [],$type = 'post'){
             }else{
                 //是否可以为空或者为0
                 if(isset($rules[2]) && !$rules[2])
-                    return false;
+                    showError(10006,$paramName.' can not empty.');
                 else
                     continue;
             }
@@ -67,32 +67,34 @@ function validate(array $paramRules = [],$type = 'post'){
                         if(!is_array($filters))
                             showError(10007);
                         if(!in_array($paramValue,$filters))
-                            return false;
+                            showError(10006,$paramName.' is error.');
                         break;
                     case 'not in':
                         if(!is_array($filters))
                             showError(10007);
                         if(in_array($paramValue,$filters))
-                            return false;
+                            showError(10006,$paramName.' is error.');
                         break;
                     case 'num':
                         if(!is_numeric($paramValue))
-                            return false;
+                            showError(10006,$paramName.' is not a number.');
                         break;
                     case 'phone':
                         if(!preg_match('/^1[0-9]{10}$/',$paramValue))
-                            return false;
+                            showError(10006,$paramName.' is not a phone number.');
                         break;
                     case 'email':
                         $email = '/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/';
                         if(!preg_match($email,$paramValue))
-                            return false;
+                            showError(10006,$paramName.' is not a email.');
                         break;
                     case 'time':
                         $paramValue = strtotime($paramValue);
                         break;
+                    case 'password':
+                        $paramValue = encodePassword($paramValue);
+                        break;
                     default:
-                        return false;
                         break;
                 }
             }
@@ -132,6 +134,10 @@ function validate(array $paramRules = [],$type = 'post'){
             $params[$paramName] = $paramValue;
     }
     return $params;
+}
+
+function encodePassword($password){
+    return sha1(md5($password));
 }
 
 function handleRecords($rules,$records){

@@ -69,7 +69,6 @@ class UserController extends CommonController
     }
 
     public function save(){
-        $_SESSION['userInfo']['id'] = 1;
         $id = I('post.id');
         $rule = [
             'phone' => [['phone']],
@@ -100,10 +99,6 @@ class UserController extends CommonController
         $data = validate($rule);
         if(!is_array($data))
             showError(10006);//参数错误
-        $field = ['role_id','state'];
-        foreach($field as $v)
-            if(isset($data[$v]) && $id == $_SESSION['userInfo']['id'])
-                showError(10110);//操作人不能修改自己的状态和角色
 
         if(isset($data['usa'])){
             $user = $model->where("usa ='".$data['usa']."'")->find();
@@ -120,6 +115,27 @@ class UserController extends CommonController
                 showError(20001);//创建失败
         }
 
+        returnResult();
+    }
+
+    public function reset(){
+        $rule = [
+            'old' => [['password'],true,true],
+            'new' => [['password'],true,true,['eq','pswd']],
+        ];
+        $data = validate($rule);
+        if(!is_array($data))
+            showError(10006);//参数错误
+        $model = M(self::T_ADMIN);
+        $where = 'id = '.$_SESSION['userInfo']['id'];
+        $user = $model->where($where)->find();
+        if(!$user)
+            showError(20004);//管理员不存在
+        if($user['pswd'] != $data['old'])
+            showError(30005);//密码错误
+        unset($data['old']);
+        if($model->where($where)->save($data) === false)
+            showError(20002);//更新失败
         returnResult();
     }
 }

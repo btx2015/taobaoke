@@ -12,5 +12,19 @@ use Admin\Controller\CommonController;
 
 class MenuController extends CommonController
 {
+    public function index(){
+        $this->display();
+    }
 
+    public function records(){
+
+    }
+
+    public function edit(){
+        $this->display();
+    }
+
+    public function save(){
+
+    }
 }

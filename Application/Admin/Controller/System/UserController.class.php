@@ -12,9 +12,9 @@ use Admin\Controller\CommonController;
 
 class UserController extends CommonController
 {
-    const T_ADMIN = 'sys_admin';
+    const T_ADMIN = 'tr_sys_admin';
 
-    const T_ROLE = 'sys_role';
+    const T_ROLE = 'tr_sys_role';
 
     public function index(){
         $this->display();

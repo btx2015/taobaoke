@@ -2,17 +2,19 @@
 /**
  * Created by PhpStorm.
  * User: leasin
- * Date: 2019/1/14
- * Time: 16:04
+ * Date: 2019/2/28
+ * Time: 17:15
  */
 
 namespace Admin\Controller\System;
 
+
 use Admin\Controller\CommonController;
 
-class RoleController extends CommonController
+class ButtonController extends CommonController
 {
-    const T_ROLE = 'tr_sys_role';
+
+    const T_BUTTON = 'tr_sys_menu_button';
 
     public function index(){
         $this->display();
@@ -31,18 +33,13 @@ class RoleController extends CommonController
         if(!is_array($where))
             showError(10006);
 
-        if(!isset($where['id']))
-            $where['id'] = ['neq',1];
-        else if($where['id'] == 1)
-            returnResult(['list'=>[],'total'=>0]);
-
         if(!isset($where['state']))
             $where['state'] = ['neq',3];
         $pageNo = $where['page_no'];
         unset($where['page_no']);
         $pageSize = $where['page_size'] > 1000 ? 1000 : $where['page_size'];
         unset($where['page_size']);
-        $model = M(self::T_ROLE);
+        $model = M(self::T_BUTTON);
         $list = $model->where($where)->page($pageNo,$pageSize)->select();
 
         returnResult([
@@ -60,23 +57,20 @@ class RoleController extends CommonController
 
     public function save(){
         $id = I('post.id');
-        $model = M(self::T_ROLE);
+        $model = M(self::T_BUTTON);
         if($id){
-            //非超级管理员不能编辑超级管理员
-            if($id == 1 && $_SESSION['userInfo']['id'] != 1)
-                showError(10110);
             $user = $model->where('id ='.$id)->find();
             if(!$user)
                 showError(20004);//不存在
             $rule = [
-                'name'  => [],
-                'menu'  => [[],false,true,['eq','role_menu']],
-                'state' => [['in'=>[1,2,3]]]
+                'name'    => [],
+                'icon'    => [[],false],
+                'state'   => [['in'=>[1,2,3]]],
             ];
         }else{
             $rule = [
-                'name' => [[],true],
-                'menu' => [[],false,false,['eq','role_menu']],
+                'name'    => [[],true],
+                'icon'    => [[],true,false],
             ];
         }
         $data = validate($rule);

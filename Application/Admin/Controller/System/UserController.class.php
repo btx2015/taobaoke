@@ -22,10 +22,11 @@ class UserController extends CommonController
 
     public function records(){
         $where = validate([
-            'page_no'     => [['num'],1],
-            'page_size'   => [['num'],10],
+            'page'        => [['num'],1],
+            'rows'        => [['num'],10],
             'id'          => [['num'],false,true,['eq','a.id']],
             'usa'         => [[],false,true,['like','a.usa']],
+            'name'        => [[],false,true,['like','a.name']],
             'phone'       => [['phone'],false,true,['like','a.phone']],
             'email'       => [['email'],false,true,['like','a.email']],
             'role_id'     => [['num'],false,true,['eq','a.role_id']],
@@ -45,12 +46,12 @@ class UserController extends CommonController
 
         if(!isset($where['a.state']))
             $where['a.state'] = ['neq',3];
-        $pageNo = $where['page_no'];
-        unset($where['page_no']);
-        $pageSize = $where['page_size'] > 1000 ? 1000 : $where['page_size'];
-        unset($where['page_size']);
+        $pageNo = $where['page'];
+        unset($where['page']);
+        $pageSize = $where['rows'] > 1000 ? 1000 : $where['rows'];
+        unset($where['rows']);
         $list = M(self::T_ADMIN)->alias('a')
-            ->join('left join sys_role b on a.role_id = b.id')
+            ->join('left join '.self::T_ROLE.' b on a.role_id = b.id')
             ->field('a.*,b.name as role_id_str')
             ->where($where)->page($pageNo,$pageSize)->select();
         returnResult([

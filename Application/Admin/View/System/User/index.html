@@ -1,10 +1,8 @@
 <include file="Public:header"/>
 <link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 <style type="text/css">
-        /* Additional style to fix warning dialog position */
-    #alertmod_table_list_2 {
-        top: 900px !important;
-    }
     .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
 </style>
 <body>
@@ -16,6 +14,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox ">
+                        <!-- 筛选 start -->
                         <div class="ibox-title">
                             <div class="container-fluid">
                                 <form class="form-inline" id="toolbar-form" onsubmit="return false;">
@@ -59,47 +58,64 @@
                                 </form>
                             </div>
                         </div>
+                        <!-- 筛选 end -->
                         <div class="ibox-content">
+                            <!-- 表格 start -->
                             <div class="jqGrid_wrapper">
                                 <table id="table"></table>
                                 <div id="pager"></div>
                             </div>
+                            <!-- 表格 end -->
+                            <!-- 添加框 start -->
                             <div class="modal inmodal" id="myModal4" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content animated fadeIn">
-                                        <div class="modal-header">
-                                            <span>添加</span>
-                                        </div>
                                         <div class="modal-body">
-                                            <form class="form-horizontal">
+                                            <form class="form-horizontal" id="form-admin">
                                                 <div class="form-group">
-                                                    <label class="control-label">用户名</label>
-                                                    <input type="text" class="form-control" name="usa">
+                                                    <label class="control-label col-lg-2">角&ensp;&ensp;色</label>
+                                                    <div class="col-lg-10">
+                                                        <select class="form-control" name="role_id">
+                                                            <option value="">请选择状态</option>
+                                                            <option value="1">启用</option>
+                                                            <option value="2">禁用</option>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>姓  名</label>
-                                                    <input type="text" class="form-control" name="name">
+                                                    <label class="control-label col-lg-2">用户名</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="usa">
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label>手  机</label>
-                                                    <input type="text" class="form-control" name="phone">
+                                                    <label class="control-label col-lg-2">姓&ensp;&ensp;名</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="name">
+                                                    </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <select class="form-control" name="state">
-                                                        <option value="">请选择状态</option>
-                                                        <option value="1">启用</option>
-                                                        <option value="2">禁用</option>
-                                                    </select>
+                                                    <label class="control-label col-lg-2">手&ensp;&ensp;机</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="phone">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">密&ensp;&ensp;码</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="password" class="form-control" name="pswd">
+                                                    </div>
                                                 </div>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary save-admin" onclick="edit(0)">保存</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <!-- 添加框 end -->
                         </div>
                     </div>
                 </div>
@@ -108,30 +124,17 @@
         <include file="Public:footer"/>
     </div>
 </div>
-<!-- Mainly scripts -->
-<script src="__PUBLIC__/Admin/js/jquery-3.1.1.min.js"></script>
-<script src="__PUBLIC__/Admin/js/bootstrap.min.js"></script>
-<script src="__PUBLIC__/Admin/js/plugins/metisMenu/jquery.metisMenu.js"></script>
-<script src="__PUBLIC__/Admin/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
-
-<!-- Peity -->
-<script src="__PUBLIC__/Admin/js/plugins/peity/jquery.peity.min.js"></script>
-
+<include file="Public:js"/>
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
-
-<!-- Custom and plugin javascript -->
-<script src="__PUBLIC__/Admin/js/inspinia.js"></script>
-<script src="__PUBLIC__/Admin/js/plugins/pace/pace.min.js"></script>
-
-<script src="__PUBLIC__/Admin/js/plugins/jquery-ui/jquery-ui.min.js"></script>
-
-
+<!-- Data picker -->
 <script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
 <script>
+    var url = "{:U('system/user/records')}";
     $(document).ready(function () {
-        var url = "{:U('system/user/records')}";
         var height = $(window).height();
         $("#table").jqGrid({
             url:url,
@@ -157,9 +160,13 @@
                 {name: 'created_at_str',align:'center',width: 170},
                 {name: 'operate', index: 'operate',width: 170,
                     formatter: function (value, grid, rows, state) {
-                        return '<button type="button" class="btn btn-primary btn-xs" onclick="modify(\''+ rows.id+ '\');">编辑</button>'
-                            + '<button type="button" class="btn btn-warning btn-xs" onclick="modify(\''+ rows.id+ '\');">禁用</button>'
-                            + '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\');">删除</button>';
+                        var op = '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>';
+                        if(rows.state == 1){
+                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="modify(\''+ rows.id+ '\',2);">禁用</button>';
+                        }else{
+                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="modify(\''+ rows.id+ '\',1);">启用</button>';
+                        }
+                        return op + '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
                     }
                 }
             ],
@@ -185,7 +192,84 @@
         $('#toolbar-reset').click(function(){
             $('#toolbar-form')[0].reset();
         });
+        $('#toolbar-datepicker').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
     });
+
+    function save(data){
+        $.ajax({
+            type:'POST',
+            url:"{:U('system/user/save')}",
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        confirmButtonText: "确认"
+                    });
+                    $('#form-admin')[0].reset();
+                    $('#myModal4').modal('hide');
+                    $("#table").jqGrid('setGridParam', {
+                        url : url,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
+
+    function edit(id){
+        var data = $('#form-admin').serialize();
+        if(id){
+            data.id = id;
+        }
+        save(data)
+    }
+
+    function modify(id,state){
+        var msg = {
+            1:'启用',
+            2:'禁用',
+            3:'删除'
+        };
+        swal({
+            title: msg[state],
+            text: "确认"+ msg[state]+"吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm:false,
+            closeOnCancel:false
+        },function(isConfirm){
+            if(isConfirm){
+                save({
+                    id:id,
+                    state:state
+                })
+            }
+        })
+    }
+
+    function editOpen(id){
+        $('#myModal4').modal('show');
+    }
 </script>
 </body>
 </html>

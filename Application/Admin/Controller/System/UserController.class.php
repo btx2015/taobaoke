@@ -53,7 +53,7 @@ class UserController extends CommonController
         $list = M(self::T_ADMIN)->alias('a')
             ->join('left join '.self::T_ROLE.' b on a.role_id = b.id')
             ->field('a.*,b.name as role_id_str')
-            ->where($where)->page($pageNo,$pageSize)->select();
+            ->where($where)->page($pageNo,$pageSize)->order('a.id DESC')->select();
         returnResult([
             'list' => handleRecords([
                 'state'           => ['translate','state','state_str'],
@@ -66,7 +66,16 @@ class UserController extends CommonController
     }
 
     public function edit(){
-
+        $rule = [
+            'id' => [['num'],true]
+        ];
+        $data = validate($rule);
+        if(!is_array($data))
+            showError(10006);//参数错误
+        $model = M(self::T_ADMIN);
+        $user = $model->where('id ='.$rule['id'])->find();
+        if(!$user)
+            showError(20004);//管理员不存在
     }
 
     public function save(){

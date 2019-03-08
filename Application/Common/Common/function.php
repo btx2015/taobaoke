@@ -219,3 +219,52 @@ function ajaxReturn($data,$type='',$json_option=0){
     }
     exit($data);
 }
+
+
+function getNodeData($roleId){
+    $menuData = $buttonData = $accessData = [];
+    $roleModel = M('tr_sys_role');
+    $roleNode = $roleModel->where("id=".$roleId)->getField('access_node');
+    if($roleNode){
+        $nodeModel = M('tr_sys_node');
+        $nodeData = $nodeModel->field('id,name,path,pid,type')
+            ->where("state = 1 and id in(".$roleNode.")")
+            ->order('sort desc')->select();
+        if($nodeData){
+            list($menuData,$buttonData) = formatNode($nodeData);
+            $accessData = array_column($nodeData,'id','path');
+            unset($accessData['']);
+        }
+    }
+    return [$menuData,$buttonData,$accessData];
+}
+
+function formatNode($nodes,$pid = 0){
+    $menuData = $buttonData = $buttons = [];
+    foreach($nodes as $key => $node) {
+        if ($node['pid'] == $pid) {
+            $menu = [
+                'name' => $node['name'],
+                'path' => $node['path'],
+            ];
+            unset($nodes[$key]);
+            if ($node['type'] == 2) {
+                $buttonData[] = $menu;
+                continue;
+            } else {
+                list($menuChildren,$buttonChildren) = formatNode($nodes, $node['id']);
+                if ($menuChildren)
+                    $menu['children'] = $menuChildren;
+                if ($buttonChildren){
+                    if($node['path']){
+                        $buttonData[$node['path']] = $buttonChildren;
+                    }else{
+                        $buttonData = array_merge($buttonData,$buttonChildren);
+                    }
+                }
+                $menuData[] = $menu;
+            }
+        }
+    }
+    return [$menuData,$buttonData];
+}

@@ -133,7 +133,7 @@
 <!-- Sweet alert -->
 <script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
 <script>
-    var url = "{:U('system/user/records')}";
+    var url = "{:U('system/user/index')}";
     $(document).ready(function () {
         var height = $(window).height();
         $("#table").jqGrid({
@@ -204,7 +204,7 @@
     function save(data){
         $.ajax({
             type:'POST',
-            url:"{:U('system/user/save')}",
+            url:"{:U('system/user/edit')}",
             data:data,
             dataType:'json',
             success: function(res){

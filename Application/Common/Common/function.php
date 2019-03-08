@@ -136,11 +136,23 @@ function validate(array $paramRules = [],$way = 'post'){
     return $params;
 }
 
-function encodePassword($password){
+/**
+ * 密码加密
+ * @param string $password
+ * @return string
+ */
+function encodePassword($password = ''){
     return sha1(md5($password));
 }
 
-function handleRecords($rules,$records){
+
+/**
+ * 数据库结果处理
+ * @param array $rules 处理规则
+ * @param array $records 待处理数据
+ * @return array
+ */
+function handleRecords($rules,$records = []){
     if($rules && $records){
         $translate = C('TRANSLATE');
         array_walk($records,function(&$v) use($rules,$translate){
@@ -167,7 +179,10 @@ function handleRecords($rules,$records){
     return $records;
 }
 
-
+/**
+ * 接口返回数据
+ * @param array $data
+ */
 function returnResult($data = []){
     $result = [
         'code' => 1,
@@ -176,6 +191,11 @@ function returnResult($data = []){
     ajaxReturn($result);
 }
 
+/**
+ * 错误信息提示
+ * @param string $errorCode 错误代码
+ * @param string $errorMsg 错误信息
+ */
 function showError($errorCode, $errorMsg = ''){
     if(!$errorMsg){
         $errorArray = C('ERROR_MESSAGE');
@@ -220,8 +240,12 @@ function ajaxReturn($data,$type='',$json_option=0){
     exit($data);
 }
 
-
-function getNodeData($roleId){
+/**
+ * 获取菜单，按钮，权限数据
+ * @param int $roleId
+ * @return array
+ */
+function getNodeData($roleId = 0){
     $menuData = $buttonData = $accessData = [];
     $roleModel = M('tr_sys_role');
     $roleNode = $roleModel->where("id=".$roleId)->getField('access_node');
@@ -232,14 +256,20 @@ function getNodeData($roleId){
             ->order('sort desc')->select();
         if($nodeData){
             list($menuData,$buttonData) = formatNode($nodeData);
-            $accessData = array_column($nodeData,'id','path');
+            $accessData = array_column($nodeData,'is_login','path');
             unset($accessData['']);
         }
     }
     return [$menuData,$buttonData,$accessData];
 }
 
-function formatNode($nodes,$pid = 0){
+/**
+ * 递归 格式化 菜单 按钮 数据
+ * @param array $nodes
+ * @param int $pid
+ * @return array
+ */
+function formatNode($nodes = [],$pid = 0){
     $menuData = $buttonData = $buttons = [];
     foreach($nodes as $key => $node) {
         if ($node['pid'] == $pid) {
@@ -267,4 +297,24 @@ function formatNode($nodes,$pid = 0){
         }
     }
     return [$menuData,$buttonData];
+}
+
+/**
+ * 权限检测
+ * @return bool
+ */
+function checkAccess(){
+    $path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
+    return isset($_SESSION['accessData'][$path]) && $_SESSION['accessData'][$path];
+}
+
+/**
+ * 判断数据库链接,5秒钟未正常连接则返回false
+ * @return bool
+ */
+function check_mysql(){
+    $mysqli = mysqli_init();
+    $mysqli->options(MYSQLI_OPT_CONNECT_TIMEOUT, 5);
+    $conn = $mysqli->real_connect(C('DB_HOST'),C('DB_USER'),C('DB_PWD'),C('DB_NAME'),C('DB_PORT'));
+    return $conn ? true : false;
 }

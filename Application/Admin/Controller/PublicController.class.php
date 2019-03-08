@@ -12,5 +12,14 @@ use Think\Controller;
 
 class PublicController extends Controller
 {
+    public function _initialize()
+    {
+        if(check_mysql()){
 
+        }
+    }
+
+    public function login(){
+
+    }
 }

@@ -243,24 +243,48 @@ function ajaxReturn($data,$type='',$json_option=0){
 /**
  * 获取菜单，按钮，权限数据
  * @param int $roleId
- * @return array
+ * @return bool
  */
 function getNodeData($roleId = 0){
-    $menuData = $buttonData = $accessData = [];
-    $roleModel = M('tr_sys_role');
-    $roleNode = $roleModel->where("id=".$roleId)->getField('access_node');
-    if($roleNode){
-        $nodeModel = M('tr_sys_node');
-        $nodeData = $nodeModel->field('id,name,path,pid,type')
-            ->where("state = 1 and id in(".$roleNode.")")
-            ->order('sort desc')->select();
-        if($nodeData){
-            list($menuData,$buttonData) = formatNode($nodeData);
-            $accessData = array_column($nodeData,'is_login','path');
-            unset($accessData['']);
+    $modelFlag = false;
+    $cacheData = [
+        'menu'   => [],
+        'button' => [],
+        'access' => []
+    ];
+    foreach ($cacheData as $k => $v){
+        $cache = S('role_'.$k.'_'.$roleId);
+        if(!$cache){
+            $modelFlag = true;
+            break;
         }
     }
-    return [$menuData,$buttonData,$accessData];
+    if($modelFlag){
+        $roleModel = M('tr_sys_role');
+        $roleNode = $roleModel->where("id=".$roleId)->getField('access_node');
+        if($roleNode){
+            $nodeModel = M('tr_sys_node');
+            $nodeData = $nodeModel->field('id,name,path,pid,type')
+                ->where("state = 1 and id in(".$roleNode.")")
+                ->order('sort desc')->select();
+            if($nodeData){
+                list($menuData,$buttonData) = formatNode($nodeData);
+                $accessData = array_column($nodeData,'is_login','path');
+                unset($accessData['']);
+                $cacheData = [
+                    'menu'   => $menuData,
+                    'button' => $buttonData,
+                    'access' => $accessData
+                ];
+            }
+        }
+        foreach($cacheData as $k => $v){
+            if(empty($v))
+                return false;
+            S('role_'.$k.'_'.$roleId,$v);
+        }
+    }
+    return true;
 }
 
 /**

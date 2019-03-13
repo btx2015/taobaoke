@@ -23,29 +23,33 @@
 
             <volist name="menuData" id="menu">
                 <empty name="menu.path">
-                    <li class="active">
+                    <notempty name="menu.active">
+                        <li class="active">
+                    <else/>
+                        <li>
+                    </notempty>
                         <a href="#">
                             <span class="nav-label">{$menu.name}</span>
                             <span class="fa arrow"></span>
                         </a>
-                        <ul class="nav nav-second-level collapse in">
-                            <volist name="menu.children" id="children">
-                                <if condition="$active eq $children['path']">
-                                    <li class="active">
-                                        <else/>
-                                    <li>
-                                </if>
-                                        <a href="{:U($children['path'])}">{$children.name}</a>
-                                    </li>
-                            </volist>
+                        <notempty name="menu.active">
+                            <ul class="nav nav-second-level collapse in">
+                        <else/>
+                            <ul class="nav nav-second-level collapse">
+                        </notempty>
+                        <volist name="menu.children" id="children">
+                            <notempty name="children.active">
+                            <li class="active">
+                            <else/>
+                            <li>
+                            </notempty>
+                                <a href="{:U($children['path'])}">{$children.name}</a>
+                            </li>
+                        </volist>
                         </ul>
                     </li>
                 <else/>
-                    <if condition="$active eq $menu['path']">
-                        <li class="active">
-                            <else/>
-                        <li>
-                    </if>
+                    <li>
                         <a href="{:U($menu['path'])}">
                             <span class="nav-label">{$menu.name}</span>
                         </a>

@@ -14,6 +14,8 @@ class RoleController extends CommonController
 {
     const T_ROLE = 'tr_sys_role';
 
+    const T_NODE = 'tr_sys_node';
+
     public function index(){
         if(IS_POST){
             $where = validate([
@@ -119,5 +121,33 @@ class RoleController extends CommonController
         if($res === false)
             showError(20002);
         returnResult();
+    }
+
+    public function access(){
+        $roleModel = M(self::T_ROLE);
+        if(IS_POST){
+            $rule = ['id' => [[],true,false]];
+            $data = validate($rule);
+            if(!is_array($data))
+                showError(10006);//参数错误
+            $role = $roleModel->where([
+                'id' => $data['id'],
+                'state' => 1
+            ])->find();
+            if(!$role)
+                showError(20004);
+        }else{
+            $id = I('get.id');
+            if(!$id)
+                showError(10006);//参数错误
+            $role = $roleModel->where([
+                'id' => $id,
+                'state' => 1
+            ])->find();
+            if(!$role)
+                showError(20004);
+            $nodeModel = M(self::T_NODE);
+            $nodes = $nodeModel->select();
+        }
     }
 }

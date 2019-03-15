@@ -183,9 +183,9 @@
                     formatter: function (value, grid, rows, state) {
                         var op = '';
                         if(editUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>';
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(delUrl)
-                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
+                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>&nbsp;';
                         return op;
                     }
                 }

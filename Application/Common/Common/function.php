@@ -167,7 +167,10 @@ function handleRecords($rules,$records = []){
                                 $v[$key] = $translate[$rule[1]][$v[$field]];
                             break;
                         case 'time':
-                            $v[$key] = date($rule[1],$v[$field]);
+                            if(!$v[$field])
+                                $v[$key] = '';
+                            else
+                                $v[$key] = date($rule[1],$v[$field]);
                             break;
                         default:
                             break;

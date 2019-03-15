@@ -17,7 +17,7 @@
         $('#toolbar-search').click(function(){
             var postData = $('#toolbar-form').serialize();
             $("#table").jqGrid('setGridParam', {
-                url : url,
+                url : listUrl,
                 datatype:'json',
                 postData : postData,
                 page : 1

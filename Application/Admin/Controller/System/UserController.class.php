@@ -62,7 +62,7 @@ class UserController extends CommonController
             ]);
         }else{
             $model =  M(self::T_ROLE);
-            $roles = $model->field('id,name')->where('state = 1')->select();
+            $roles = $model->field('id,name')->where('id != 1 AND state = 1')->select();
             $this->assign('roleOption',$roles);
             $this->display();
         }
@@ -111,6 +111,7 @@ class UserController extends CommonController
                 if($model->where('id ='.$id)->save($data) === false)
                     showError(20002);//更新失败
             }else{
+                $data['created_at'] = time();
                 $insertId = $model->add($data);
                 if(!$insertId)
                     showError(20001);//创建失败

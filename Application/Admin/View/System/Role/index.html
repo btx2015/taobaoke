@@ -1,55 +1,160 @@
 <include file="Public:header"/>
-<link href="__PUBLIC__/ADMIN/css/plugins/jQueryUI/jquery-ui-1.10.4.custom.min.css" rel="stylesheet">
-<link href="__PUBLIC__/ADMIN/css/plugins/jqGrid/ui.jqgrid.css" rel="stylesheet">
+<link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
+</style>
 <body>
-    <div id="wrapper">
-        <include file="Public:menu"/>
-        <div id="page-wrapper" class="gray-bg">
-            <include file="Public:nav"/>
-            <div class="wrapper wrapper-content  animated fadeInRight">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="ibox ">
-                            <div class="ibox-title">
-                                <h5>jQuery Grid Plugin – jqGrid</h5>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <!-- 筛选 start -->
+                        <div class="ibox-title">
+                            <div class="container-fluid">
+                                <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="name"
+                                                   placeholder="角色名" style="width: 100px">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="state">
+                                                <option value="">请选择状态</option>
+                                                <option value="1">启用</option>
+                                                <option value="2">禁用</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="toolbar-datepicker" name="create_from" class="form-control"
+                                                   style="width: 180px;" placeholder="创建时间"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-search">查询
+                                            </button>
+                                        </div>
+                                        <present name="buttonData.add">
+                                            <div class="form-group pull-right">
+                                                <button class="btn btn-sm btn-success" id="toolbar-create"
+                                                        route="{$buttonData.add.path}">{$buttonData.add.name}
+                                                </button>
+                                            </div>
+                                        </present>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="ibox-content">
-                                <p>
-                                    <strong>jqGrid</strong> is an Ajax-enabled JavaScript control that provides solutions
-                                    for representing and manipulating tabular data on the web. Since the grid is a
-                                    client-side solution loading data dynamically through Ajax callbacks, it can be
-                                    integrated with any server-side technology, including PHP, ASP, Java Servlets, JSP,
-                                    ColdFusion, and Perl.
-                                    jqGrid uses a jQuery Java Script Library and is written as plugin for that package. For
-                                    more information on jQuery Grid, please refer to the <a target="_blank"
-                                                                                            href="http://www.trirand.com/blog/">
-                                    jqGrid web site.</a>
-                                </p>
-
-                                <h4>Basic example</h4>
-
-                                <div class="jqGrid_wrapper">
-                                    <table id="table_list_1"></table>
-                                    <div id="pager_list_1"></div>
-                                </div>
-
-                                <h4>Advanced example</h4>
-                                <p>
-
-                                </p>
-
-                                <div class="jqGrid_wrapper">
-                                    <table id="table_list_2"></table>
-                                    <div id="pager_list_2"></div>
+                        </div>
+                        <!-- 筛选 end -->
+                        <div class="ibox-content">
+                            <!-- 表格 start -->
+                            <div class="jqGrid_wrapper">
+                                <table id="table"></table>
+                                <div id="pager"></div>
+                            </div>
+                            <!-- 表格 end -->
+                            <!-- 添加框 start -->
+                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content animated fadeIn">
+                                        <div class="modal-body">
+                                            <form class="form-horizontal" id="save-form">
+                                                <input type="hidden" name="id">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">角色名称</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="name">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- 添加框 end -->
                         </div>
                     </div>
                 </div>
             </div>
-            <include file="Public:footer"/>
         </div>
+        <include file="Public:footer"/>
     </div>
-    <include file="Public:js"/>
+</div>
+<include file="Public:js"/>
+<!-- jqGrid -->
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
+<!-- Data picker -->
+<script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var listUrl = window.location;
+    var editUrl = "{:U($buttonData['edit']['path'])}";
+    var delUrl = "{:U($buttonData['del']['path'])}";
+    $(document).ready(function () {
+        var height = $(window).height();
+        $("#table").jqGrid({
+            url:listUrl,
+            mtype: 'POST',
+            datatype: "json",
+            autowidth: true,
+            shrinkToFit: true,
+            viewrecords: true,
+            hidegrid: false,
+            height: height - 300,
+            rowNum: 15,
+            rowList: [15, 30],
+//            multiselect: true,
+            colNames: [ '名称','状态','创建时间','操作'],
+            colModel: [
+                {name: 'name',align:'center'},
+                {name: 'state_str',align:'center',width:60,
+                    formatter: function (value, grid, rows, state) {
+                        var status,op = '<button type="button" class="btn btn-xs';
+                        if(rows.state == 1){
+                            op += ' btn-primary"';
+                            status = 2;
+                        }else{
+                            op += ' btn-warning"';
+                            status = 1;
+                        }
+                        if(edit)
+                            op += ' onclick="modify(' + rows.id + ','+ status +')";';
+                        return op + '">' + rows.state_str + '</button>';
+                    }
+                },
+                {name: 'created_at_str',align:'center',width: 170},
+                {name: 'operate', index: 'operate',width: 120,align:'center',
+                    formatter: function (value, grid, rows, state) {
+                        var op = '';
+                        if(editUrl)
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>';
+                        if(delUrl)
+                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
+                        return op;
+                    }
+                }
+            ],
+            pager: "#pager",
+            jsonReader:{
+                root:"data.list",
+                records:"data.total"
+            }
+        });
+    });
+</script>
 </body>
 </html>

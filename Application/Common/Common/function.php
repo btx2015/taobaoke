@@ -302,8 +302,8 @@ function formatNode($nodes = [],$pid = 0){
                 'path' => $node['path'],
             ];
             unset($nodes[$key]);
-            if ($node['type'] == 2) {
-                $buttonData[] = $menu;
+            if ($node['type'] != 1) {
+                $buttonData[$node['type']] = $menu;
                 continue;
             } else {
                 list($menuChildren,$buttonChildren) = formatNode($nodes, $node['id']);

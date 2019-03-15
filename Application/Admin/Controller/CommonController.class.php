@@ -16,30 +16,31 @@ class CommonController extends Controller
 
     public function _initialize()
     {
-        if(empty($_SESSION['adminInfo']['id']))
-            $this->redirect('System/Login/login');
-
-        $lastLoginTime = strtotime($_SESSION['adminInfo']['last_login_time']);
-        if(time() - $lastLoginTime > 3600)
-            $this->redirect('System/Login/login');
-
-        if(!checkAccess()){
-            if(IS_POST)
-                showError(10010);
-            else{
-                unset($_SESSION['adminInfo']);
-                $this->redirect('System/Login/login');
-            }
-        }
-
+        $_SESSION['adminInfo']['role_id'] = 1;
+//        if(empty($_SESSION['adminInfo']['id']))
+//            $this->redirect('System/Login/login');
+//
+//        $lastLoginTime = strtotime($_SESSION['adminInfo']['last_login_time']);
+//        if(time() - $lastLoginTime > 3600)
+//            $this->redirect('System/Login/login');
+//
+//        if(!checkAccess()){
+//            if(IS_POST)
+//                showError(10010);
+//            else{
+//                unset($_SESSION['adminInfo']);
+//                $this->redirect('System/Login/login');
+//            }
+//        }
+        getNodeData(1);
         $this->getMenuData();
     }
 
     private function getMenuData(){
-        if(IS_GET){
-            $menuData = S('role_menu_1');
+        if(ACTION_NAME === 'index'){
+            $active = strtolower(CONTROLLER_NAME . '/' . ACTION_NAME);
+            $menuData = S('role_menu_'.$_SESSION['adminInfo']['role_id']);
             if ($menuData) {
-                $active = strtolower(CONTROLLER_NAME . '/' . ACTION_NAME);
                 foreach ($menuData as &$v) {
                     if (isset($v['children'])) {
                         foreach ($v['children'] as &$a) {
@@ -54,8 +55,18 @@ class CommonController extends Controller
                         }
                     }
                 }
+            }else{
+                $menuData = [];
             }
-            $this->assign('menuData', $menuData);
+
+            $buttonData = [];
+            $buttons = S('role_button_'.$_SESSION['adminInfo']['role_id']);
+            if(isset($buttons[$active]))
+                $buttonData = $buttons[$active];
+            $this->assign([
+                'menuData'   => $menuData,
+                'buttonData' => $buttonData
+            ]);
         }
     }
 }

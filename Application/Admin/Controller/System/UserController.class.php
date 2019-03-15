@@ -61,11 +61,15 @@ class UserController extends CommonController
                 'total' =>M(self::T_ADMIN)->alias('a')->where($where)->count()
             ]);
         }else{
+            $model =  M(self::T_ROLE);
+            $roles = $model->field('id,name')->where('state = 1')->select();
+            $this->assign('roleOption',$roles);
             $this->display();
         }
     }
 
     public function edit(){
+        $model = M(self::T_ADMIN);
         if(IS_POST){
             $id = I('post.id');
             $rule = [
@@ -73,7 +77,6 @@ class UserController extends CommonController
                 'name'  => [],
                 'email' => [['email']],
             ];
-            $model = M(self::T_ADMIN);
             if($id){
                 //非超级管理员不能编辑超级管理员
                 if($id == 1 && $_SESSION['userInfo']['id'] != 1)
@@ -85,7 +88,7 @@ class UserController extends CommonController
                     'usa'     => [],
                     'pswd'    => [['password']],
                     'role_id' => [['num']],
-                    'state'   => [['in'=>[1,2,3]]]
+                    'state'   => [['in'=>[1,2]]]
                 ],$rule);
             }else{
                 $rule = array_merge([
@@ -115,8 +118,27 @@ class UserController extends CommonController
 
             returnResult();
         }else{
-            $this->display();
+            $id = I('get.id');
+            if($id == 1 && $_SESSION['userInfo']['id'] != 1)
+                showError(10110);
+            $user = $model->where('id ='.$id)->find();
+            if(!$user)
+                showError(20004);//管理员不存在
+            returnResult($user);
         }
+    }
+
+    public function del(){
+        $rule = ['id' => [[],true,false]];
+        $data = validate($rule);
+        if(!is_array($data))
+            showError(10006);//参数错误
+
+        $model = M(self::T_ADMIN);
+        $res = $model->where(['id'=>['in',$data['id']]])->setField('state',3);
+        if($res === false)
+            showError(20002);
+        returnResult();
     }
 
     public function reset(){

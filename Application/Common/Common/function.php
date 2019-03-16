@@ -142,7 +142,7 @@ function validate(array $paramRules = [],$way = 'post'){
  * @return string
  */
 function encodePassword($password = ''){
-    return sha1(md5($password));
+    return md5(sha1($password));
 }
 
 
@@ -328,11 +328,13 @@ function formatNode($nodes = [],$pid = 0){
 
 /**
  * 权限检测
+ * @param $roleId
  * @return bool
  */
-function checkAccess(){
+function checkAccess($roleId){
     $path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
-    return isset($_SESSION['accessData'][$path]);
+    $accessData = S('role_access_'.$roleId);
+    return isset($accessData[$path]);
 }
 
 /**

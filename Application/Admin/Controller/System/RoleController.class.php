@@ -126,7 +126,10 @@ class RoleController extends CommonController
     public function access(){
         $roleModel = M(self::T_ROLE);
         if(IS_POST){
-            $rule = ['id' => [[],true,false]];
+            $rule = [
+                'id'     => [[],true,false],
+                'access' => [[],true,false]
+            ];
             $data = validate($rule);
             if(!is_array($data))
                 showError(10006);//参数错误
@@ -136,6 +139,17 @@ class RoleController extends CommonController
             ])->find();
             if(!$role)
                 showError(20004);
+            if($data['access']){
+                sort($data['access']);
+                $data['access_node'] = implode(',',$data['access']);
+                unset($data['access']);
+            }
+            $res = $roleModel->where([
+                'id' => $data['id']
+            ])->save($data);
+            if($res === false)
+                showError(20002);
+            returnResult();
         }else{
             $id = I('get.id');
             if(!$id)
@@ -147,7 +161,35 @@ class RoleController extends CommonController
             if(!$role)
                 showError(20004);
             $nodeModel = M(self::T_NODE);
-            $nodes = $nodeModel->select();
+            $nodes = $nodeModel->field('id,name,pid,type')
+                ->where('state = 1')->order('sort desc')->select();
+            $checked = explode(',',$role['access_node']);
+            $nodeData = $this->formatAccess($nodes,$checked);
+            $this->assign([
+                'roleInfo' => $role,
+                'nodeData' => $nodeData
+            ]);
+            $this->display();
         }
+    }
+
+    private function formatAccess($nodes,$checked,$pid = 0){
+        $accessData = [];
+        foreach($nodes as $key => $node) {
+            if ($node['pid'] == $pid) {
+                $access = [
+                    'id'   => $node['id'],
+                    'name' => $node['name'],
+                ];
+                if(in_array($node['id'],$checked))
+                    $access['checked'] = 1;
+                unset($nodes[$key]);
+                $accessChildren = $this->formatAccess($nodes,$checked, $node['id']);
+                if ($accessChildren)
+                    $access['children'] = $accessChildren;
+                $accessData[] = $access;
+            }
+        }
+        return $accessData;
     }
 }

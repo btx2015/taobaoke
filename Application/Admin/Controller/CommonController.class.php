@@ -14,32 +14,36 @@ use Think\Controller;
 class CommonController extends Controller
 {
 
+    private $roleId;
+
     public function _initialize()
     {
-        $_SESSION['adminInfo']['role_id'] = 1;
-//        if(empty($_SESSION['adminInfo']['id']))
-//            $this->redirect('System/Login/login');
-//
-//        $lastLoginTime = strtotime($_SESSION['adminInfo']['last_login_time']);
-//        if(time() - $lastLoginTime > 3600)
-//            $this->redirect('System/Login/login');
-//
-//        if(!checkAccess()){
-//            if(IS_POST)
-//                showError(10010);
-//            else{
-//                unset($_SESSION['adminInfo']);
-//                $this->redirect('System/Login/login');
-//            }
-//        }
-        getNodeData(1);
+        if(empty($_SESSION['adminInfo']))
+            $this->redirect('System/Public/login');
+
+        $this->roleId = $_SESSION['adminInfo']['role_id'];
+
+        $loginTime = $_SESSION['adminInfo']['login_time'];
+        if(time() - $loginTime > 3600)
+            $this->redirect('System/Public/login');
+        if(!checkAccess($this->roleId)){
+            if(IS_POST)
+                showError(10010);
+            else{
+                unset($_SESSION['adminInfo']);
+                $this->redirect('System/Public/login');
+            }
+        }
         $this->getMenuData();
     }
 
     private function getMenuData(){
-        if(ACTION_NAME === 'index'){
-            $active = strtolower(CONTROLLER_NAME . '/' . ACTION_NAME);
-            $menuData = S('role_menu_'.$_SESSION['adminInfo']['role_id']);
+        $active = strtolower(CONTROLLER_NAME . '/' . ACTION_NAME);
+        $accessData = S('role_access_'.$this->roleId);
+        if($accessData[$active]){
+            if(!is_numeric($_SESSION['accessData'][$active]))
+                $active = strtolower(CONTROLLER_NAME . '/' . $_SESSION['accessData'][$active]);
+            $menuData = S('role_menu_'.$this->roleId);
             if ($menuData) {
                 foreach ($menuData as &$v) {
                     if (isset($v['children'])) {
@@ -60,7 +64,7 @@ class CommonController extends Controller
             }
 
             $buttonData = [];
-            $buttons = S('role_button_'.$_SESSION['adminInfo']['role_id']);
+            $buttons = S('role_button_'.$this->roleId);;
             if(isset($buttons[$active]))
                 $buttonData = $buttons[$active];
             $this->assign([

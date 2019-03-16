@@ -43,13 +43,32 @@ class PublicController extends Controller
                 'usa'   => $where['usa'],
                 'state' => 1
             ])->find();
-            if(!$admin || $where['pwd'] !== $admin['pswd'])
+            if(!$admin)
                 showError(30005);
 
-            getNodeData($admin['role_id']);
-            $_SESSION['adminInfo'] = $admin;
+            if($where['pwd'] !== $admin['pswd']){
+                $admin['login_error'] = 0;
+                $res = $adminModel->where('id = '.$admin['id'])->setInc('login_error');
+                if(!$res)
+                    showError(30006);
+                showError(30005);
+            }else{
+                $accessCache = S('role_access_',$admin['role_id']);
+                if(!$accessCache)
+                    getNodeData($admin['role_id']);
 
-            $this->redirect('System/Index');
+                $_SESSION['adminInfo'] = $admin;
+
+                $admin['last_login_time'] = $admin['login_time'];
+                $admin['login_time'] = time();
+                $admin['login_num'] = $admin['login_num'] + 1;
+                $admin['login_error'] = 0;
+
+                $res = $adminModel->save($admin);
+                if(!$res)
+                    showError(30006);
+                returnResult(U('System/Index/index'));
+            }
         }else{
             $this->display();
         }

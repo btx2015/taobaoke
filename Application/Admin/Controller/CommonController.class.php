@@ -41,8 +41,8 @@ class CommonController extends Controller
         $active = strtolower(CONTROLLER_NAME . '/' . ACTION_NAME);
         $accessData = S('role_access_'.$this->roleId);
         if($accessData[$active]){
-            if(!is_numeric($_SESSION['accessData'][$active]))
-                $active = strtolower(CONTROLLER_NAME . '/' . $_SESSION['accessData'][$active]);
+            if(!is_numeric($accessData[$active]))
+                $active = strtolower(CONTROLLER_NAME . '/' . $accessData[$active]);
             $menuData = S('role_menu_'.$this->roleId);
             if ($menuData) {
                 foreach ($menuData as &$v) {

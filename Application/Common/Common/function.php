@@ -267,12 +267,12 @@ function getNodeData($roleId = 0){
         $roleNode = $roleModel->where("id=".$roleId)->getField('access_node');
         if($roleNode){
             $nodeModel = M('tr_sys_node');
-            $nodeData = $nodeModel->field('id,name,path,pid,type')
+            $nodeData = $nodeModel->field('id,name,path,pid,type,is_menu')
                 ->where("state = 1 and id in(".$roleNode.")")
                 ->order('sort desc')->select();
             if($nodeData){
                 list($menuData,$buttonData) = formatNode($nodeData);
-                $accessData = array_column($nodeData,'is_login','path');
+                $accessData = array_column($nodeData,'is_menu','path');
                 unset($accessData['']);
                 $cacheData = [
                     'menu'   => $menuData,
@@ -332,7 +332,7 @@ function formatNode($nodes = [],$pid = 0){
  */
 function checkAccess(){
     $path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
-    return isset($_SESSION['accessData'][$path]) && $_SESSION['accessData'][$path];
+    return isset($_SESSION['accessData'][$path]);
 }
 
 /**

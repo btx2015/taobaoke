@@ -93,6 +93,7 @@
     </div>
 </div>
 <include file="Public:js"/>
+<include file="Public:methods"/>
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
@@ -144,7 +145,7 @@
                         if(editUrl)
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(accessUrl)
-                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="editOpen(\''+ rows.id+ '\');">分配权限</button>&nbsp;';
+                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="accessOpen(\''+ rows.id +'\')">分配权限</button>&nbsp;';
                         if(delUrl)
                             op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
                         return op;
@@ -158,6 +159,11 @@
             }
         });
     });
+    function accessOpen(id){
+        if(accessUrl){
+            window.location.href = accessUrl + '?id=' +id
+        }
+    }
 </script>
 </body>
 </html>

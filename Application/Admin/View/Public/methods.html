@@ -1,0 +1,150 @@
+<script>
+    $(document).ready(function () {
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table').setGridWidth(width);
+        });
+        $('#toolbar-create').click(function(){
+            $('#save-modal').modal('show');
+        });
+        $('#toolbar-search').click(function(){
+            var postData = $('#toolbar-form').serialize();
+            $("#table").jqGrid('setGridParam', {
+                url : listUrl,
+                datatype:'json',
+                postData : postData,
+                page : 1
+            }).trigger("reloadGrid"); //重新载入
+        });
+        $('#toolbar-reset').click(function(){
+            $('#toolbar-form')[0].reset();
+        });
+        $('#toolbar-datepicker').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
+    });
+    function save(data){
+        $.ajax({
+            type:'POST',
+            url:editUrl,
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        confirmButtonText: "确认"
+                    });
+                    $('#save-form')[0].reset();
+                    $('#save-modal').modal('hide');
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
+
+    function edit(){
+        save($('#save-form').serialize())
+    }
+
+    function modify(id,state){
+        var msg = {
+            1:'启用',
+            2:'禁用',
+            3:'删除'
+        };
+        swal({
+            title: '',
+            text: "确认"+ msg[state]+"吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm:false,
+            closeOnCancel:true
+        },function(isConfirm){
+            if(isConfirm){
+                if(state === 3){
+                    remove(id)
+                }else{
+                    save({
+                        id:id,
+                        state:state
+                    })
+                }
+            }
+        })
+    }
+
+    function remove(id){
+        $.ajax({
+            type:'POST',
+            url:delUrl,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        confirmButtonText: "确认"
+                    });
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
+
+    function editOpen(id){
+        $('#save-modal').modal('show');
+        $.ajax({
+            type:'GET',
+            url:editUrl,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    $('#save-form').find(':input').each(function() {
+                        $(this).val(res.data[$(this).attr('name')]);
+                    });
+                }
+            }
+        });
+    }
+</script>

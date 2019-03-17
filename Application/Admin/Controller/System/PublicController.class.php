@@ -8,20 +8,13 @@
 
 namespace Admin\Controller\System;
 
-use Think\Controller;
+use Admin\Controller\CommonController;
 use Think\Verify;
 
-class PublicController extends Controller
+class PublicController extends CommonController
 {
 
     const T_USER = 'tr_sys_admin';
-
-    public function _initialize()
-    {
-//        if(check_mysql()){
-//            exit();
-//        }
-    }
 
     public function login(){
         if(IS_POST){
@@ -53,9 +46,10 @@ class PublicController extends Controller
                     showError(30006);
                 showError(30005);
             }else{
-                $accessCache = S('role_access_',$admin['role_id']);
+                $accessCache = S('role_access_'.$admin['role_id']);
                 if(!$accessCache)
-                    getNodeData($admin['role_id']);
+                    if(!$this->getNodeData($admin['role_id']))
+                        showError(30006);
 
                 $_SESSION['adminInfo'] = $admin;
 
@@ -64,7 +58,8 @@ class PublicController extends Controller
                 $admin['login_num'] = $admin['login_num'] + 1;
                 $admin['login_error'] = 0;
 
-                $res = $adminModel->save($admin);
+                $res = $adminModel->where('id='.$admin['id'])
+                    ->save($admin);
                 if(!$res)
                     showError(30006);
                 returnResult(U('System/Index/index'));

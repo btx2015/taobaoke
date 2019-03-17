@@ -63,6 +63,10 @@
                             text: res.code + res.msg,
                             type: "error",
                             confirmButtonText: "确认"
+                        },function(){
+                            $('#captcha').click(function(){
+                                $(this).attr('src',"{:U('System/Public/captcha')}?id="+Math.random())
+                            });
                         });
                     }else{
                         swal({

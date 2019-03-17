@@ -23,26 +23,26 @@
 
             <volist name="menuData" id="menu">
                 <empty name="menu.path">
-                    <notempty name="menu.active">
+                    <if condition="isset($active[$menu['id']])">
                         <li class="active">
                     <else/>
                         <li>
-                    </notempty>
+                    </if>
                         <a href="#">
                             <span class="nav-label">{$menu.name}</span>
                             <span class="fa arrow"></span>
                         </a>
-                        <notempty name="menu.active">
+                        <if condition="isset($active[$menu['id']])">
                             <ul class="nav nav-second-level collapse in">
                         <else/>
                             <ul class="nav nav-second-level collapse">
-                        </notempty>
+                        </if>
                         <volist name="menu.children" id="children">
-                            <notempty name="children.active">
+                            <if condition="isset($active[$children['id']])">
                             <li class="active">
                             <else/>
                             <li>
-                            </notempty>
+                            </if>
                                 <a href="{:U($children['path'])}">{$children.name}</a>
                             </li>
                         </volist>

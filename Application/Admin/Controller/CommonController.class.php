@@ -58,7 +58,8 @@ class CommonController extends Controller
         if($accessData[$this->path]['pid'])
             $active[$accessData[$this->path]['pid']] = 1;
         $menuData = S('role_menu_'.$this->roleId);
-        $buttonData = S('role_button_'.$this->roleId);
+        $buttons = S('role_button_'.$this->roleId);
+        $buttonData = $buttons[$this->path];
         $this->assign([
             'active'     => $active,
             'menuData'   => $menuData,

@@ -73,7 +73,7 @@ class CommonController extends Controller
      * @param int $roleId
      * @return bool
      */
-    private function getNodeData($roleId = 0){
+    protected function getNodeData($roleId = 0){
         $modelFlag = false;
         $cacheData = [
             'menu'   => [],

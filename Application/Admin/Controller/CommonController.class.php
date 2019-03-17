@@ -14,13 +14,18 @@ use Think\Controller;
 class CommonController extends Controller
 {
 
-    private $roleId;
+    public $roleId;
 
-    private $path;
+    public $path;
+
+    public $basicInfo;
 
     public function _initialize()
     {
         $this->path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
+
+        $this->getBasic();
+
         if(!$this->needLogin()){
             $this->checkLogin();
             if(!$this->checkAccess()){
@@ -34,6 +39,16 @@ class CommonController extends Controller
         }
     }
 
+    private function getBasic(){
+        $basic = S('basic_info');
+        if(!$basic){
+            $basic = M('tr_sys_basic')
+                ->where('id=1')->find();
+            S('basic_info',$basic);
+        }
+        $this->basicInfo = $basic;
+    }
+
     private function needLogin(){
         $access = C('ADMIN_ACCESS');
         return isset($access[$this->path]);
@@ -44,7 +59,7 @@ class CommonController extends Controller
             $this->redirect('System/Public/login');
 
         $loginTime = $_SESSION['adminInfo']['login_time'];
-        if(time() - $loginTime > 3600)
+        if(time() - $loginTime > $this->basicInfo['login_overtime']*60)
             $this->redirect('System/Public/login');
 
         $this->roleId = $_SESSION['adminInfo']['role_id'];
@@ -60,7 +75,9 @@ class CommonController extends Controller
         $menuData = S('role_menu_'.$this->roleId);
         $buttons = S('role_button_'.$this->roleId);
         $buttonData = $buttons[$this->path];
+        $title = $this->basicInfo ? $this->basicInfo['system_name'] : '管理后台';
         $this->assign([
+            'title'      => $title,
             'active'     => $active,
             'menuData'   => $menuData,
             'buttonData' => $buttonData

@@ -40,10 +40,13 @@ class PublicController extends CommonController
                 showError(30005);
 
             if($where['pwd'] !== $admin['pswd']){
-                $admin['login_error'] = 0;
-                $res = $adminModel->where('id = '.$admin['id'])->setInc('login_error');
-                if(!$res)
-                    showError(30006);
+                if($admin['login_error'] >= $this->basicInfo['login_error']){
+                    $adminModel->where('id = '.$admin['id'])->setField('state',2);
+                }else{
+                    $res = $adminModel->where('id = '.$admin['id'])->setInc('login_error');
+                    if(!$res)
+                        showError(30006);
+                }
                 showError(30005);
             }else{
                 $accessCache = S('role_access_'.$admin['role_id']);

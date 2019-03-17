@@ -2,9 +2,6 @@
 <link href="__PUBLIC__/Admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 <!-- Sweet Alert -->
 <link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-<style type="text/css">
-    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
-</style>
 <body>
 <div id="wrapper">
     <include file="Public:menu"/>
@@ -105,11 +102,10 @@
                         title:"",
                         text: "成功",
                         type: "success",
-                        confirmButtonText: "确认"
-                    },function(isConfirm){
-                        if(isConfirm){
-                            window.location.reload()
-                        }
+                        showConfirmButton:false,
+                        timer: 1000
+                    },function(){
+                        window.location.reload()
                     });
                 }
             }

@@ -155,8 +155,7 @@ class RoleController extends CommonController
             if(!$id)
                 showError(10006);//参数错误
             $role = $roleModel->where([
-                'id' => $id,
-                'state' => 1
+                'id' => $id
             ])->find();
             if(!$role)
                 showError(20004);

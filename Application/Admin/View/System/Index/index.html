@@ -1,0 +1,55 @@
+<include file="Public:header"/>
+<link href="__PUBLIC__/Admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="ibox-content">
+            <h1>欢迎</h1>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var editUrl = "{:U($buttonData['edit']['path'])}";
+    function edit(){
+        var switcher = $('#switcher');
+        var s = switcher.prop('checked');
+        s ? switcher.val(1) : switcher.val(0);
+        var data = $('#save-form').serialize();
+        $.ajax({
+            type:'POST',
+            url:editUrl,
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    },function(){
+                        window.location.reload()
+                    });
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

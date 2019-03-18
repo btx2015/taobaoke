@@ -69,12 +69,15 @@ class CommonController extends Controller
         $accessData = S('role_access_'.$this->roleId);
         if(!isset($accessData[$this->path]))
             return false;
-        $active[$accessData[$this->path]['id']] = 1;
-        if($accessData[$this->path]['pid'])
-            $active[$accessData[$this->path]['pid']] = 1;
+        $path = $this->path;
+        if($accessData[$this->path]['type'] != 1)
+            $path = strtolower(CONTROLLER_NAME.'/index');
+        $active[$accessData[$path]['id']] = 1;
+        if($accessData[$path]['pid'])
+            $active[$accessData[$path]['pid']] = 1;
         $menuData = S('role_menu_'.$this->roleId);
         $buttons = S('role_button_'.$this->roleId);
-        $buttonData = $buttons[$this->path];
+        $buttonData = @$buttons[$path];
         $title = $this->basicInfo ? $this->basicInfo['system_name'] : '管理后台';
         $this->assign([
             'title'      => $title,
@@ -113,7 +116,7 @@ class CommonController extends Controller
                 $where['id'] = ['in',$roleNode];
             }
             $nodeModel = M('tr_sys_node');
-            $nodeData = $nodeModel->field('id,name,path,pid,type')
+            $nodeData = $nodeModel->field('id,name,path,pid,type,title')
                 ->where($where)->order('sort desc')->select();
             if($nodeData){
                 list($menuData,$buttonData) = $this->formatNode($nodeData);
@@ -146,7 +149,7 @@ class CommonController extends Controller
             if ($node['pid'] == $pid) {
                 unset($nodes[$key]);
                 if ($node['type'] != 1) {
-                    $buttonData[$node['type']] = $node;
+                    $buttonData[$node['name']] = $node;
                     continue;
                 } else {
                     list($menuChildren,$buttonChildren) = $this->formatNode($nodes, $node['id']);

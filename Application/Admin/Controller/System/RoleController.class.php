@@ -160,7 +160,7 @@ class RoleController extends CommonController
             if(!$role)
                 showError(20004);
             $nodeModel = M(self::T_NODE);
-            $nodes = $nodeModel->field('id,name,pid,type')
+            $nodes = $nodeModel->field('id,pid,type,title')
                 ->where('state = 1')->order('sort desc')->select();
             $checked = explode(',',$role['access_node']);
             $nodeData = $this->formatAccess($nodes,$checked);
@@ -178,7 +178,7 @@ class RoleController extends CommonController
             if ($node['pid'] == $pid) {
                 $access = [
                     'id'   => $node['id'],
-                    'name' => $node['name'],
+                    'name' => $node['title'],
                 ];
                 if(in_array($node['id'],$checked))
                     $access['checked'] = 1;

@@ -29,7 +29,7 @@
                         <li>
                     </if>
                         <a href="#">
-                            <span class="nav-label">{$menu.name}</span>
+                            <span class="nav-label">{$menu.title}</span>
                             <span class="fa arrow"></span>
                         </a>
                         <if condition="isset($active[$menu['id']])">
@@ -43,15 +43,19 @@
                             <else/>
                             <li>
                             </if>
-                                <a href="{:U($children['path'])}">{$children.name}</a>
+                                <a href="{:U($children['path'])}">{$children.title}</a>
                             </li>
                         </volist>
                         </ul>
                     </li>
                 <else/>
-                    <li>
+                        <if condition="isset($active[$menu['id']])">
+                            <li class="active">
+                                <else/>
+                            <li>
+                        </if>
                         <a href="{:U($menu['path'])}">
-                            <span class="nav-label">{$menu.name}</span>
+                            <span class="nav-label">{$menu.title}</span>
                         </a>
                     </li>
                 </empty>

@@ -55,7 +55,7 @@ class CommonController extends Controller
     }
 
     private function checkLogin(){
-        if(empty($_SESSION['adminInfo']))
+        if(!isset($_SESSION['adminInfo']))
             $this->redirect('System/Public/login');
 
         $loginTime = $_SESSION['adminInfo']['login_time'];

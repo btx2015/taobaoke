@@ -1,0 +1,214 @@
+<include file="Public:header"/>
+<link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td {
+        white-space: normal !important;
+        height: auto;
+    }
+</style>
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <!-- 筛选 start -->
+                        <div class="ibox-title">
+                            <div class="container-fluid">
+                                <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="username"
+                                                   placeholder="昵称" style="width: 100px">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="phone"
+                                                   placeholder="手机号" style="width: 150px">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="state">
+                                                <option value="">请选择状态</option>
+                                                <volist name="state" id="item" key="key">
+                                                    <option value="{$key}">{$item}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="toolbar-datepicker" name="create_from"
+                                                   class="form-control"
+                                                   style="width: 180px;" placeholder="申请时间"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-search">查询
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- 筛选 end -->
+                        <div class="ibox-content">
+                            <!-- 表格 start -->
+                            <div class="jqGrid_wrapper">
+                                <table id="table"></table>
+                                <div id="pager"></div>
+                            </div>
+                            <!-- 表格 end -->
+                            <!-- 添加框 start -->
+                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content animated fadeIn">
+                                        <div class="modal-body">
+                                            <form class="form-horizontal" id="save-form">
+                                                <input type="hidden" name="id">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">昵称</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="username">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">手机</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="phone">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">推荐人</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="referee"
+                                                               placeholder="推荐人手机号（选填）">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">密码</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="password" class="form-control" name="password">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">余额</label>
+                                                    <div class="col-lg-4">
+                                                        <input type="text" class="form-control" disabled
+                                                               name="available_fund">
+                                                    </div>
+                                                    <label class="control-label col-lg-2">累计收益</label>
+                                                    <div class="col-lg-4">
+                                                        <input type="text" class="form-control" disabled
+                                                               name="total_income">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">提现中</label>
+                                                    <div class="col-lg-4">
+                                                        <input type="text" class="form-control" disabled
+                                                               name="frozen_withdraw">
+                                                    </div>
+                                                    <label class="control-label col-lg-2">累计提现</label>
+                                                    <div class="col-lg-4">
+                                                        <input type="text" class="form-control" disabled
+                                                               name="total_withdraw">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 添加框 end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<include file="Public:methods"/>
+<!-- jqGrid -->
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
+<!-- Data picker -->
+<script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var listUrl = window.location;
+    var editUrl = "{:U($buttonData['edit']['path'])}";
+    var delUrl = "{:U($buttonData['del']['path'])}";
+    var flowUrl = "{:U($buttonData['flow']['path'])}";
+    $(document).ready(function () {
+        var height = $(window).height();
+        $("#table").jqGrid({
+            url: listUrl,
+            mtype: 'POST',
+            datatype: "json",
+            autowidth: true,
+            shrinkToFit: true,
+            viewrecords: true,
+            hidegrid: false,
+            height: height - 300,
+            rowNum: 15,
+            rowList: [15, 30],
+//            multiselect: true,
+            colNames: ['昵称', '手机号', '提现金额', '状态', '申请时间', '审核人','审核时间', '操作'],
+            colModel: [
+                {name: 'username', align: 'center'},
+                {name: 'phone', align: 'center'},
+                {name: 'amount', align: 'center'},
+                {
+                    name: 'state_str', align: 'center', width: 60,
+                    formatter: function (value, grid, rows, state) {
+                        var op = '<button type="button" class="btn btn-xs';
+                        if (rows.state == 1) {
+                            op += ' btn-warning">';
+                        } else if (rows.state == 2){
+                            op += ' btn-primary">';
+                        } else{
+                            op += ' btn-danger">';
+                        }
+                        return op + rows.state_str + '</button>';
+                    }
+                },
+                {name: 'created_at_str', align: 'center', width: 170},
+                {name: 'admin_id_str', align: 'center'},
+                {name: 'audit_time_str', align: 'center', width: 170},
+                {
+                    name: 'operate', index: 'operate', width: 150, align: 'center',
+                    formatter: function (value, grid, rows, state) {
+                        var op = '';
+                        if (editUrl)
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\'' + rows.id + '\');">审核</button>';
+                        return op;
+                    }
+                }
+            ],
+            pager: "#pager",
+            jsonReader: {
+                root: "data.list",
+                records: "data.total"
+            }
+        });
+    });
+    function flowOpen(id) {
+        if (flowUrl) {
+            window.location.href = flowUrl + '?id=' + id
+        }
+    }
+</script>
+</body>
+</html>

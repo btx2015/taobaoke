@@ -156,7 +156,7 @@ class IndexController extends CommonController
 
             returnResult([
                 'list' => handleRecords([
-                    'type'       => ['translate','state','type_str'],
+                    'type'       => ['translate','flow_type','type_str'],
                     'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
                 ],$list),
                 'total' =>M(self::T_FLOW)->where($where)->count()

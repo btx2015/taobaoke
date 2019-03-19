@@ -186,13 +186,13 @@
                 },
                 {name: 'created_at_str',align:'center',width: 170},
                 {name: 'last_login_time_str',align:'center',width: 170},
-                {name: 'operate', index: 'operate',width: 120,align:'center',
+                {name: 'operate', index: 'operate',width: 150,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
                         if(editUrl)
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(flowUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="flowOpen(\''+ rows.id+ '\');">会员明细</button>&nbsp;';
+                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="flowOpen(\''+ rows.id+ '\');">会员明细</button>&nbsp;';
                         if(delUrl)
                             op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
                         return op;
@@ -207,8 +207,8 @@
         });
     });
     function flowOpen(id){
-        if(accessUrl){
-            window.location.href = accessUrl + '?id=' +id
+        if(flowUrl){
+            window.location.href = flowUrl + '?id=' +id
         }
     }
 </script>

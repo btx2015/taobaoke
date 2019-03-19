@@ -149,6 +149,10 @@ class RoleController extends CommonController
             ])->save($data);
             if($res === false)
                 showError(20002);
+
+            if($this->getNodeData($data['id'],true))
+                showError(20002);
+
             returnResult();
         }else{
             $id = I('get.id');

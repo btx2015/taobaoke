@@ -14,6 +14,8 @@ class IndexController extends CommonController
 {
     const T_MEMBER = 'tr_member_info';
 
+    const T_FLOW = 'tr_member_fund_flow';
+
     public function index(){
         if(IS_POST){
             $where = validate([
@@ -129,5 +131,40 @@ class IndexController extends CommonController
         if($res === false)
             showError(20002);
         returnResult();
+    }
+
+    public function flow(){
+        if(IS_POST){
+            $where = validate([
+                'page'        => [['num'],1],
+                'rows'        => [['num'],10],
+                'id'          => [['num'],false,true],
+                'user_id'     => [[],false,true],
+                'type'        => [[],false,true],
+                'create_from' => [['time'],false,true,['egt','created_at']],
+                'create_to'   => [['time'],false,true,['elt','created_at']],
+            ]);
+            if(!is_array($where))
+                showError(10006);
+
+            $pageNo = $where['page'];
+            unset($where['page']);
+            $pageSize = $where['rows'] > 1000 ? 1000 : $where['rows'];
+            unset($where['rows']);
+
+            $list = M(self::T_FLOW)->where($where)->page($pageNo,$pageSize)->select();
+
+            returnResult([
+                'list' => handleRecords([
+                    'type'       => ['translate','state','type_str'],
+                    'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
+                ],$list),
+                'total' =>M(self::T_FLOW)->where($where)->count()
+            ]);
+        }else{
+            $id = I('get.id');
+            $this->assign('userId',$id);
+            $this->display();
+        }
     }
 }

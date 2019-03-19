@@ -54,8 +54,6 @@ class PublicController extends CommonController
                     if(!$this->getNodeData($admin['role_id']))
                         showError(30006);
 
-                $_SESSION['adminInfo'] = $admin;
-
                 $admin['last_login_time'] = $admin['login_time'];
                 $admin['login_time'] = time();
                 $admin['login_num'] = $admin['login_num'] + 1;
@@ -65,6 +63,9 @@ class PublicController extends CommonController
                     ->save($admin);
                 if(!$res)
                     showError(30006);
+
+                $_SESSION['adminInfo'] = $admin;
+
                 returnResult(U('System/Index/index'));
             }
         }else{

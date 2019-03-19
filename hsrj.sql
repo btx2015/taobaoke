@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-18 21:53:17
+Date: 2019-03-19 21:25:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -28,11 +28,13 @@ CREATE TABLE `tr_member_fund_flow` (
   `note` varchar(255) NOT NULL DEFAULT '' COMMENT '描述',
   `created_at` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member_fund_flow
 -- ----------------------------
+INSERT INTO `tr_member_fund_flow` VALUES ('1', '1', '100.00', '100.00', '1', '系统充值', '1552994379');
+INSERT INTO `tr_member_fund_flow` VALUES ('2', '1', '-100.00', '0.00', '2', '系统扣除', '1552994390');
 
 -- ----------------------------
 -- Table structure for tr_member_info
@@ -40,34 +42,73 @@ CREATE TABLE `tr_member_fund_flow` (
 DROP TABLE IF EXISTS `tr_member_info`;
 CREATE TABLE `tr_member_info` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) DEFAULT '' COMMENT '用户名',
-  `password` varchar(32) DEFAULT '' COMMENT '密码',
-  `phone` varchar(20) DEFAULT '' COMMENT '手机',
-  `referee_id` int(11) DEFAULT '0' COMMENT '推荐人id',
-  `name` varchar(30) DEFAULT '' COMMENT '姓名',
-  `state` tinyint(1) DEFAULT '1' COMMENT '状态 1正常 2禁用 3删除',
-  `avatar` varchar(255) DEFAULT '' COMMENT '头像',
-  `sex` tinyint(1) DEFAULT '0' COMMENT '性别 0未设置 1男 2女',
-  `login_time` int(10) DEFAULT '0' COMMENT '登陆时间',
-  `login_ip` varchar(20) DEFAULT '' COMMENT '登陆ip',
-  `last_login_time` int(10) DEFAULT '0' COMMENT '上次登录时间',
-  `last_login_ip` varchar(20) DEFAULT '' COMMENT '上次登陆ip',
-  `login_num` int(11) DEFAULT '0' COMMENT '登陆次数',
-  `level` tinyint(1) DEFAULT '0' COMMENT '用户等级 0普通用户',
-  `created_at` int(10) DEFAULT '0' COMMENT '注册时间',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `available_fund` decimal(12,2) DEFAULT '0.00' COMMENT '可用余额',
-  `frozen_fund` decimal(12,2) DEFAULT '0.00' COMMENT '冻结金额',
-  `frozen_withdraw` decimal(12,2) DEFAULT '0.00' COMMENT '提现冻结',
-  `total_income` decimal(12,2) DEFAULT '0.00' COMMENT '累计收益',
-  `total_withdraw` decimal(12,2) DEFAULT '0.00' COMMENT '累计提现',
+  `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
+  `phone` varchar(20) NOT NULL DEFAULT '' COMMENT '手机',
+  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人id',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '姓名',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态 1正常 2禁用 3删除',
+  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
+  `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0未设置 1男 2女',
+  `login_time` int(10) NOT NULL DEFAULT '0' COMMENT '登陆时间',
+  `login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '登陆ip',
+  `last_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '上次登录时间',
+  `last_login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '上次登陆ip',
+  `login_num` int(11) NOT NULL DEFAULT '0' COMMENT '登陆次数',
+  `level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户等级 0普通用户',
+  `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '注册时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `available_fund` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '可用余额',
+  `frozen_fund` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '冻结金额',
+  `frozen_withdraw` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '提现冻结',
+  `total_income` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '累计收益',
+  `total_withdraw` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '累计提现',
+  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '阿里妈妈pid',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member_info
 -- ----------------------------
-INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00');
+INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
+
+-- ----------------------------
+-- Table structure for tr_member_pid
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_member_pid`;
+CREATE TABLE `tr_member_pid` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pid` varchar(255) NOT NULL DEFAULT '' COMMENT '阿里妈妈pid',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_member_pid
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tr_member_withdraw
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_member_withdraw`;
+CREATE TABLE `tr_member_withdraw` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '提现金额',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '审核状态 1申请中 2 通过 3拒绝',
+  `admin_id` int(11) NOT NULL DEFAULT '0' COMMENT '审核人管理员id',
+  `descr` varchar(255) NOT NULL DEFAULT '' COMMENT '审核理由',
+  `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '申请时间',
+  `audit_time` int(11) NOT NULL DEFAULT '0' COMMENT '审核时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_member_withdraw
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tr_sys_admin
@@ -96,7 +137,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '', '132@qq.com', '1', '1', '1552916920', '', '1552916713', '', '44', '0', '1548075651', '2019-03-18 01:12:03');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '', '132@qq.com', '1', '1', '1552994156', '', '1552992771', '', '48', '0', '1548075651', '2019-03-18 01:12:03');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -184,7 +225,7 @@ CREATE TABLE `tr_sys_role` (
 -- ----------------------------
 -- Records of tr_sys_role
 -- ----------------------------
-INSERT INTO `tr_sys_role` VALUES ('1', '超级管理员', '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20', '1', '1548145765', '2019-01-22 16:29:25');
+INSERT INTO `tr_sys_role` VALUES ('1', '超级管理员', '', '1', '1548145765', '2019-03-19 18:57:35');
 INSERT INTO `tr_sys_role` VALUES ('2', '管理员', '1,2,3,4,5,7,8,9,10', '1', '1548145765', '2019-03-16 16:55:19');
 INSERT INTO `tr_sys_role` VALUES ('3', '客服', '', '2', '1552632230', '2019-03-15 14:43:50');
 INSERT INTO `tr_sys_role` VALUES ('4', '运营', '', '1', '1552632386', '2019-03-15 15:31:52');

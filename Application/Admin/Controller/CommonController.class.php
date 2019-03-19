@@ -22,6 +22,8 @@ class CommonController extends Controller
 
     public function _initialize()
     {
+//        unset($_SESSION['adminInfo']);
+
         $this->path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
 
         $this->getBasic();
@@ -55,8 +57,13 @@ class CommonController extends Controller
     }
 
     private function checkLogin(){
-        if(!isset($_SESSION['adminInfo']))
-            $this->redirect('System/Public/login');
+        if(!isset($_SESSION['adminInfo'])){
+            if(IS_POST){
+                showError(10003);
+            }else{
+                $this->redirect('System/Public/login');
+            }
+        }
 
         $loginTime = $_SESSION['adminInfo']['login_time'];
         if(time() - $loginTime > $this->basicInfo['login_overtime']*60)
@@ -91,23 +98,25 @@ class CommonController extends Controller
     /**
      * 获取菜单，按钮，权限数据
      * @param int $roleId
+     * @param bool $update
      * @return bool
      */
-    protected function getNodeData($roleId = 0){
-        $modelFlag = false;
+    protected function getNodeData($roleId = 0,$update = false){
         $cacheData = [
             'menu'   => [],
             'button' => [],
             'access' => []
         ];
+
         foreach ($cacheData as $k => $v){
             $cache = S('role_'.$k.'_'.$roleId);
             if(!$cache){
-                $modelFlag = true;
+                $update = true;
                 break;
             }
         }
-        if($modelFlag){
+
+        if($update){
             $where = ['state' => 1];
             if($roleId != 1){
                 $roleModel = M('tr_sys_role');

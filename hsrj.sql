@@ -10,10 +10,29 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-19 21:25:45
+Date: 2019-03-20 20:26:22
 */
 
 SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for tr_member_account
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_member_account`;
+CREATE TABLE `tr_member_account` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员id',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '提现类型 1银行卡 2 支付宝 3微信',
+  `account` varchar(30) NOT NULL DEFAULT '' COMMENT '提现账号',
+  `note` varchar(255) NOT NULL DEFAULT '' COMMENT '其他信息json 银行卡开户行,银行名称等信息',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_member_account
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tr_member_fund_flow
@@ -70,7 +89,7 @@ CREATE TABLE `tr_member_info` (
 -- ----------------------------
 -- Records of tr_member_info
 -- ----------------------------
-INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
+INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
 
 -- ----------------------------
 -- Table structure for tr_member_pid
@@ -103,12 +122,19 @@ CREATE TABLE `tr_member_withdraw` (
   `created_at` int(11) NOT NULL DEFAULT '0' COMMENT '申请时间',
   `audit_time` int(11) NOT NULL DEFAULT '0' COMMENT '审核时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '提现方式',
+  `account` varchar(30) NOT NULL DEFAULT '' COMMENT '提现账户',
+  `note` varchar(255) NOT NULL DEFAULT '' COMMENT '账户信息',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member_withdraw
 -- ----------------------------
+INSERT INTO `tr_member_withdraw` VALUES ('1', '1', '100.00', '2', '1', '', '1553065944', '1553083800', '2019-03-20 20:10:00', '1', '22070219890120', '{\r\n\"bank_name\": \"招商银行\",\r\n\"province\": \"浙江省\",\r\n\"city\": \"杭州市\",\r\n\"area\": \"滨江区\",\r\n\"bank_branch\": \"钱塘支行\"\r\n}');
+INSERT INTO `tr_member_withdraw` VALUES ('2', '1', '100.00', '2', '1', '审核通过', '1553065944', '1553065944', '2019-03-20 16:18:35', '2', '13588269863', '');
+INSERT INTO `tr_member_withdraw` VALUES ('3', '1', '100.00', '3', '1', '拒绝', '1553065944', '1553065944', '2019-03-20 16:18:28', '3', 'weixin', '');
+INSERT INTO `tr_member_withdraw` VALUES ('4', '1', '100.00', '3', '1', 'asd', '1553065944', '1553083773', '2019-03-20 20:09:33', '2', '13588269863', '');
 
 -- ----------------------------
 -- Table structure for tr_sys_admin
@@ -137,7 +163,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '', '132@qq.com', '1', '1', '1552994156', '', '1552992771', '', '48', '0', '1548075651', '2019-03-18 01:12:03');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553079837', '', '1553079794', '', '65', '0', '1548075651', '2019-03-20 15:14:40');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -183,7 +209,7 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
@@ -207,6 +233,11 @@ INSERT INTO `tr_sys_node` VALUES ('17', '会员信息', 'member/index/index', '1
 INSERT INTO `tr_sys_node` VALUES ('18', '添加', 'member/index/add', '17', 'add', '9', '2', '1', '0', '2019-03-18 21:39:33');
 INSERT INTO `tr_sys_node` VALUES ('19', '编辑', 'member/index/edit', '17', 'edit', '8', '2', '1', '0', '2019-03-18 21:39:34');
 INSERT INTO `tr_sys_node` VALUES ('20', '删除', 'member/index/del', '17', 'del', '7', '2', '1', '0', '2019-03-18 21:39:35');
+INSERT INTO `tr_sys_node` VALUES ('23', '会员明细', 'member/flow/index', '16', '1', '8', '1', '1', '0', '2019-03-20 10:59:41');
+INSERT INTO `tr_sys_node` VALUES ('24', '提现申请', 'member/withdraw/index', '16', '1', '7', '1', '1', '0', '2019-03-20 11:00:29');
+INSERT INTO `tr_sys_node` VALUES ('25', '审核', 'member/withdraw/audit', '24', 'audit', '9', '2', '1', '0', '2019-03-20 18:13:03');
+INSERT INTO `tr_sys_node` VALUES ('26', '分佣比例', 'member/fee/index', '16', '1', '6', '1', '1', '0', '2019-03-20 11:28:55');
+INSERT INTO `tr_sys_node` VALUES ('27', '编辑', 'member/fee/edit', '26', 'edit', '9', '2', '1', '0', '2019-03-20 11:28:59');
 
 -- ----------------------------
 -- Table structure for tr_sys_role

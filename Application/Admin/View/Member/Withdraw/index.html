@@ -2,6 +2,7 @@
 <link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <!-- Sweet Alert -->
 <link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<link href="__PUBLIC__/Admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
 <style type="text/css">
     .ui-jqgrid tr.jqgrow td {
         white-space: normal !important;
@@ -32,8 +33,16 @@
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
-                                                <option value="">请选择状态</option>
+                                                <option value="">审核状态</option>
                                                 <volist name="state" id="item" key="key">
+                                                    <option value="{$key}">{$item}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="state">
+                                                <option value="">提现方式</option>
+                                                <volist name="type" id="item" key="key">
                                                     <option value="{$key}">{$item}</option>
                                                 </volist>
                                             </select>
@@ -73,50 +82,61 @@
                                                 <div class="form-group">
                                                     <label class="control-label col-lg-2">昵称</label>
                                                     <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="username">
+                                                        <input type="text" class="form-control" name="username" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="control-label col-lg-2">手机</label>
                                                     <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="phone">
+                                                        <input type="text" class="form-control" name="phone" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">推荐人</label>
+                                                    <label class="control-label col-lg-2">提现金额</label>
                                                     <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="referee"
-                                                               placeholder="推荐人手机号（选填）">
+                                                        <input type="text" class="form-control" name="amount" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">密码</label>
+                                                    <label class="control-label col-lg-2">提现方式</label>
                                                     <div class="col-lg-10">
-                                                        <input type="password" class="form-control" name="password">
+                                                        <input type="text" class="form-control" name="type_str" disabled>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">余额</label>
-                                                    <div class="col-lg-4">
-                                                        <input type="text" class="form-control" disabled
-                                                               name="available_fund">
+                                                    <label class="control-label col-lg-2">提现账户</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="account" disabled>
                                                     </div>
-                                                    <label class="control-label col-lg-2">累计收益</label>
-                                                    <div class="col-lg-4">
-                                                        <input type="text" class="form-control" disabled
-                                                               name="total_income">
+                                                </div>
+                                                <div id="extend-form" style="display: none">
+                                                    <div class="form-group">
+                                                        <label class="control-label col-lg-2">银行名称</label>
+                                                        <div class="col-lg-10">
+                                                            <input type="text" class="form-control" name="bank_name" disabled>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="control-label col-lg-2">开户行</label>
+                                                        <div class="col-lg-10">
+                                                            <input type="text" class="form-control" name="location" disabled>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">提现中</label>
-                                                    <div class="col-lg-4">
-                                                        <input type="text" class="form-control" disabled
-                                                               name="frozen_withdraw">
+                                                    <label class="control-label col-lg-2">审核</label>
+                                                    <div class="col-lg-10">
+                                                        <select name="state" class="form-control" id="stateChange">
+                                                            <option value="1" selected="selected">请选择</option>
+                                                            <option value="3">拒绝</option>
+                                                            <option value="2">通过</option>
+                                                        </select>
                                                     </div>
-                                                    <label class="control-label col-lg-2">累计提现</label>
-                                                    <div class="col-lg-4">
-                                                        <input type="text" class="form-control" disabled
-                                                               name="total_withdraw">
+                                                </div>
+                                                <div class="form-group" id="reject" style="display: none">
+                                                    <label class="control-label col-lg-2">拒绝理由</label>
+                                                    <div class="col-lg-10">
+                                                        <textarea class="form-control" name="descr" style="resize: vertical"></textarea>
                                                     </div>
                                                 </div>
                                             </form>
@@ -148,9 +168,7 @@
 <script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
 <script>
     var listUrl = window.location;
-    var editUrl = "{:U($buttonData['edit']['path'])}";
-    var delUrl = "{:U($buttonData['del']['path'])}";
-    var flowUrl = "{:U($buttonData['flow']['path'])}";
+    var editUrl = "{:U($buttonData['audit']['path'])}";
     $(document).ready(function () {
         var height = $(window).height();
         $("#table").jqGrid({
@@ -164,14 +182,15 @@
             height: height - 300,
             rowNum: 15,
             rowList: [15, 30],
-//            multiselect: true,
-            colNames: ['昵称', '手机号', '提现金额', '状态', '申请时间', '审核人','审核时间', '操作'],
+            colNames: ['申请时间','昵称', '手机号', '提现金额', '提现方式','状态','审核','审核时间'],
             colModel: [
+                {name: 'created_at_str', align: 'center', width: 170},
                 {name: 'username', align: 'center'},
                 {name: 'phone', align: 'center'},
                 {name: 'amount', align: 'center'},
+                {name: 'type_str', align: 'center'},
                 {
-                    name: 'state_str', align: 'center', width: 60,
+                    name: 'state_str', align: 'center', width: 70,
                     formatter: function (value, grid, rows, state) {
                         var op = '<button type="button" class="btn btn-xs';
                         if (rows.state == 1) {
@@ -184,18 +203,18 @@
                         return op + rows.state_str + '</button>';
                     }
                 },
-                {name: 'created_at_str', align: 'center', width: 170},
-                {name: 'admin_id_str', align: 'center'},
-                {name: 'audit_time_str', align: 'center', width: 170},
                 {
                     name: 'operate', index: 'operate', width: 150, align: 'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
-                        if (editUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\'' + rows.id + '\');">审核</button>';
+                        if (editUrl && rows.state == 1)
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="auditOpen(\'' + rows.id + '\');">点击审核</button>';
+                        if(rows.state != 1)
+                            op += rows.admin_id_str;
                         return op;
                     }
-                }
+                },
+                {name: 'audit_time_str', align: 'center', width: 170}
             ],
             pager: "#pager",
             jsonReader: {
@@ -203,11 +222,38 @@
                 records: "data.total"
             }
         });
+        $("#stateChange").change(function(){
+            if($(this).val() == 3){
+                $("#reject").show();
+            }else{
+                $("#reject").hide();
+            }
+        })
     });
-    function flowOpen(id) {
-        if (flowUrl) {
-            window.location.href = flowUrl + '?id=' + id
-        }
+    function auditOpen(id){
+        $('#save-modal').modal('show');
+        $.ajax({
+            type:'GET',
+            url:editUrl + '?id=' + id,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    if(res.data.type === '1'){
+                        $("#extend-form").show();
+                    }
+                    $('#save-form').find(':input').each(function() {
+                        $(this).val(res.data[$(this).attr('name')]);
+                    });
+                }
+            }
+        });
     }
 </script>
 </body>

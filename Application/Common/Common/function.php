@@ -120,6 +120,8 @@ function validate(array $paramRules = [],$way = 'post'){
                     if($rules[3][0] === 'eq'){
                         $params[$rules[3][1]] = $paramValue;
                     }else{
+                        if($rules[3][0] === 'like')
+                            $paramValue = '%'.$paramValue.'%';
                         $params[$rules[3][1]] = [$rules[3][0],$paramValue];
                     }
                 }

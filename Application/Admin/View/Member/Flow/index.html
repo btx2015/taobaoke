@@ -1,0 +1,129 @@
+<include file="Public:header"/>
+<link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
+</style>
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <!-- 筛选 start -->
+                        <div class="ibox-title">
+                            <div class="container-fluid">
+                                <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <input type="text" name="username" class="form-control"
+                                                   style="width: 100px;" placeholder="会员昵称"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" name="phone" class="form-control"
+                                                   style="width: 150px;" placeholder="手机号"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="toolbar-datepicker" name="create_from" class="form-control"
+                                                   style="width: 180px;" placeholder="时间"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-search">查询
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- 筛选 end -->
+                        <div class="ibox-content">
+                            <!-- 表格 start -->
+                            <div class="jqGrid_wrapper">
+                                <table id="table"></table>
+                                <div id="pager"></div>
+                            </div>
+                            <!-- 表格 end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<!-- jqGrid -->
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
+<!-- Data picker -->
+<script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var listUrl = window.location;
+    $(document).ready(function () {
+        $('#toolbar-datepicker').datepicker({
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            calendarWeeks: true,
+            autoclose: true
+        });
+        var height = $(window).height();
+        $("#table").jqGrid({
+            url:listUrl,
+            mtype: 'POST',
+            datatype: "json",
+            autowidth: true,
+            shrinkToFit: true,
+            viewrecords: true,
+            hidegrid: false,
+            height: height - 300,
+            rowNum: 15,
+            rowList: [15, 30],
+            colNames: [ '会员昵称','手机号','类型','金额','余额','备注','时间'],
+            colModel: [
+                {name: 'username',align:'center'},
+                {name: 'phone',align:'center'},
+                {name: 'type_str',align:'center'},
+                {name: 'amount',align:'center',
+                    formatter: function (value, grid, rows, state) {
+                        var op = '<button type="button" class="btn btn-xs';
+                        if(rows.amount < 0){
+                            op += ' btn-primary">';
+                        }else if(rows.amount > 0){
+                            op += ' btn-danger">+';
+                        }
+                        return op + rows.amount + '</button>';
+                    }},
+                {name: 'balance',align:'center'},
+                {name: 'note',align:'center'},
+                {name: 'created_at_str',align:'center',width: 170},
+            ],
+            pager: "#pager",
+            jsonReader:{
+                root:"data.list",
+                records:"data.total"
+            }
+        });
+        $('#toolbar-search').click(function(){
+            var postData = $('#toolbar-form').serialize();
+            $("#table").jqGrid('setGridParam', {
+                url : listUrl,
+                datatype:'json',
+                postData : postData,
+                page : 1
+            }).trigger("reloadGrid"); //重新载入
+        });
+    });
+</script>
+</body>
+</html>

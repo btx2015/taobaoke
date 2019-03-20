@@ -86,4 +86,10 @@ class PublicController extends CommonController
         ob_end_clean();
         $verify->entry();
     }
+
+    public function logout(){
+        if(isset($_SESSION['adminInfo']))
+            unset($_SESSION['adminInfo']);
+        $this->redirect('System/Public/login');
+    }
 }

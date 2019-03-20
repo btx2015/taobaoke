@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: leasin
- * Date: 2019/2/28
- * Time: 17:15
- */
 
 namespace Admin\Controller\System;
 

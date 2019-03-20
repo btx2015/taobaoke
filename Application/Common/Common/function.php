@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: leasin
- * Date: 2019/1/17
- * Time: 14:25
- */
 
 /**
  * 参数验证方法

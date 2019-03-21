@@ -10,32 +10,42 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-21 00:05:54
+Date: 2019-03-21 21:55:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `tr_manage_banner`
+-- Table structure for tr_manage_banner
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_banner`;
 CREATE TABLE `tr_manage_banner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(60) DEFAULT '' COMMENT 'banner标题',
-  `url` varchar(255) DEFAULT '' COMMENT '链接',
-  `img` varchar(255) DEFAULT '' COMMENT '图片地址',
-  `state` tinyint(1) DEFAULT '1' COMMENT '状态',
-  `created_at` int(11) DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `title` varchar(60) NOT NULL DEFAULT '' COMMENT 'banner标题',
+  `url` varchar(255) NOT NULL DEFAULT '' COMMENT '链接',
+  `img` varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_manage_banner
 -- ----------------------------
+INSERT INTO `tr_manage_banner` VALUES ('1', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('2', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('3', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('4', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('5', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('6', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('7', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('8', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('9', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('10', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '1553156575', '2019-03-21 16:23:03');
 
 -- ----------------------------
--- Table structure for `tr_members`
+-- Table structure for tr_members
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_members`;
 CREATE TABLE `tr_members` (
@@ -64,7 +74,7 @@ CREATE TABLE `tr_members` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_member_account`
+-- Table structure for tr_member_account
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_account`;
 CREATE TABLE `tr_member_account` (
@@ -83,7 +93,7 @@ CREATE TABLE `tr_member_account` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_member_fund_flow`
+-- Table structure for tr_member_fund_flow
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_fund_flow`;
 CREATE TABLE `tr_member_fund_flow` (
@@ -104,7 +114,7 @@ INSERT INTO `tr_member_fund_flow` VALUES ('1', '1', '100.00', '100.00', '1', '�
 INSERT INTO `tr_member_fund_flow` VALUES ('2', '1', '-100.00', '0.00', '2', '系统扣除', '1552994390');
 
 -- ----------------------------
--- Table structure for `tr_member_info`
+-- Table structure for tr_member_info
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_info`;
 CREATE TABLE `tr_member_info` (
@@ -140,7 +150,7 @@ CREATE TABLE `tr_member_info` (
 INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
 
 -- ----------------------------
--- Table structure for `tr_member_pid`
+-- Table structure for tr_member_pid
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_pid`;
 CREATE TABLE `tr_member_pid` (
@@ -157,7 +167,7 @@ CREATE TABLE `tr_member_pid` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_member_withdraw`
+-- Table structure for tr_member_withdraw
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_withdraw`;
 CREATE TABLE `tr_member_withdraw` (
@@ -185,7 +195,7 @@ INSERT INTO `tr_member_withdraw` VALUES ('3', '1', '100.00', '3', '1', '拒绝',
 INSERT INTO `tr_member_withdraw` VALUES ('4', '1', '100.00', '3', '1', 'asd', '1553065944', '1553083773', '2019-03-20 20:09:33', '2', '13588269863', '');
 
 -- ----------------------------
--- Table structure for `tr_sys_admin`
+-- Table structure for tr_sys_admin
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_admin`;
 CREATE TABLE `tr_sys_admin` (
@@ -211,7 +221,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553091149', '', '1553090707', '', '67', '0', '1548075651', '2019-03-20 15:14:40');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553164942', '', '1553153042', '', '69', '0', '1548075651', '2019-03-20 15:14:40');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -223,7 +233,7 @@ INSERT INTO `tr_sys_admin` VALUES ('9', '20190305002', '10470c3b4b1fed12c3baac01
 INSERT INTO `tr_sys_admin` VALUES ('10', '20190314001', 'b96a2f155fe64963219c24abeed1f252', '13588272939', 'njbgjr_daicao', '', '2', '1', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-17 15:42:02');
 
 -- ----------------------------
--- Table structure for `tr_sys_basic`
+-- Table structure for tr_sys_basic
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_basic`;
 CREATE TABLE `tr_sys_basic` (
@@ -242,7 +252,7 @@ CREATE TABLE `tr_sys_basic` (
 INSERT INTO `tr_sys_basic` VALUES ('1', '唐人', '系统名称', '1', '3', '120');
 
 -- ----------------------------
--- Table structure for `tr_sys_node`
+-- Table structure for tr_sys_node
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_node`;
 CREATE TABLE `tr_sys_node` (
@@ -293,7 +303,7 @@ INSERT INTO `tr_sys_node` VALUES ('31', '编辑', 'manage/banner/edit', '29', 'e
 INSERT INTO `tr_sys_node` VALUES ('32', '删除', 'manage/banner/del', '29', 'del', '7', '2', '1', '0', '2019-03-20 23:23:07');
 
 -- ----------------------------
--- Table structure for `tr_sys_role`
+-- Table structure for tr_sys_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_role`;
 CREATE TABLE `tr_sys_role` (

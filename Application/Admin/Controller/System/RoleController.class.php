@@ -13,8 +13,8 @@ class RoleController extends CommonController
     public function index(){
         if(IS_POST){
             $where = validate([
-                'page_no'     => [['num'],1],
-                'page_size'   => [['num'],10],
+                'page'        => [['num'],1],
+                'rows'        => [['num'],10],
                 'id'          => [['num'],false,true,['eq','id']],
                 'name'        => [[],false,true,['like','name']],
                 'state'       => [['in'=>[1,2]],false,true,['eq','state']],

@@ -21,7 +21,7 @@ class FaqController extends CommonController
             list($where,$pageNo,$pageSize) = before_query([
                 'title'       => [[],false,true,['like','title']],
                 'cate'        => [['num'],false,true,['eq','cate_id']],
-                'state'       => [['in'=>[1,2]]],
+                'state'       => [['in'=>[1,2]],false,true,['eq','a.state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ],'a');
@@ -52,9 +52,11 @@ class FaqController extends CommonController
         if(IS_POST){
             $model = M(self::T_FAQ);
             $rule = [
-                'name' => [[],true],
+                'title'   => [[],true],
+                'cate'    => [[],true,false,['eq','cate_id']],
+                'content' => []
             ];
-            $data = beforeSave($model,$rule,['name']);
+            $data = beforeSave($model,$rule,['title']);
             $data['created_at'] = time();
             $insertId = $model->add($data);
             if(!$insertId)
@@ -73,11 +75,12 @@ class FaqController extends CommonController
         $model = M(self::T_FAQ);
         if(IS_POST){
             $rule = [
-                'id'    => [['num'],true,false],
-                'name'  => [],
-                'state' => [['in'=>[1,2,3]]]
+                'id'      => [['num'],true,false],
+                'title'   => [],
+                'state'   => [['in'=>[1,2,3]]],
+                'content' => []
             ];
-            $data = beforeSave($model,$rule,['name']);
+            $data = beforeSave($model,$rule,['title']);
             $cate = $model->where(['id'=>$data['id']])->find();
             if(!$cate)
                 showError(20004);//管理员不存在
@@ -89,6 +92,7 @@ class FaqController extends CommonController
             $user = $model->where('id ='.$id)->find();
             if(!$user)
                 showError(20004);//不存在
+            $user['content'] = stripcslashes(htmlspecialchars_decode($user['content']));
             $model = M(self::T_FAQ_CATE);
             $cate = $model->field('id,name')
                 ->where(['state'=>['neq',3]])->order('sort desc')->select();

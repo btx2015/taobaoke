@@ -169,38 +169,35 @@
             $('#toolbar-form')[0].reset();
         });
     });
-    function remove(id){
-        $.ajax({
-            type:'POST',
-            url:delUrl,
-            data:{id:id},
-            dataType:'json',
-            success: function(res){
-                if(res.code !== 1){
-                    swal({
-                        title:"失败",
-                        text: res.code + res.msg,
-                        type: "error",
-                        confirmButtonText: "确认"
-                    });
+
+    function modify(id,state){
+        var msg = {
+            1:'启用',
+            2:'禁用',
+            3:'删除'
+        };
+        swal({
+            title: '',
+            text: "确认"+ msg[state]+"吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm:false,
+            closeOnCancel:true
+        },function(isConfirm){
+            if(isConfirm){
+                if(state === 3){
+                    save(delUrl,{id:id})
                 }else{
-                    swal({
-                        title:"",
-                        text: "成功",
-                        type: "success",
-                        showConfirmButton: false,
-                        timer:1000
-                    });
-                    $("#table").jqGrid('setGridParam', {
-                        url : listUrl,
-                        datatype:'json',
-                        page : 1
-                    }).trigger("reloadGrid"); //重新载入
+                    save(editUrl,{
+                        id:id,
+                        state:state
+                    })
                 }
             }
-        });
+        })
     }
-
     function editOpen(id){
         window.location.href = editUrl + '?id=' + id;
     }
@@ -226,8 +223,6 @@
                         showConfirmButton:false,
                         timer: 1000
                     });
-                    $('#save-form')[0].reset();
-                    $('#save-modal').modal('hide');
                     $("#table").jqGrid('setGridParam', {
                         url : listUrl,
                         datatype:'json',

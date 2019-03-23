@@ -12,7 +12,7 @@ class RoleController extends CommonController
 
     public function index(){
         if(IS_POST){
-            $where = validate([
+            list($where,$pageNo,$pageSize) = before_query([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
                 'id'          => [['num'],false,true,['eq','id']],
@@ -21,20 +21,12 @@ class RoleController extends CommonController
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ]);
-            if(!is_array($where))
-                showError(10006);
 
             if(!isset($where['id']))
                 $where['id'] = ['neq',1];
             else if($where['id'] == 1)
                 returnResult(['list'=>[],'total'=>0]);
 
-            if(!isset($where['state']))
-                $where['state'] = ['neq',3];
-            $pageNo = $where['page_no'];
-            unset($where['page_no']);
-            $pageSize = $where['page_size'] > 1000 ? 1000 : $where['page_size'];
-            unset($where['page_size']);
             $model = M(self::T_ROLE);
             $list = $model->where($where)->page($pageNo,$pageSize)->select();
 
@@ -50,47 +42,39 @@ class RoleController extends CommonController
         }
     }
 
+    public function add(){
+        $model = M(self::T_ROLE);
+        $rule = [
+            'name' => [[],true],
+            'menu' => [[],false,false,['eq','role_menu']],
+        ];
+        $data = beforeSave($model,$rule,['name']);
+        $data['created_at'] = time();
+        $insertId = $model->add($data);
+        if(!$insertId)
+            showError(20001);//创建失败
+        returnResult();
+    }
+
     public function edit(){
         $model = M(self::T_ROLE);
         if(IS_POST){
-            $id = I('post.id');
-            if($id){
-                //非超级管理员不能编辑超级管理员
-                if($id == 1 && $_SESSION['userInfo']['id'] != 1)
-                    showError(10110);
-                $user = $model->where('id ='.$id)->find();
-                if(!$user)
-                    showError(20004);//不存在
-                $rule = [
-                    'name'  => [],
-                    'menu'  => [[],false,true,['eq','role_menu']],
-                    'state' => [['in'=>[1,2,3]]]
-                ];
-            }else{
-                $rule = [
-                    'name' => [[],true],
-                    'menu' => [[],false,false,['eq','role_menu']],
-                ];
-            }
-            $data = validate($rule);
-            if(!is_array($data))
-                showError(10006);//参数错误
+            $rule = [
+                'id'    => [['num'],true,false],
+                'name'  => [],
+                'menu'  => [[],false,true,['eq','role_menu']],
+                'state' => [['in'=>[1,2,3]]]
+            ];
+            $data = beforeSave($model,$rule,['name']);
+            if($data['id'] == 1 && $_SESSION['userInfo']['id'] != 1)
+                showError(10110);
+            $role = $model->where(['id' => $data['id']])->find();
+            if(!$role)
+                showError(20004);//不存在
+            $res = $model->save($data);
 
-            if(isset($data['name'])){
-                $user = $model->where("name ='".$data['name']."'")->find();
-                if($user && $user['id'] != $id)
-                    showError(20000);//存在同名
-            }
-
-            if($id){
-                if($model->where('id ='.$id)->save($data) === false)
-                    showError(20002);//更新失败
-            }else{
-                $data['created_at'] = time();
-                $insertId = $model->add($data);
-                if(!$insertId)
-                    showError(20001);//创建失败
-            }
+            if($res === false)
+                showError(20002);//更新失败
 
             returnResult();
         }else{

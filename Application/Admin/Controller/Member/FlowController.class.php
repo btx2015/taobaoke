@@ -14,7 +14,7 @@ class FlowController extends CommonController
 
     public function index(){
         if(IS_POST){
-            $where = validate([
+            list($where,$pageNo,$pageSize) = before_query([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
                 'username'    => [[],false,true,['like','b.username']],
@@ -22,14 +22,7 @@ class FlowController extends CommonController
                 'type'        => [[],false,true,['eq','a.type']],
                 'create_from' => [['time'],false,true,['egt','a.created_at']],
                 'create_to'   => [['time'],false,true,['elt','a.created_at']],
-            ]);
-            if(!is_array($where))
-                showError(10006);
-
-            $pageNo = $where['page'];
-            unset($where['page']);
-            $pageSize = $where['rows'] > 1000 ? 1000 : $where['rows'];
-            unset($where['rows']);
+            ],false);
 
             $list = M(self::T_FLOW)->alias('a')
                 ->join('left join '.self::T_MEMBER.' b on a.user_id = b.id')

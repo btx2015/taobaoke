@@ -1,27 +1,30 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: leasin
+ * Date: 2019/3/23
+ * Time: 10:35
+ */
 
 namespace Admin\Controller\Manage;
 
 use Admin\Controller\CommonController;
-use Think\Upload;
 
-class BannerController extends CommonController
+class FaqcateController extends CommonController
 {
 
-    const T_BANNER = "tr_manage_banner";
+    const T_GUIDE_CATE = 'tr_manage_faq_cate';
 
     public function index(){
         if(IS_POST){
             list($where,$pageNo,$pageSize) = before_query([
-                'page'        => [['num'],1],
-                'rows'        => [['num'],10],
-                'title'       => [[],false,true,['like','title']],
+                'name'        => [[],false,true,['like','name']],
                 'state'       => [['in'=>[1,2]],false,true,['eq','state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ]);
 
-            $model = M(self::T_BANNER);
+            $model = M(self::T_GUIDE_CATE);
             $list = $model->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
@@ -37,23 +40,11 @@ class BannerController extends CommonController
     }
 
     public function add(){
-        $model = M(self::T_BANNER);
+        $model = M(self::T_GUIDE_CATE);
         $rule = [
-            'title' => [[],true,false],
-            'url'   => [[],true,false],
+            'name' => [[],true],
         ];
-        $data = beforeSave($model,$rule,['title']);
-        if(!isset($_FILES['banner_upload']))
-            showError(10006,'请上传图片');
-        $upload = new Upload(); // 实例化上传类
-        $upload->savePath = '/banner/';// 设置原图上传目录
-        $upload->saveName = uniqid();
-        $info = $upload->upload();
-        if(!$info)
-            showError(20002,$upload->getError());
-        foreach ($info as $v){
-            $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
-        }
+        $data = beforeSave($model,$rule,['name']);
         $data['created_at'] = time();
         $insertId = $model->add($data);
         if(!$insertId)
@@ -62,33 +53,19 @@ class BannerController extends CommonController
     }
 
     public function edit(){
-        $model = M(self::T_BANNER);
+        $model = M(self::T_GUIDE_CATE);
         if(IS_POST){
             $rule = [
-                'title'  => [],
-                'url'    => [[],false,true],
-                'state'  => [['in'=>[1,2,3]]]
+                'id'    => [['num'],true,false],
+                'name'  => [],
+                'state' => [['in'=>[1,2,3]]]
             ];
-            $data = beforeSave($model,$rule,['title']);
-            $user = $model->where(['id'=>$data['id']])->find();
-            if(!$user)
-                showError(20004);//不存在
-
-            if(isset($_FILES['banner_upload'])){
-                $upload = new Upload(); // 实例化上传类
-                $upload->savePath = '/banner/';// 设置原图上传目录
-                $upload->saveName = uniqid();
-                $info = $upload->upload();
-                if(!$info)
-                    showError(20002,$upload->getError());
-                foreach ($info as $v){
-                    $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
-                }
-            }
-
+            $data = beforeSave($model,$rule,['name']);
+            $cate = $model->where(['id'=>$data['id']])->find();
+            if(!$cate)
+                showError(20004);//管理员不存在
             if($model->save($data) === false)
                 showError(20002);//更新失败
-
             returnResult();
         }else{
             $id = I('get.id');
@@ -105,7 +82,7 @@ class BannerController extends CommonController
         if(!is_array($data))
             showError(10006);//参数错误
 
-        $model = M(self::T_BANNER);
+        $model = M(self::T_GUIDE_CATE);
         $res = $model->where(['id'=>['in',$data['id']]])->setField('state',3);
         if($res === false)
             showError(20002);

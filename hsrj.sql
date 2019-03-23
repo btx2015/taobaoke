@@ -10,13 +10,13 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-22 23:33:16
+Date: 2019-03-23 17:01:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for `tr_article`
+-- Table structure for tr_article
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_article`;
 CREATE TABLE `tr_article` (
@@ -38,7 +38,7 @@ CREATE TABLE `tr_article` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_article_cate`
+-- Table structure for tr_article_cate
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_article_cate`;
 CREATE TABLE `tr_article_cate` (
@@ -57,7 +57,7 @@ CREATE TABLE `tr_article_cate` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_manage_banner`
+-- Table structure for tr_manage_banner
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_banner`;
 CREATE TABLE `tr_manage_banner` (
@@ -87,7 +87,49 @@ INSERT INTO `tr_manage_banner` VALUES ('9', '轮播i图1', 'www.baidu.com', '/Pu
 INSERT INTO `tr_manage_banner` VALUES ('10', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
 
 -- ----------------------------
--- Table structure for `tr_manage_guide`
+-- Table structure for tr_manage_faq
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_manage_faq`;
+CREATE TABLE `tr_manage_faq` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `cate_id` int(11) NOT NULL DEFAULT '0' COMMENT '分类id',
+  `title` varchar(90) NOT NULL DEFAULT '' COMMENT '标题',
+  `img` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
+  `content` text NOT NULL COMMENT '内容',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `state` tinyint(1) NOT NULL DEFAULT '2' COMMENT '状态',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_manage_faq
+-- ----------------------------
+INSERT INTO `tr_manage_faq` VALUES ('1', '1', '关于订单的', '', '', '0', '2', '0', '2019-03-23 15:29:34');
+
+-- ----------------------------
+-- Table structure for tr_manage_faq_cate
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_manage_faq_cate`;
+CREATE TABLE `tr_manage_faq_cate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '类型名称',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_manage_faq_cate
+-- ----------------------------
+INSERT INTO `tr_manage_faq_cate` VALUES ('1', '常见问题', '1', '0', '0', '2019-03-23 13:57:17');
+INSERT INTO `tr_manage_faq_cate` VALUES ('2', '关于分佣', '1', '0', '1553315829', '2019-03-23 12:38:44');
+
+-- ----------------------------
+-- Table structure for tr_manage_guide
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_guide`;
 CREATE TABLE `tr_manage_guide` (
@@ -108,25 +150,7 @@ CREATE TABLE `tr_manage_guide` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_manage_guide_cate`
--- ----------------------------
-DROP TABLE IF EXISTS `tr_manage_guide_cate`;
-CREATE TABLE `tr_manage_guide_cate` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '类型名称',
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
-  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_manage_guide_cate
--- ----------------------------
-
--- ----------------------------
--- Table structure for `tr_manage_notice`
+-- Table structure for tr_manage_notice
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_notice`;
 CREATE TABLE `tr_manage_notice` (
@@ -146,7 +170,7 @@ CREATE TABLE `tr_manage_notice` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_members`
+-- Table structure for tr_members
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_members`;
 CREATE TABLE `tr_members` (
@@ -175,7 +199,7 @@ CREATE TABLE `tr_members` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_member_account`
+-- Table structure for tr_member_account
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_account`;
 CREATE TABLE `tr_member_account` (
@@ -194,7 +218,7 @@ CREATE TABLE `tr_member_account` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_member_fund_flow`
+-- Table structure for tr_member_fund_flow
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_fund_flow`;
 CREATE TABLE `tr_member_fund_flow` (
@@ -215,7 +239,7 @@ INSERT INTO `tr_member_fund_flow` VALUES ('1', '1', '100.00', '100.00', '1', '�
 INSERT INTO `tr_member_fund_flow` VALUES ('2', '1', '-100.00', '0.00', '2', '系统扣除', '1552994390');
 
 -- ----------------------------
--- Table structure for `tr_member_info`
+-- Table structure for tr_member_info
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_info`;
 CREATE TABLE `tr_member_info` (
@@ -251,7 +275,7 @@ CREATE TABLE `tr_member_info` (
 INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
 
 -- ----------------------------
--- Table structure for `tr_member_pid`
+-- Table structure for tr_member_pid
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_pid`;
 CREATE TABLE `tr_member_pid` (
@@ -268,7 +292,7 @@ CREATE TABLE `tr_member_pid` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `tr_member_withdraw`
+-- Table structure for tr_member_withdraw
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_withdraw`;
 CREATE TABLE `tr_member_withdraw` (
@@ -296,7 +320,7 @@ INSERT INTO `tr_member_withdraw` VALUES ('3', '1', '100.00', '3', '1', '拒绝',
 INSERT INTO `tr_member_withdraw` VALUES ('4', '1', '100.00', '3', '1', 'asd', '1553065944', '1553083773', '2019-03-20 20:09:33', '2', '13588269863', '');
 
 -- ----------------------------
--- Table structure for `tr_sys_admin`
+-- Table structure for tr_sys_admin
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_admin`;
 CREATE TABLE `tr_sys_admin` (
@@ -322,7 +346,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553265015', '', '1553180859', '', '72', '0', '1548075651', '2019-03-20 15:14:40');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553328647', '', '1553328470', '', '79', '0', '1548075651', '2019-03-20 15:14:40');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -334,7 +358,7 @@ INSERT INTO `tr_sys_admin` VALUES ('9', '20190305002', '10470c3b4b1fed12c3baac01
 INSERT INTO `tr_sys_admin` VALUES ('10', '20190314001', 'b96a2f155fe64963219c24abeed1f252', '13588272939', 'njbgjr_daicao', '', '2', '1', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-17 15:42:02');
 
 -- ----------------------------
--- Table structure for `tr_sys_basic`
+-- Table structure for tr_sys_basic
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_basic`;
 CREATE TABLE `tr_sys_basic` (
@@ -353,7 +377,7 @@ CREATE TABLE `tr_sys_basic` (
 INSERT INTO `tr_sys_basic` VALUES ('1', '唐人', '系统名称', '1', '3', '120');
 
 -- ----------------------------
--- Table structure for `tr_sys_node`
+-- Table structure for tr_sys_node
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_node`;
 CREATE TABLE `tr_sys_node` (
@@ -368,7 +392,7 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
@@ -402,9 +426,26 @@ INSERT INTO `tr_sys_node` VALUES ('29', '轮播图', 'manage/banner/index', '28'
 INSERT INTO `tr_sys_node` VALUES ('30', '添加', 'manage/banner/add', '29', 'add', '9', '2', '1', '0', '2019-03-20 23:21:32');
 INSERT INTO `tr_sys_node` VALUES ('31', '编辑', 'manage/banner/edit', '29', 'edit', '8', '2', '1', '0', '2019-03-20 23:23:01');
 INSERT INTO `tr_sys_node` VALUES ('32', '删除', 'manage/banner/del', '29', 'del', '7', '2', '1', '0', '2019-03-20 23:23:07');
+INSERT INTO `tr_sys_node` VALUES ('33', '系统公告', 'manage/notice/index', '28', '1', '8', '1', '1', '0', '2019-03-23 10:03:25');
+INSERT INTO `tr_sys_node` VALUES ('34', '添加', 'manage/notice/add', '33', 'add', '9', '2', '1', '0', '2019-03-23 10:04:36');
+INSERT INTO `tr_sys_node` VALUES ('35', '编辑', 'manage/notice/edit', '33', 'edit', '8', '2', '1', '0', '2019-03-23 10:04:42');
+INSERT INTO `tr_sys_node` VALUES ('36', '删除', 'manage/notice/del', '33', 'del', '7', '2', '1', '0', '2019-03-23 10:04:48');
+INSERT INTO `tr_sys_node` VALUES ('37', '新手指引', 'manage/guide/index', '28', '1', '7', '1', '1', '0', '2019-03-23 10:06:39');
+INSERT INTO `tr_sys_node` VALUES ('38', '添加', 'manage/guide/add', '37', 'add', '9', '2', '1', '0', '2019-03-23 10:07:41');
+INSERT INTO `tr_sys_node` VALUES ('39', '编辑', 'manage/guide/edit', '37', 'edit', '8', '2', '1', '0', '2019-03-23 10:07:48');
+INSERT INTO `tr_sys_node` VALUES ('40', '删除', 'manage/guide/del', '37', 'del', '7', '2', '1', '0', '2019-03-23 10:07:54');
+INSERT INTO `tr_sys_node` VALUES ('41', '常见问题', '', '0', '1', '6', '1', '1', '0', '2019-03-23 13:30:31');
+INSERT INTO `tr_sys_node` VALUES ('42', '分类管理', 'manage/faqcate/index', '41', '1', '9', '1', '1', '0', '2019-03-23 13:33:28');
+INSERT INTO `tr_sys_node` VALUES ('43', '添加', 'manage/faqcate/add', '42', 'add', '8', '2', '1', '0', '2019-03-23 13:56:41');
+INSERT INTO `tr_sys_node` VALUES ('44', '编辑', 'manage/faqcate/edit', '42', 'edit', '7', '2', '1', '0', '2019-03-23 13:56:41');
+INSERT INTO `tr_sys_node` VALUES ('45', '删除', 'manage/faqcate/del', '42', 'del', '6', '2', '1', '0', '2019-03-23 13:56:43');
+INSERT INTO `tr_sys_node` VALUES ('47', '添加', 'manage/faq/add', '46', 'add', '8', '2', '1', '0', '2019-03-23 13:34:20');
+INSERT INTO `tr_sys_node` VALUES ('48', '编辑', 'manage/faq/edit', '46', 'edit', '7', '2', '1', '0', '2019-03-23 13:34:10');
+INSERT INTO `tr_sys_node` VALUES ('49', '删除', 'manage/faq/del', '46', 'del', '6', '2', '1', '0', '2019-03-23 13:32:55');
+INSERT INTO `tr_sys_node` VALUES ('46', '文章列表', 'manage/faq/index', '41', '1', '9', '1', '1', '0', '2019-03-23 13:32:52');
 
 -- ----------------------------
--- Table structure for `tr_sys_role`
+-- Table structure for tr_sys_role
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_role`;
 CREATE TABLE `tr_sys_role` (
@@ -422,5 +463,5 @@ CREATE TABLE `tr_sys_role` (
 -- ----------------------------
 INSERT INTO `tr_sys_role` VALUES ('1', '超级管理员', '', '1', '1548145765', '2019-03-19 18:57:35');
 INSERT INTO `tr_sys_role` VALUES ('2', '管理员', '1,2,3,4,5,7,8,9,10', '1', '1548145765', '2019-03-16 16:55:19');
-INSERT INTO `tr_sys_role` VALUES ('3', '客服', '', '2', '1552632230', '2019-03-15 14:43:50');
+INSERT INTO `tr_sys_role` VALUES ('3', '客服', '', '1', '1552632230', '2019-03-23 14:13:40');
 INSERT INTO `tr_sys_role` VALUES ('4', '运营', '', '1', '1552632386', '2019-03-15 15:31:52');

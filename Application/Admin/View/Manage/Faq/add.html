@@ -1,0 +1,39 @@
+<include file="Public:header"/>
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-content">
+                            <!-- 加载编辑器的容器 -->
+                            <script id="container" name="content" type="text/plain">
+                                这里写你的初始化内容
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="__PUBLIC__/Admin/js/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__PUBLIC__/Admin/js/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('container');
+</script>
+<script>
+
+</script>

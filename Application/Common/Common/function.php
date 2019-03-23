@@ -249,3 +249,45 @@ function check_mysql(){
     $conn = $mysqli->real_connect(C('DB_HOST'),C('DB_USER'),C('DB_PWD'),C('DB_NAME'),C('DB_PORT'));
     return $conn ? true : false;
 }
+
+function before_query($rule,$alias = ''){
+    $rule['page'] = [['num'],1];
+    $rule['rows'] = [['num'],10];
+    $where = validate($rule);
+    if(!is_array($where))
+        showError(10006);
+
+    if($alias !== false){
+        $state = 'state';
+        if($alias){
+            $state = $alias.'.'.$state;
+        }
+        if(!isset($where[$state]))
+            $where[$state] = ['neq',3];
+    }
+
+    $pageNo = $where['page'];
+    unset($where['page']);
+    $pageSize = $where['rows'] > 1000 ? 1000 : $where['rows'];
+    unset($where['rows']);
+
+    return [$where,$pageNo,$pageSize];
+}
+
+function beforeSave($model,$rule,$fields){
+    $data = validate($rule);
+    if(!is_array($data))
+        showError(10006);//参数错误
+
+    foreach($fields as $v){
+        if(isset($data[$v])){
+            $record = $model->where([
+                $v => $data[$v]
+            ])->find();
+            if($record && $record['id'] != $data['id'])
+                showError(20000);//存在同名
+        }
+    }
+
+    return $data;
+}

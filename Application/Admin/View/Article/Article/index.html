@@ -20,16 +20,20 @@
                                 <form class="form-inline" id="toolbar-form" onsubmit="return false;">
                                     <div class="row">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="usa"
-                                                   placeholder="用户名" style="width: 100px">
-                                        </div>
-                                        <div class="form-group">
                                             <input type="text" class="form-control" name="name"
-                                                   placeholder="姓名" style="width: 100px">
+                                                   placeholder="文章标题" style="width: 100px">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="phone"
-                                                   placeholder="手机" style="width: 120px">
+                                            <input type="text" class="form-control" name="author"
+                                                   placeholder="作者" style="width: 100px">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="cate">
+                                                <option value="">请选择分类</option>
+                                                <volist name="cate" id="item">
+                                                    <option value="{$item.id}">{$item.name}</option>
+                                                </volist>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
@@ -51,11 +55,11 @@
                                             </button>
                                         </div>
                                         <present name="buttonData.add">
-                                        <div class="form-group pull-right">
-                                            <button class="btn btn-sm btn-success" id="toolbar-create"
-                                                    route="{$buttonData.add.path}">{$buttonData.add.title}
-                                            </button>
-                                        </div>
+                                            <div class="form-group pull-right">
+                                                <button class="btn btn-sm btn-success" id="toolbar-create">
+                                                    {$buttonData.add.title}
+                                                </button>
+                                            </div>
                                         </present>
                                     </div>
                                 </form>
@@ -69,58 +73,6 @@
                                 <div id="pager"></div>
                             </div>
                             <!-- 表格 end -->
-                            <!-- 添加框 start -->
-                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content animated fadeIn">
-                                        <div class="modal-body">
-                                            <form class="form-horizontal" id="save-form">
-                                                <input type="hidden" name="id">
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">角&ensp;&ensp;色</label>
-                                                    <div class="col-lg-10">
-                                                        <select class="form-control" name="role_id">
-                                                            <option value="">请选择角色</option>
-                                                            <volist name="roleOption" id="role">
-                                                                <option value="{$role.id}">{$role.name}</option>
-                                                            </volist>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">用户名</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="usa">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">姓&ensp;&ensp;名</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="name">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">手&ensp;&ensp;机</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="phone">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">密&ensp;&ensp;码</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="password" class="form-control" name="pswd">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 添加框 end -->
                         </div>
                     </div>
                 </div>
@@ -130,7 +82,6 @@
     </div>
 </div>
 <include file="Public:js"/>
-<include file="Public:methods"/>
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
@@ -156,13 +107,12 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-//            multiselect: true,
-            colNames: [ '用户名','姓名','手机','角色','状态','登录次数','登录时间','创建时间','操作'],
+            colNames: [ '标题','作者','分类','排序','状态','创建时间','操作'],
             colModel: [
-                {name: 'usa',align:'center'},
+                {name: 'title',align:'center'},
+                {name: 'author',align:'center'},
                 {name: 'name',align:'center'},
-                {name: 'phone',align:'center'},
-                {name: 'role_id_str',align:'center'},
+                {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';
@@ -178,8 +128,6 @@
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
-                {name: 'login_num',align:'center'},
-                {name: 'login_time_str',align:'center',width: 170},
                 {name: 'created_at_str',align:'center',width: 170},
                 {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
@@ -187,7 +135,7 @@
                         if(editUrl)
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(delUrl)
-                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>&nbsp;';
+                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
                         return op;
                     }
                 }
@@ -206,7 +154,89 @@
             calendarWeeks: true,
             autoclose: true
         });
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table').setGridWidth(width);
+        });
+        $('#toolbar-create').click(function(){
+            window.location.href = addUrl;
+        });
+        $('#toolbar-search').click(function(){
+            var postData = $('#toolbar-form').serialize();
+            $("#table").jqGrid('setGridParam', {
+                url : listUrl,
+                datatype:'json',
+                postData : postData,
+                page : 1
+            }).trigger("reloadGrid"); //重新载入
+        });
+        $('#toolbar-reset').click(function(){
+            $('#toolbar-form')[0].reset();
+        });
     });
+
+    function modify(id,state){
+        var msg = {
+            1:'启用',
+            2:'禁用',
+            3:'删除'
+        };
+        swal({
+            title: '',
+            text: "确认"+ msg[state]+"吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm:false,
+            closeOnCancel:true
+        },function(isConfirm){
+            if(isConfirm){
+                if(state === 3){
+                    save(delUrl,{id:id})
+                }else{
+                    save(editUrl,{
+                        id:id,
+                        state:state
+                    })
+                }
+            }
+        })
+    }
+    function editOpen(id){
+        window.location.href = editUrl + '?id=' + id;
+    }
+    function save(url, data){
+        $.ajax({
+            type:'POST',
+            url:url,
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

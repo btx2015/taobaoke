@@ -20,16 +20,16 @@
                                 <form class="form-inline" id="toolbar-form" onsubmit="return false;">
                                     <div class="row">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="usa"
-                                                   placeholder="用户名" style="width: 100px">
-                                        </div>
-                                        <div class="form-group">
                                             <input type="text" class="form-control" name="name"
-                                                   placeholder="姓名" style="width: 100px">
+                                                   placeholder="分类名称" style="width: 100px">
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" class="form-control" name="phone"
-                                                   placeholder="手机" style="width: 120px">
+                                            <select class="form-control" name="pid">
+                                                <option value="0">请选择父级分类</option>
+                                                <volist name="cateOption" id="cate">
+                                                    <option value="{$cate.id}">{$cate.name}</option>
+                                                </volist>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
@@ -51,11 +51,11 @@
                                             </button>
                                         </div>
                                         <present name="buttonData.add">
-                                        <div class="form-group pull-right">
-                                            <button class="btn btn-sm btn-success" id="toolbar-create"
-                                                    route="{$buttonData.add.path}">{$buttonData.add.title}
-                                            </button>
-                                        </div>
+                                            <div class="form-group pull-right">
+                                                <button class="btn btn-sm btn-success" id="toolbar-create"
+                                                        route="{$buttonData.add.path}">{$buttonData.add.title}
+                                                </button>
+                                            </div>
                                         </present>
                                     </div>
                                 </form>
@@ -77,38 +77,26 @@
                                             <form class="form-horizontal" id="save-form">
                                                 <input type="hidden" name="id">
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">角&ensp;&ensp;色</label>
-                                                    <div class="col-lg-10">
-                                                        <select class="form-control" name="role_id">
-                                                            <option value="">请选择角色</option>
-                                                            <volist name="roleOption" id="role">
-                                                                <option value="{$role.id}">{$role.name}</option>
-                                                            </volist>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">用户名</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="usa">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">姓&ensp;&ensp;名</label>
+                                                    <label class="control-label col-lg-2">分类名称</label>
                                                     <div class="col-lg-10">
                                                         <input type="text" class="form-control" name="name">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">手&ensp;&ensp;机</label>
+                                                    <label class="control-label col-lg-2">父级分类</label>
                                                     <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="phone">
+                                                        <select class="form-control" name="pid">
+                                                            <option value="0">请选择父级分类</option>
+                                                            <volist name="cateOption" id="cate">
+                                                                <option value="{$cate.id}">{$cate.name}</option>
+                                                            </volist>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">密&ensp;&ensp;码</label>
+                                                    <label class="control-label col-lg-2">分类排序</label>
                                                     <div class="col-lg-10">
-                                                        <input type="password" class="form-control" name="pswd">
+                                                        <input type="text" class="form-control" name="sort">
                                                     </div>
                                                 </div>
                                             </form>
@@ -156,13 +144,11 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-//            multiselect: true,
-            colNames: [ '用户名','姓名','手机','角色','状态','登录次数','登录时间','创建时间','操作'],
+            colNames: [ '名称','父级名称','排序','状态','创建时间','操作'],
             colModel: [
-                {name: 'usa',align:'center'},
                 {name: 'name',align:'center'},
-                {name: 'phone',align:'center'},
-                {name: 'role_id_str',align:'center'},
+                {name: 'pid_str',align:'center'},
+                {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';
@@ -178,8 +164,6 @@
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
-                {name: 'login_num',align:'center'},
-                {name: 'login_time_str',align:'center',width: 170},
                 {name: 'created_at_str',align:'center',width: 170},
                 {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
@@ -187,7 +171,7 @@
                         if(editUrl)
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(delUrl)
-                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>&nbsp;';
+                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
                         return op;
                     }
                 }

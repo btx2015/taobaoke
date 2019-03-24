@@ -1,0 +1,92 @@
+<include file="Public:header"/>
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-content">
+                            <div class="container-fluid">
+                                <form class="form-horizontal" id="save-form" onsubmit="return false;">
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-1">文章标题</label>
+                                        <div class="col-lg-5">
+                                            <input type="text" class="form-control" name="title">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-1">文章内容</label>
+                                    </div>
+                                    <div class="form-group">
+                                        <script id="container" name="content" type="text/plain">
+                                        </script>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <div class="col-sm-4 col-sm-offset-2">
+                                            <button class="btn btn-white" onclick="goBack()">取消</button>
+                                            <button class="btn btn-primary" onclick="save()">保存</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<!-- 配置文件 -->
+<script type="text/javascript" src="__PUBLIC__/Admin/ueditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="__PUBLIC__/Admin/ueditor/ueditor.all.js"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+    var ue = UE.getEditor('container');
+    ue.ready(function(){
+        var height = $(window).height();
+        ue.setHeight(height-350)
+    });
+    var listUrl = "{:U('Manage/Guide/index')}";
+    function save(){
+        var data = $('#save-form').serialize();
+        $.ajax({
+            type:'POST',
+            url:window.location,
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    goBack();
+                }
+            }
+        });
+    }
+    function goBack(){
+        window.location.href = listUrl;
+    }
+</script>

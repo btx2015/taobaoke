@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: leasin
- * Date: 2019/3/23
- * Time: 14:54
- */
+
 
 namespace Admin\Controller\Manage;
 
@@ -19,8 +14,8 @@ class FaqController extends CommonController
     public function index(){
         if(IS_POST){
             list($where,$pageNo,$pageSize) = before_query([
-                'title'       => [[],false,true,['like','title']],
-                'cate'        => [['num'],false,true,['eq','cate_id']],
+                'title'       => [[],false,true,['like','a.title']],
+                'cate'        => [['num'],false,true,['eq','a.cate_id']],
                 'state'       => [['in'=>[1,2]],false,true,['eq','a.state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
@@ -77,21 +72,22 @@ class FaqController extends CommonController
             $rule = [
                 'id'      => [['num'],true,false],
                 'title'   => [],
+                'cate'    => [[],false,false,['eq','cate_id']],
                 'state'   => [['in'=>[1,2,3]]],
                 'content' => []
             ];
             $data = beforeSave($model,$rule,['title']);
             $cate = $model->where(['id'=>$data['id']])->find();
             if(!$cate)
-                showError(20004);//管理员不存在
+                showError(20004);
             if($model->save($data) === false)
-                showError(20002);//更新失败
+                showError(20002);
             returnResult();
         }else{
             $id = I('get.id');
             $user = $model->where('id ='.$id)->find();
             if(!$user)
-                showError(20004);//不存在
+                showError(20004);
             $user['content'] = stripcslashes(htmlspecialchars_decode($user['content']));
             $model = M(self::T_FAQ_CATE);
             $cate = $model->field('id,name')

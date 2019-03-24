@@ -2,23 +2,24 @@
 
 namespace Admin\Controller\Manage;
 
+
 use Admin\Controller\CommonController;
 
-class FaqcateController extends CommonController
+class GuideController extends CommonController
 {
 
-    const T_GUIDE_CATE = 'tr_manage_faq_cate';
+    const T_GUIDE = 'tr_manage_guide';
 
     public function index(){
         if(IS_POST){
             list($where,$pageNo,$pageSize) = before_query([
-                'name'        => [[],false,true,['like','name']],
-                'state'       => [['in'=>[1,2]],false,true,['eq','state']],
+                'title'       => [[],false,true,['like','title']],
+                'state'       => [['in'=>[1,2]]],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ]);
 
-            $model = M(self::T_GUIDE_CATE);
+            $model = M(self::T_GUIDE);
             $list = $model->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
@@ -34,39 +35,47 @@ class FaqcateController extends CommonController
     }
 
     public function add(){
-        $model = M(self::T_GUIDE_CATE);
-        $rule = [
-            'name' => [[],true],
-        ];
-        $data = beforeSave($model,$rule,['name']);
-        $data['created_at'] = time();
-        $insertId = $model->add($data);
-        if(!$insertId)
-            showError(20001);//创建失败
-        returnResult();
+        if(IS_POST){
+            $model = M(self::T_GUIDE);
+            $rule = [
+                'title'   => [[],true],
+                'content' => []
+            ];
+            $data = beforeSave($model,$rule,['title']);
+            $data['created_at'] = time();
+            $insertId = $model->add($data);
+            if(!$insertId)
+                showError(20001);
+            returnResult();
+        }else{
+            $this->display();
+        }
     }
 
     public function edit(){
-        $model = M(self::T_GUIDE_CATE);
+        $model = M(self::T_GUIDE);
         if(IS_POST){
             $rule = [
-                'id'    => [['num'],true,false],
-                'name'  => [],
-                'state' => [['in'=>[1,2,3]]]
+                'id'      => [['num'],true,false],
+                'title'   => [],
+                'state'   => [['in'=>[1,2,3]]],
+                'content' => []
             ];
-            $data = beforeSave($model,$rule,['name']);
+            $data = beforeSave($model,$rule,['title']);
             $cate = $model->where(['id'=>$data['id']])->find();
             if(!$cate)
-                showError(20004);//管理员不存在
+                showError(20004);
             if($model->save($data) === false)
-                showError(20002);//更新失败
+                showError(20002);
             returnResult();
         }else{
             $id = I('get.id');
             $user = $model->where('id ='.$id)->find();
             if(!$user)
-                showError(20004);//不存在
-            returnResult($user);
+                showError(20004);
+            $user['content'] = stripcslashes(htmlspecialchars_decode($user['content']));
+            $this->assign('data',$user);
+            $this->display();
         }
     }
 
@@ -74,9 +83,9 @@ class FaqcateController extends CommonController
         $rule = ['id' => [[],true,false]];
         $data = validate($rule);
         if(!is_array($data))
-            showError(10006);//参数错误
+            showError(10006);
 
-        $model = M(self::T_GUIDE_CATE);
+        $model = M(self::T_GUIDE);
         $res = $model->where(['id'=>['in',$data['id']]])->setField('state',3);
         if($res === false)
             showError(20002);

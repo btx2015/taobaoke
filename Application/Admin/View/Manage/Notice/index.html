@@ -21,7 +21,7 @@
                                     <div class="row">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="name"
-                                                   placeholder="分类名称" style="width: 100px">
+                                                   placeholder="文章标题" style="width: 100px">
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
@@ -44,8 +44,8 @@
                                         </div>
                                         <present name="buttonData.add">
                                             <div class="form-group pull-right">
-                                                <button class="btn btn-sm btn-success" id="toolbar-create"
-                                                        route="{$buttonData.add.path}">{$buttonData.add.title}
+                                                <button class="btn btn-sm btn-success" id="toolbar-create">
+                                                    {$buttonData.add.title}
                                                 </button>
                                             </div>
                                         </present>
@@ -61,35 +61,6 @@
                                 <div id="pager"></div>
                             </div>
                             <!-- 表格 end -->
-                            <!-- 添加框 start -->
-                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content animated fadeIn">
-                                        <div class="modal-body">
-                                            <form class="form-horizontal" id="save-form">
-                                                <input type="hidden" name="id">
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">分类名称</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="name">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">分类排序</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="sort">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 添加框 end -->
                         </div>
                     </div>
                 </div>
@@ -99,7 +70,6 @@
     </div>
 </div>
 <include file="Public:js"/>
-<include file="Public:methods"/>
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
@@ -125,9 +95,9 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '名称','排序','状态','创建时间','操作'],
+            colNames: [ '标题','排序','状态','创建时间','操作'],
             colModel: [
-                {name: 'name',align:'center'},
+                {name: 'title',align:'center'},
                 {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
@@ -170,7 +140,89 @@
             calendarWeeks: true,
             autoclose: true
         });
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table').setGridWidth(width);
+        });
+        $('#toolbar-create').click(function(){
+            window.location.href = addUrl;
+        });
+        $('#toolbar-search').click(function(){
+            var postData = $('#toolbar-form').serialize();
+            $("#table").jqGrid('setGridParam', {
+                url : listUrl,
+                datatype:'json',
+                postData : postData,
+                page : 1
+            }).trigger("reloadGrid"); //重新载入
+        });
+        $('#toolbar-reset').click(function(){
+            $('#toolbar-form')[0].reset();
+        });
     });
+
+    function modify(id,state){
+        var msg = {
+            1:'启用',
+            2:'禁用',
+            3:'删除'
+        };
+        swal({
+            title: '',
+            text: "确认"+ msg[state]+"吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm:false,
+            closeOnCancel:true
+        },function(isConfirm){
+            if(isConfirm){
+                if(state === 3){
+                    save(delUrl,{id:id})
+                }else{
+                    save(editUrl,{
+                        id:id,
+                        state:state
+                    })
+                }
+            }
+        })
+    }
+    function editOpen(id){
+        window.location.href = editUrl + '?id=' + id;
+    }
+    function save(url, data){
+        $.ajax({
+            type:'POST',
+            url:url,
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

@@ -22,7 +22,7 @@ class BannerController extends CommonController
             ]);
 
             $model = M(self::T_BANNER);
-            $list = $model->where($where)->page($pageNo,$pageSize)->select();
+            $list = $model->where($where)->page($pageNo,$pageSize)->order('sort desc')->select();
 
             returnResult([
                 'list' => handleRecords([
@@ -41,9 +41,12 @@ class BannerController extends CommonController
         $rule = [
             'title' => [[],true,false],
             'url'   => [[],true,false],
+            'sort'  => [['num']]
         ];
         $data = beforeSave($model,$rule,['title']);
         if(!isset($_FILES['banner_upload']))
+            showError(10006,'请上传图片');
+        if(!isset($_FILES['banner_upload']['size']) || !$_FILES['banner_upload']['size'])
             showError(10006,'请上传图片');
         $upload = new Upload(); // 实例化上传类
         $upload->savePath = '/banner/';// 设置原图上传目录
@@ -65,9 +68,11 @@ class BannerController extends CommonController
         $model = M(self::T_BANNER);
         if(IS_POST){
             $rule = [
-                'title'  => [],
-                'url'    => [[],false,true],
-                'state'  => [['in'=>[1,2,3]]]
+                'id'    => [['num']],
+                'title' => [],
+                'url'   => [[],false,true],
+                'state' => [['in'=>[1,2,3]]],
+                'sort'  => [['num']]
             ];
             $data = beforeSave($model,$rule,['title']);
             $user = $model->where(['id'=>$data['id']])->find();
@@ -75,14 +80,16 @@ class BannerController extends CommonController
                 showError(20004);//不存在
 
             if(isset($_FILES['banner_upload'])){
-                $upload = new Upload(); // 实例化上传类
-                $upload->savePath = '/banner/';// 设置原图上传目录
-                $upload->saveName = uniqid();
-                $info = $upload->upload();
-                if(!$info)
-                    showError(20002,$upload->getError());
-                foreach ($info as $v){
-                    $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+                if(isset($_FILES['banner_upload']['size']) && $_FILES['banner_upload']['size']){
+                    $upload = new Upload(); // 实例化上传类
+                    $upload->savePath = '/banner/';// 设置原图上传目录
+                    $upload->saveName = uniqid();
+                    $info = $upload->upload();
+                    if(!$info)
+                        showError(20002,$upload->getError());
+                    foreach ($info as $v){
+                        $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+                    }
                 }
             }
 

@@ -39,6 +39,7 @@ class GuideController extends CommonController
             $model = M(self::T_GUIDE);
             $rule = [
                 'title'   => [[],true],
+                'sort'    => [['num']],
                 'content' => []
             ];
             $data = beforeSave($model,$rule,['title']);
@@ -58,6 +59,7 @@ class GuideController extends CommonController
             $rule = [
                 'id'      => [['num'],true,false],
                 'title'   => [],
+                'sort'    => [['num']],
                 'state'   => [['in'=>[1,2,3]]],
                 'content' => []
             ];

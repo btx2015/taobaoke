@@ -37,6 +37,7 @@ class FaqcateController extends CommonController
         $model = M(self::T_GUIDE_CATE);
         $rule = [
             'name' => [[],true],
+            'sort' => [['num']]
         ];
         $data = beforeSave($model,$rule,['name']);
         $data['created_at'] = time();
@@ -52,6 +53,7 @@ class FaqcateController extends CommonController
             $rule = [
                 'id'    => [['num'],true,false],
                 'name'  => [],
+                'sort' => [['num']],
                 'state' => [['in'=>[1,2,3]]]
             ];
             $data = beforeSave($model,$rule,['name']);

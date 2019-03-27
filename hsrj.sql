@@ -10,13 +10,13 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-27 21:25:19
+Date: 2019-03-28 00:59:23
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for tr_article
+-- Table structure for `tr_article`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_article`;
 CREATE TABLE `tr_article` (
@@ -40,7 +40,7 @@ CREATE TABLE `tr_article` (
 INSERT INTO `tr_article` VALUES ('1', '4', '一万个美丽的未来', '花销Q', '', '&lt;p&gt;safsfsdfsfffs&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553424904.png&quot; title=&quot;1553424904.png&quot; alt=&quot;QQ截图20190111144433.png&quot;/&gt;&lt;/p&gt;', '99', '1', '0', '1553424906', '2019-03-24 18:57:06');
 
 -- ----------------------------
--- Table structure for tr_article_cate
+-- Table structure for `tr_article_cate`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_article_cate`;
 CREATE TABLE `tr_article_cate` (
@@ -69,11 +69,11 @@ INSERT INTO `tr_article_cate` VALUES ('9', '精品课程', '8', '1', '9', '0', '
 INSERT INTO `tr_article_cate` VALUES ('10', '大咖分享', '8', '1', '8', '0', '2019-03-24 17:06:12');
 
 -- ----------------------------
--- Table structure for tr_attribute
+-- Table structure for `tr_attribute`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_attribute`;
 CREATE TABLE `tr_attribute` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `cate_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品类型id',
   `name` varchar(30) NOT NULL DEFAULT '' COMMENT '属性名称',
   `sort` smallint(5) NOT NULL DEFAULT '0',
@@ -84,14 +84,16 @@ CREATE TABLE `tr_attribute` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_attribute
 -- ----------------------------
+INSERT INTO `tr_attribute` VALUES ('1', '1', '内存', '0', '0', '                                                        ', '0', '1', '1553702169', '2019-03-27 23:56:09');
+INSERT INTO `tr_attribute` VALUES ('2', '1', 'cpu', '0', '1', '123,456,789', '0', '1', '1553703005', '2019-03-28 00:10:05');
 
 -- ----------------------------
--- Table structure for tr_category
+-- Table structure for `tr_category`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_category`;
 CREATE TABLE `tr_category` (
@@ -112,7 +114,7 @@ CREATE TABLE `tr_category` (
 INSERT INTO `tr_category` VALUES ('1', '手机', '', '0', '0', '1', '1553683405', '2019-03-27 19:40:11');
 
 -- ----------------------------
--- Table structure for tr_goods
+-- Table structure for `tr_goods`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_goods`;
 CREATE TABLE `tr_goods` (
@@ -152,7 +154,7 @@ CREATE TABLE `tr_goods` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_goods_attr
+-- Table structure for `tr_goods_attr`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_goods_attr`;
 CREATE TABLE `tr_goods_attr` (
@@ -173,7 +175,7 @@ CREATE TABLE `tr_goods_attr` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_goods_gallery
+-- Table structure for `tr_goods_gallery`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_goods_gallery`;
 CREATE TABLE `tr_goods_gallery` (
@@ -192,7 +194,7 @@ CREATE TABLE `tr_goods_gallery` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_goods_spec
+-- Table structure for `tr_goods_spec`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_goods_spec`;
 CREATE TABLE `tr_goods_spec` (
@@ -213,7 +215,7 @@ CREATE TABLE `tr_goods_spec` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_goods_spec_image
+-- Table structure for `tr_goods_spec_image`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_goods_spec_image`;
 CREATE TABLE `tr_goods_spec_image` (
@@ -232,7 +234,7 @@ CREATE TABLE `tr_goods_spec_image` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_manage_banner
+-- Table structure for `tr_manage_banner`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_banner`;
 CREATE TABLE `tr_manage_banner` (
@@ -262,7 +264,7 @@ INSERT INTO `tr_manage_banner` VALUES ('9', '轮播i图1', 'www.baidu.com', '/Pu
 INSERT INTO `tr_manage_banner` VALUES ('10', '轮播i图12', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '12', '1553156575', '2019-03-24 09:58:16');
 
 -- ----------------------------
--- Table structure for tr_manage_faq
+-- Table structure for `tr_manage_faq`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_faq`;
 CREATE TABLE `tr_manage_faq` (
@@ -287,7 +289,7 @@ INSERT INTO `tr_manage_faq` VALUES ('3', '1', '房源列表', '', '&lt;p&gt;sfsf
 INSERT INTO `tr_manage_faq` VALUES ('4', '1', '城市地址', '', '&lt;p&gt;sdfsfsdfs&lt;/p&gt;', '0', '2', '1553350974', '2019-03-23 22:22:54');
 
 -- ----------------------------
--- Table structure for tr_manage_faq_cate
+-- Table structure for `tr_manage_faq_cate`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_faq_cate`;
 CREATE TABLE `tr_manage_faq_cate` (
@@ -307,7 +309,7 @@ INSERT INTO `tr_manage_faq_cate` VALUES ('1', '常见问题', '1', '12', '0', '2
 INSERT INTO `tr_manage_faq_cate` VALUES ('2', '关于分佣', '1', '0', '1553315829', '2019-03-23 12:38:44');
 
 -- ----------------------------
--- Table structure for tr_manage_guide
+-- Table structure for `tr_manage_guide`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_guide`;
 CREATE TABLE `tr_manage_guide` (
@@ -329,7 +331,7 @@ CREATE TABLE `tr_manage_guide` (
 INSERT INTO `tr_manage_guide` VALUES ('1', '0', '如何分享', '', '&lt;p&gt;&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553391651.png&quot; title=&quot;1553391651.png&quot; alt=&quot;QQ截图20190111144200.png&quot;/&gt;&lt;/p&gt;', '0', '2', '1553391653', '2019-03-24 09:40:53');
 
 -- ----------------------------
--- Table structure for tr_manage_nav
+-- Table structure for `tr_manage_nav`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_nav`;
 CREATE TABLE `tr_manage_nav` (
@@ -350,7 +352,7 @@ CREATE TABLE `tr_manage_nav` (
 INSERT INTO `tr_manage_nav` VALUES ('1', '今日特价', '/Uploads/nav/2019-03-24/5c9797e28b33d.png', 'http://www.iqiyi.com/v_19rr8sbot0.html#vfrm=2-4-0-1', '1', '1', '1553438690', '2019-03-24 22:46:37');
 
 -- ----------------------------
--- Table structure for tr_manage_notice
+-- Table structure for `tr_manage_notice`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_notice`;
 CREATE TABLE `tr_manage_notice` (
@@ -371,7 +373,7 @@ CREATE TABLE `tr_manage_notice` (
 INSERT INTO `tr_manage_notice` VALUES ('1', '系统升级提醒', '', '&lt;p&gt;&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553391920.png&quot; title=&quot;1553391920.png&quot; alt=&quot;QQ截图20190111144433.png&quot;/&gt;&lt;/p&gt;', '12', '1', '1553391923', '2019-03-24 09:47:27');
 
 -- ----------------------------
--- Table structure for tr_member
+-- Table structure for `tr_member`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member`;
 CREATE TABLE `tr_member` (
@@ -407,7 +409,7 @@ CREATE TABLE `tr_member` (
 INSERT INTO `tr_member` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
 
 -- ----------------------------
--- Table structure for tr_member_account
+-- Table structure for `tr_member_account`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_account`;
 CREATE TABLE `tr_member_account` (
@@ -426,7 +428,7 @@ CREATE TABLE `tr_member_account` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_member_address
+-- Table structure for `tr_member_address`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_address`;
 CREATE TABLE `tr_member_address` (
@@ -450,7 +452,7 @@ CREATE TABLE `tr_member_address` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_member_fund_flow
+-- Table structure for `tr_member_fund_flow`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_fund_flow`;
 CREATE TABLE `tr_member_fund_flow` (
@@ -471,7 +473,7 @@ INSERT INTO `tr_member_fund_flow` VALUES ('1', '1', '100.00', '100.00', '1', '�
 INSERT INTO `tr_member_fund_flow` VALUES ('2', '1', '-100.00', '0.00', '2', '系统扣除', '1552994390');
 
 -- ----------------------------
--- Table structure for tr_member_pid
+-- Table structure for `tr_member_pid`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_pid`;
 CREATE TABLE `tr_member_pid` (
@@ -488,7 +490,7 @@ CREATE TABLE `tr_member_pid` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_member_withdraw
+-- Table structure for `tr_member_withdraw`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_withdraw`;
 CREATE TABLE `tr_member_withdraw` (
@@ -516,7 +518,7 @@ INSERT INTO `tr_member_withdraw` VALUES ('3', '1', '100.00', '3', '1', '拒绝',
 INSERT INTO `tr_member_withdraw` VALUES ('4', '1', '100.00', '3', '1', 'asd', '1553065944', '1553083773', '2019-03-20 20:09:33', '2', '13588269863', '');
 
 -- ----------------------------
--- Table structure for tr_spec
+-- Table structure for `tr_spec`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_spec`;
 CREATE TABLE `tr_spec` (
@@ -535,7 +537,7 @@ CREATE TABLE `tr_spec` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_spec_item
+-- Table structure for `tr_spec_item`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_spec_item`;
 CREATE TABLE `tr_spec_item` (
@@ -554,7 +556,7 @@ CREATE TABLE `tr_spec_item` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_sys_admin
+-- Table structure for `tr_sys_admin`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_admin`;
 CREATE TABLE `tr_sys_admin` (
@@ -592,7 +594,7 @@ INSERT INTO `tr_sys_admin` VALUES ('9', '20190305002', '10470c3b4b1fed12c3baac01
 INSERT INTO `tr_sys_admin` VALUES ('10', '20190314001', 'b96a2f155fe64963219c24abeed1f252', '13588272939', 'njbgjr_daicao', '', '2', '1', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-17 15:42:02');
 
 -- ----------------------------
--- Table structure for tr_sys_basic
+-- Table structure for `tr_sys_basic`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_basic`;
 CREATE TABLE `tr_sys_basic` (
@@ -611,7 +613,7 @@ CREATE TABLE `tr_sys_basic` (
 INSERT INTO `tr_sys_basic` VALUES ('1', '唐人', '系统名称', '1', '3', '120');
 
 -- ----------------------------
--- Table structure for tr_sys_node
+-- Table structure for `tr_sys_node`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_node`;
 CREATE TABLE `tr_sys_node` (
@@ -713,7 +715,7 @@ INSERT INTO `tr_sys_node` VALUES ('83', '编辑', 'goods/spec/edit', '81', 'edit
 INSERT INTO `tr_sys_node` VALUES ('84', '删除', 'goods/spec/del', '81', 'del', '7', '2', '1', '0', '2019-03-27 17:05:49');
 
 -- ----------------------------
--- Table structure for tr_sys_role
+-- Table structure for `tr_sys_role`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_role`;
 CREATE TABLE `tr_sys_role` (
@@ -735,7 +737,7 @@ INSERT INTO `tr_sys_role` VALUES ('3', '客服', '', '1', '1552632230', '2019-03
 INSERT INTO `tr_sys_role` VALUES ('4', '运营', '', '1', '1552632386', '2019-03-15 15:31:52');
 
 -- ----------------------------
--- Table structure for tr_ticket_cate
+-- Table structure for `tr_ticket_cate`
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_ticket_cate`;
 CREATE TABLE `tr_ticket_cate` (

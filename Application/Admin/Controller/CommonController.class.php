@@ -69,7 +69,7 @@ class CommonController extends Controller
         if(!isset($accessData[$this->path]))
             return false;
         $path = $this->path;
-        if($accessData[$this->path]['type'] == 2)
+        if($accessData[$this->path]['type'] != 1)
             $path = strtolower(CONTROLLER_NAME.'/index');
         $active[$accessData[$path]['id']] = 1;
         if($accessData[$path]['pid'])

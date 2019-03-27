@@ -28,7 +28,7 @@ class CateController extends CommonController
                     return $var ? 1 : 0;
                 });
                 if($pid)
-                    $parent = $model->where(['id'=>$pid])->select();
+                    $parent = $model->where(['id'=>['in',$pid]])->select();
                 if($parent)
                     $parent = array_column($parent,'name','id');
             }
@@ -108,8 +108,16 @@ class CateController extends CommonController
 
     public function attr(){
         if(IS_POST){
-
+            A('Goods/Attr')->index();
         }else{
+            $id = I('get.id');
+            if(!$id)
+                $this->redirect('Goods/Cate/index');
+            $model = M(self::T_CATE);
+            $cate = $model->where(['id'=>$id])->find();
+            if(!$cate)
+                $this->redirect('Goods/Cate/index');
+            $this->assign('cid',$id);
             $this->display();
         }
     }

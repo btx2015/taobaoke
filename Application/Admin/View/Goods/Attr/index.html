@@ -1,5 +1,4 @@
 <include file="Public:header"/>
-<link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <!-- Sweet Alert -->
 <link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 <link href="__PUBLIC__/Admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
@@ -38,10 +37,6 @@
                                                 <option value="1">启用</option>
                                                 <option value="2">禁用</option>
                                             </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" id="toolbar-datepicker" name="create_from" class="form-control"
-                                                   style="width: 180px;" placeholder="创建时间"/>
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
@@ -86,7 +81,7 @@
                                                 <div class="form-group">
                                                     <label class="control-label col-lg-2">商品分类</label>
                                                     <div class="col-lg-10">
-                                                        <select name="pid" class="form-control">
+                                                        <select name="cate_id" class="form-control">
                                                             <volist name="parent" id="item">
                                                                 <option value="{$item.id}">{$item.name}</option>
                                                             </volist>
@@ -118,7 +113,7 @@
                                                             <label for="radioType2">从下面列表中选择</label>
                                                         </div>
                                                         <div class="radio radio-info radio-inline">
-                                                            <input type="radio" id="radioType3" value="1" name="input_type">
+                                                            <input type="radio" id="radioType3" value="2" name="input_type">
                                                             <label for="radioType3">多行文本框</label>
                                                         </div>
                                                     </div>
@@ -126,8 +121,7 @@
                                                 <div class="form-group">
                                                     <label class="control-label col-lg-2">可选列表</label>
                                                     <div class="col-lg-10">
-                                                        <textarea class="form-control" name="input_value" style="resize: vertical">
-                                                        </textarea>
+                                                        <textarea class="form-control" name="input_value" style="resize: vertical"></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -159,8 +153,6 @@
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
-<!-- Data picker -->
-<script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <!-- Sweet alert -->
 <script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
 <script>
@@ -168,7 +160,6 @@
     var addUrl = "{:U($buttonData['add']['path'])}";
     var editUrl = "{:U($buttonData['edit']['path'])}";
     var delUrl = "{:U($buttonData['del']['path'])}";
-    var attrUrl = "{:U($buttonData['attr']['path'])}";
     $(document).ready(function () {
         var height = $(window).height();
         $("#table").jqGrid({
@@ -182,12 +173,9 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '属性名称','商品类型','检索','排序','状态','创建时间','操作'],
+            colNames: [ '属性名称','状态','商品类型','检索','录入方式','属性值','排序','操作'],
             colModel: [
                 {name: 'name',align:'center'},
-                {name: 'cate_id_str',align:'center'},
-                {name: 'attr_index_str',align:'center'},
-                {name: 'sort',align:'center',width: 170},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';
@@ -203,12 +191,14 @@
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
-                {name: 'created_at_str',align:'center',width: 170},
+                {name: 'cate_id_str',align:'center'},
+                {name: 'attr_index_str',align:'center'},
+                {name: 'input_type_str',align:'center'},
+                {name: 'input_value',align:'center'},
+                {name: 'sort',align:'center'},
                 {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
-                        if(attrUrl)
-                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="attrOpen(\''+ rows.id +'\')">属性列表</button>&nbsp;';
                         if(editUrl)
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(delUrl)
@@ -223,20 +213,7 @@
                 records:"data.total"
             }
         });
-
-        $('#toolbar-datepicker').datepicker({
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            calendarWeeks: true,
-            autoclose: true
-        });
     });
-    function attrOpen(id){
-        if(attrUrl){
-            window.location.href = attrUrl + '?id=' +id
-        }
-    }
 </script>
 </body>
 </html>

@@ -168,6 +168,14 @@ function handleRecords($rules,$records = []){
                             else
                                 $v[$key] = date($rule[1],$v[$field]);
                             break;
+                        case 'array_walk':
+                            $transArray = $rule[1];
+                            if(isset($transArray[$v[$field]])){
+                                $v[$key] = $transArray[$v[$field]];
+                            }else{
+                                $v[$key] = '-';
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -289,5 +297,28 @@ function beforeSave($model,$rule,$fields){
         }
     }
 
+    return $data;
+}
+
+function cateFormat($cate,$pid = 0,$level = 0){
+    $data = [];
+    foreach($cate as $k => $v){
+        if($v['pid'] == $pid){
+            $name = '';
+            if($pid)
+                $name = '|';
+            for($i = 0;$i < $level;$i ++){
+                $name .= '-';
+            }
+            $data[] = [
+                'id'   => $v['id'],
+                'name' => $name.$v['name'],
+            ];
+            unset($cate[$k]);
+            $children = cateFormat($cate,$v['id'],$level+1);
+            if($children)
+                $data = array_merge($data,$children);
+        }
+    }
     return $data;
 }

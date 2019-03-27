@@ -16,8 +16,6 @@ class CommonController extends Controller
 
     public function _initialize()
     {
-//        unset($_SESSION['adminInfo']);
-
         $this->path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
 
         $this->getBasic();
@@ -71,7 +69,7 @@ class CommonController extends Controller
         if(!isset($accessData[$this->path]))
             return false;
         $path = $this->path;
-        if($accessData[$this->path]['type'] != 1)
+        if($accessData[$this->path]['type'] == 2)
             $path = strtolower(CONTROLLER_NAME.'/index');
         $active[$accessData[$path]['id']] = 1;
         if($accessData[$path]['pid'])
@@ -151,22 +149,21 @@ class CommonController extends Controller
         foreach($nodes as $key => $node) {
             if ($node['pid'] == $pid) {
                 unset($nodes[$key]);
-                if ($node['type'] != 1) {
+                if ($node['type'] != 1)
                     $buttonData[$node['name']] = $node;
+                if ($node['type'] == 2)
                     continue;
-                } else {
-                    list($menuChildren,$buttonChildren) = $this->formatNode($nodes, $node['id']);
-                    if ($menuChildren)
-                        $node['children'] = $menuChildren;
-                    if ($buttonChildren){
-                        if($node['path']){
-                            $buttonData[$node['path']] = $buttonChildren;
-                        }else{
-                            $buttonData = array_merge($buttonData,$buttonChildren);
-                        }
+                list($menuChildren,$buttonChildren) = $this->formatNode($nodes, $node['id']);
+                if ($menuChildren)
+                    $node['children'] = $menuChildren;
+                if ($buttonChildren){
+                    if($node['path']){
+                        $buttonData[$node['path']] = $buttonChildren;
+                    }else{
+                        $buttonData = array_merge($buttonData,$buttonChildren);
                     }
-                    $menuData[] = $node;
                 }
+                $menuData[] = $node;
             }
         }
         return [$menuData,$buttonData];

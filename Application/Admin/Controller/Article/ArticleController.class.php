@@ -39,33 +39,10 @@ class ArticleController extends CommonController
             $model = M(self::T_ARTICLE_CATE);
             $cate = $model->field('id,name,pid')
                 ->where(['state'=>1])->order('sort desc')->select();
-            $data = $this->cateFormat($cate);
+            $data = cateFormat($cate);
             $this->assign('cate',$data);
             $this->display();
         }
-    }
-
-    private function cateFormat($cate,$pid = 0,$level = 0){
-        $data = [];
-        foreach($cate as $k => $v){
-            if($v['pid'] == $pid){
-                $name = '';
-                if($pid)
-                    $name = '|';
-                for($i = 0;$i < $level;$i ++){
-                    $name .= '-';
-                }
-                $data[] = [
-                    'id'   => $v['id'],
-                    'name' => $name.$v['name'],
-                ];
-                unset($cate[$k]);
-                $children = $this->cateFormat($cate,$v['id'],$level+1);
-                if($children)
-                    $data = array_merge($data,$children);
-            }
-        }
-        return $data;
     }
 
     public function add(){
@@ -88,7 +65,7 @@ class ArticleController extends CommonController
             $model = M(self::T_ARTICLE_CATE);
             $cate = $model->field('id,name,pid')
                 ->where(['state'=>1])->order('sort desc')->select();
-            $data = $this->cateFormat($cate);
+            $data = cateFormat($cate);
             $this->assign('cate',$data);
             $this->display();
         }
@@ -122,9 +99,9 @@ class ArticleController extends CommonController
             $model = M(self::T_ARTICLE_CATE);
             $cate = $model->field('id,name,pid')
                 ->where(['state'=>1])->order('sort desc')->select();
-            $data = $this->cateFormat($cate);
+            $data = cateFormat($cate);
             $this->assign([
-                'cate'=> $cate,
+                'cate'=> $data,
                 'data' => $user
             ]);
             $this->display();

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-25 21:41:19
+Date: 2019-03-27 21:25:19
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -69,6 +69,49 @@ INSERT INTO `tr_article_cate` VALUES ('9', '精品课程', '8', '1', '9', '0', '
 INSERT INTO `tr_article_cate` VALUES ('10', '大咖分享', '8', '1', '8', '0', '2019-03-24 17:06:12');
 
 -- ----------------------------
+-- Table structure for tr_attribute
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_attribute`;
+CREATE TABLE `tr_attribute` (
+  `id` int(11) NOT NULL,
+  `cate_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品类型id',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '属性名称',
+  `sort` smallint(5) NOT NULL DEFAULT '0',
+  `input_type` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0 手工录入 1从列表中选择 2多行文本框',
+  `input_value` varchar(255) NOT NULL DEFAULT '' COMMENT '属性值 逗号相隔',
+  `attr_index` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0不需要检索 1关键字检索 2范围检索',
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_attribute
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tr_category
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_category`;
+CREATE TABLE `tr_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '父级id',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '分类名称',
+  `img` varchar(255) NOT NULL DEFAULT '' COMMENT '分类图片',
+  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `sort` smallint(4) NOT NULL,
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_category
+-- ----------------------------
+INSERT INTO `tr_category` VALUES ('1', '手机', '', '0', '0', '1', '1553683405', '2019-03-27 19:40:11');
+
+-- ----------------------------
 -- Table structure for tr_goods
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_goods`;
@@ -84,8 +127,10 @@ CREATE TABLE `tr_goods` (
   `image` varchar(255) NOT NULL DEFAULT '' COMMENT '商品主图',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '价格',
   `market_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '原价 市场价',
+  `cost_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '成本价',
+  `weight` int(11) NOT NULL DEFAULT '0' COMMENT '商品重量 克',
   `detail` text NOT NULL COMMENT '商品详情',
-  `goods_num` int(11) NOT NULL DEFAULT '0' COMMENT '库存',
+  `unit_name` varchar(30) NOT NULL DEFAULT '' COMMENT '单位名称',
   `sale_num` int(11) NOT NULL DEFAULT '0' COMMENT '销量',
   `click_count` int(11) NOT NULL DEFAULT '0' COMMENT '商品点击量',
   `state` tinyint(1) NOT NULL DEFAULT '2',
@@ -95,6 +140,8 @@ CREATE TABLE `tr_goods` (
   `is_new` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否新品',
   `Is_shipping` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否包邮',
   `brand_id` int(1) NOT NULL DEFAULT '0' COMMENT '品牌id',
+  `comment_count` int(11) NOT NULL DEFAULT '0' COMMENT '评论数量',
+  `store_count` int(11) NOT NULL DEFAULT '0' COMMENT '库存数量',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -111,7 +158,7 @@ DROP TABLE IF EXISTS `tr_goods_attr`;
 CREATE TABLE `tr_goods_attr` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) NOT NULL DEFAULT '1' COMMENT '商品id',
-  `attribute_id` int(11) NOT NULL DEFAULT '0' COMMENT '属性id',
+  `attr_id` int(11) NOT NULL DEFAULT '0' COMMENT '属性id',
   `attr_value` varchar(255) NOT NULL DEFAULT '' COMMENT '属性值',
   `attr_price` decimal(10,2) NOT NULL DEFAULT '0.00',
   `state` tinyint(1) NOT NULL DEFAULT '1',
@@ -123,45 +170,6 @@ CREATE TABLE `tr_goods_attr` (
 
 -- ----------------------------
 -- Records of tr_goods_attr
--- ----------------------------
-
--- ----------------------------
--- Table structure for tr_goods_attribute
--- ----------------------------
-DROP TABLE IF EXISTS `tr_goods_attribute`;
-CREATE TABLE `tr_goods_attribute` (
-  `id` int(11) NOT NULL,
-  `type_id` int(11) NOT NULL DEFAULT '0' COMMENT '分类id',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '属性名称',
-  `sort` smallint(5) NOT NULL DEFAULT '0',
-  `state` tinyint(1) NOT NULL DEFAULT '1',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_goods_attribute
--- ----------------------------
-
--- ----------------------------
--- Table structure for tr_goods_cate
--- ----------------------------
-DROP TABLE IF EXISTS `tr_goods_cate`;
-CREATE TABLE `tr_goods_cate` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '父级id',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '分类名称',
-  `img` varchar(255) NOT NULL DEFAULT '' COMMENT '分类图片',
-  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
-  `sort` smallint(4) NOT NULL,
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_goods_cate
 -- ----------------------------
 
 -- ----------------------------
@@ -184,20 +192,43 @@ CREATE TABLE `tr_goods_gallery` (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for tr_goods_type
+-- Table structure for tr_goods_spec
 -- ----------------------------
-DROP TABLE IF EXISTS `tr_goods_type`;
-CREATE TABLE `tr_goods_type` (
+DROP TABLE IF EXISTS `tr_goods_spec`;
+CREATE TABLE `tr_goods_spec` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '类型名称',
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品id',
+  `key` varchar(255) NOT NULL DEFAULT '' COMMENT '规格id 下划线分割',
+  `key_name` varchar(255) NOT NULL DEFAULT '' COMMENT '对应规格id 的中文名',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '价格',
+  `store_count` int(11) NOT NULL DEFAULT '0' COMMENT '库存',
   `state` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tr_goods_type
+-- Records of tr_goods_spec
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tr_goods_spec_image
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_goods_spec_image`;
+CREATE TABLE `tr_goods_spec_image` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `goods_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品id',
+  `spec_id` int(11) NOT NULL DEFAULT '0' COMMENT '规格id',
+  `img` varchar(255) NOT NULL DEFAULT '' COMMENT '规格图片',
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_goods_spec_image
 -- ----------------------------
 
 -- ----------------------------
@@ -340,6 +371,42 @@ CREATE TABLE `tr_manage_notice` (
 INSERT INTO `tr_manage_notice` VALUES ('1', '系统升级提醒', '', '&lt;p&gt;&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553391920.png&quot; title=&quot;1553391920.png&quot; alt=&quot;QQ截图20190111144433.png&quot;/&gt;&lt;/p&gt;', '12', '1', '1553391923', '2019-03-24 09:47:27');
 
 -- ----------------------------
+-- Table structure for tr_member
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_member`;
+CREATE TABLE `tr_member` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
+  `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
+  `phone` varchar(20) NOT NULL DEFAULT '' COMMENT '手机',
+  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人id',
+  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '姓名',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态 1正常 2禁用 3删除',
+  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
+  `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0未设置 1男 2女',
+  `login_time` int(10) NOT NULL DEFAULT '0' COMMENT '登陆时间',
+  `login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '登陆ip',
+  `last_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '上次登录时间',
+  `last_login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '上次登陆ip',
+  `login_num` int(11) NOT NULL DEFAULT '0' COMMENT '登陆次数',
+  `level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户等级 0普通用户',
+  `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '注册时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `available_fund` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '可用余额',
+  `frozen_fund` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '冻结金额',
+  `frozen_withdraw` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '提现冻结',
+  `total_income` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '累计收益',
+  `total_withdraw` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '累计提现',
+  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '阿里妈妈pid',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_member
+-- ----------------------------
+INSERT INTO `tr_member` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
+
+-- ----------------------------
 -- Table structure for tr_member_account
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_account`;
@@ -404,42 +471,6 @@ INSERT INTO `tr_member_fund_flow` VALUES ('1', '1', '100.00', '100.00', '1', '�
 INSERT INTO `tr_member_fund_flow` VALUES ('2', '1', '-100.00', '0.00', '2', '系统扣除', '1552994390');
 
 -- ----------------------------
--- Table structure for tr_member_info
--- ----------------------------
-DROP TABLE IF EXISTS `tr_member_info`;
-CREATE TABLE `tr_member_info` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL DEFAULT '' COMMENT '用户名',
-  `password` varchar(32) NOT NULL DEFAULT '' COMMENT '密码',
-  `phone` varchar(20) NOT NULL DEFAULT '' COMMENT '手机',
-  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人id',
-  `name` varchar(30) NOT NULL DEFAULT '' COMMENT '姓名',
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态 1正常 2禁用 3删除',
-  `avatar` varchar(255) NOT NULL DEFAULT '' COMMENT '头像',
-  `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 0未设置 1男 2女',
-  `login_time` int(10) NOT NULL DEFAULT '0' COMMENT '登陆时间',
-  `login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '登陆ip',
-  `last_login_time` int(10) NOT NULL DEFAULT '0' COMMENT '上次登录时间',
-  `last_login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '上次登陆ip',
-  `login_num` int(11) NOT NULL DEFAULT '0' COMMENT '登陆次数',
-  `level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户等级 0普通用户',
-  `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '注册时间',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `available_fund` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '可用余额',
-  `frozen_fund` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '冻结金额',
-  `frozen_withdraw` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '提现冻结',
-  `total_income` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '累计收益',
-  `total_withdraw` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '累计提现',
-  `pid` int(11) NOT NULL DEFAULT '0' COMMENT '阿里妈妈pid',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_member_info
--- ----------------------------
-INSERT INTO `tr_member_info` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '0', '1552908886', '2019-03-18 19:34:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0');
-
--- ----------------------------
 -- Table structure for tr_member_pid
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_member_pid`;
@@ -485,6 +516,44 @@ INSERT INTO `tr_member_withdraw` VALUES ('3', '1', '100.00', '3', '1', '拒绝',
 INSERT INTO `tr_member_withdraw` VALUES ('4', '1', '100.00', '3', '1', 'asd', '1553065944', '1553083773', '2019-03-20 20:09:33', '2', '13588269863', '');
 
 -- ----------------------------
+-- Table structure for tr_spec
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_spec`;
+CREATE TABLE `tr_spec` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type_id` int(11) NOT NULL DEFAULT '0' COMMENT '商品分类id',
+  `name` varchar(60) NOT NULL DEFAULT '' COMMENT '规格名称',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` int(11) NOT NULL DEFAULT '1',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_spec
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tr_spec_item
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_spec_item`;
+CREATE TABLE `tr_spec_item` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `spec_id` int(11) NOT NULL DEFAULT '0' COMMENT '规格id',
+  `item` varchar(60) NOT NULL DEFAULT '' COMMENT '规格项',
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `sort` smallint(4) NOT NULL DEFAULT '0' COMMENT '排序',
+  `created_at` int(11) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_spec_item
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for tr_sys_admin
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_admin`;
@@ -511,7 +580,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553438204', '', '1553425012', '', '89', '0', '1548075651', '2019-03-20 15:14:40');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1553686739', '', '1553679054', '', '97', '0', '1548075651', '2019-03-20 15:14:40');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -557,7 +626,7 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
@@ -576,7 +645,7 @@ INSERT INTO `tr_sys_node` VALUES ('11', '删除', 'system/user/del', '8', 'del',
 INSERT INTO `tr_sys_node` VALUES ('21', '会员明细', 'member/index/flow', '17', 'flow', '6', '2', '1', '0', '2019-03-18 21:39:32');
 INSERT INTO `tr_sys_node` VALUES ('14', '系统设置', 'system/basic/index', '2', '1', '9', '1', '1', '0', '2019-03-18 18:50:35');
 INSERT INTO `tr_sys_node` VALUES ('15', '编辑', 'system/basic/edit', '14', 'edit', '9', '2', '1', '0', '2019-03-18 21:39:32');
-INSERT INTO `tr_sys_node` VALUES ('16', '会员管理', '', '0', '1', '97', '1', '1', '0', '2019-03-18 20:22:37');
+INSERT INTO `tr_sys_node` VALUES ('16', '会员管理', '', '0', '1', '98', '1', '1', '0', '2019-03-27 15:20:16');
 INSERT INTO `tr_sys_node` VALUES ('17', '会员信息', 'member/index/index', '16', '1', '9', '1', '1', '0', '2019-03-18 20:22:31');
 INSERT INTO `tr_sys_node` VALUES ('18', '添加', 'member/index/add', '17', 'add', '9', '2', '1', '0', '2019-03-18 21:39:33');
 INSERT INTO `tr_sys_node` VALUES ('19', '编辑', 'member/index/edit', '17', 'edit', '8', '2', '1', '0', '2019-03-18 21:39:34');
@@ -599,7 +668,7 @@ INSERT INTO `tr_sys_node` VALUES ('37', '新手指引', 'manage/guide/index', '2
 INSERT INTO `tr_sys_node` VALUES ('38', '添加', 'manage/guide/add', '37', 'add', '9', '2', '1', '0', '2019-03-23 10:07:41');
 INSERT INTO `tr_sys_node` VALUES ('39', '编辑', 'manage/guide/edit', '37', 'edit', '8', '2', '1', '0', '2019-03-23 10:07:48');
 INSERT INTO `tr_sys_node` VALUES ('40', '删除', 'manage/guide/del', '37', 'del', '7', '2', '1', '0', '2019-03-23 10:07:54');
-INSERT INTO `tr_sys_node` VALUES ('41', '常见问题', '', '0', '1', '6', '1', '1', '0', '2019-03-23 13:30:31');
+INSERT INTO `tr_sys_node` VALUES ('41', '常见问题', '', '0', '1', '6', '1', '1', '0', '2019-03-27 15:06:07');
 INSERT INTO `tr_sys_node` VALUES ('42', '分类管理', 'manage/faqcate/index', '41', '1', '9', '1', '1', '0', '2019-03-23 13:33:28');
 INSERT INTO `tr_sys_node` VALUES ('43', '添加', 'manage/faqcate/add', '42', 'add', '8', '2', '1', '0', '2019-03-23 13:56:41');
 INSERT INTO `tr_sys_node` VALUES ('44', '编辑', 'manage/faqcate/edit', '42', 'edit', '7', '2', '1', '0', '2019-03-23 13:56:41');
@@ -621,6 +690,27 @@ INSERT INTO `tr_sys_node` VALUES ('59', '导航管理', 'manage/nav/index', '28'
 INSERT INTO `tr_sys_node` VALUES ('60', '添加', 'manage/nav/add', '59', 'add', '9', '2', '1', '0', '2019-03-24 22:27:22');
 INSERT INTO `tr_sys_node` VALUES ('61', '编辑', 'manage/nav/edit', '59', 'edit', '8', '2', '1', '0', '2019-03-24 22:27:23');
 INSERT INTO `tr_sys_node` VALUES ('62', '删除', 'manage/nav/del', '59', 'del', '7', '2', '1', '0', '2019-03-24 22:27:24');
+INSERT INTO `tr_sys_node` VALUES ('63', '商品管理', '', '0', '1', '97', '1', '1', '0', '2019-03-27 15:20:18');
+INSERT INTO `tr_sys_node` VALUES ('64', '商品信息', 'goods/index/index', '63', '1', '9', '1', '1', '0', '2019-03-27 15:07:05');
+INSERT INTO `tr_sys_node` VALUES ('65', '添加', 'goods/index/add', '64', 'add', '9', '2', '1', '0', '2019-03-27 15:08:26');
+INSERT INTO `tr_sys_node` VALUES ('66', '编辑', 'goods/index/edit', '64', 'edit', '8', '2', '1', '0', '2019-03-27 15:08:22');
+INSERT INTO `tr_sys_node` VALUES ('67', '删除', 'goods/index/del', '64', 'del', '7', '2', '1', '0', '2019-03-27 15:08:16');
+INSERT INTO `tr_sys_node` VALUES ('68', '商品分类', 'goods/cate/index', '63', '1', '8', '1', '1', '0', '2019-03-27 15:09:09');
+INSERT INTO `tr_sys_node` VALUES ('69', '添加', 'goods/cate/add', '68', 'add', '9', '2', '1', '0', '2019-03-27 15:12:10');
+INSERT INTO `tr_sys_node` VALUES ('70', '编辑', 'goods/cate/edit', '68', 'edit', '8', '2', '1', '0', '2019-03-27 15:12:12');
+INSERT INTO `tr_sys_node` VALUES ('71', '删除', 'goods/cate/del', '68', 'del', '7', '2', '1', '0', '2019-03-27 15:12:14');
+INSERT INTO `tr_sys_node` VALUES ('85', '添加', 'goods/attr/add', '76', 'add', '9', '2', '1', '0', '2019-03-27 17:23:59');
+INSERT INTO `tr_sys_node` VALUES ('86', '编辑', 'goods/attr/edit', '76', 'edit', '8', '2', '1', '0', '2019-03-27 17:24:02');
+INSERT INTO `tr_sys_node` VALUES ('87', '删除', 'goods/attr/del', '76', 'del', '7', '2', '1', '0', '2019-03-27 17:24:02');
+INSERT INTO `tr_sys_node` VALUES ('76', '属性列表', 'goods/cate/attr', '68', 'attr', '6', '3', '1', '0', '2019-03-27 17:23:47');
+INSERT INTO `tr_sys_node` VALUES ('77', '商品属性', 'goods/attr/index', '63', '1', '6', '1', '1', '0', '2019-03-27 15:17:47');
+INSERT INTO `tr_sys_node` VALUES ('78', '添加', 'goods/attr/add', '77', 'add', '9', '2', '1', '0', '2019-03-27 17:05:42');
+INSERT INTO `tr_sys_node` VALUES ('79', '编辑', 'goods/attr/edit', '77', 'edit', '8', '2', '1', '0', '2019-03-27 17:05:43');
+INSERT INTO `tr_sys_node` VALUES ('80', '删除', 'goods/attr/del', '77', 'del', '7', '2', '1', '0', '2019-03-27 17:05:43');
+INSERT INTO `tr_sys_node` VALUES ('81', '商品规格', 'goods/spec/index', '63', '1', '5', '1', '1', '0', '2019-03-27 15:17:49');
+INSERT INTO `tr_sys_node` VALUES ('82', '添加', 'goods/spec/add', '81', 'add', '9', '2', '1', '0', '2019-03-27 17:05:44');
+INSERT INTO `tr_sys_node` VALUES ('83', '编辑', 'goods/spec/edit', '81', 'edit', '8', '2', '1', '0', '2019-03-27 17:05:50');
+INSERT INTO `tr_sys_node` VALUES ('84', '删除', 'goods/spec/del', '81', 'del', '7', '2', '1', '0', '2019-03-27 17:05:49');
 
 -- ----------------------------
 -- Table structure for tr_sys_role

@@ -27,10 +27,10 @@
 function validate(array $paramRules = [],$way = 'post'){
     $params = [];
     $flag = true;//重复参数标识
+    $temp = I($way.'.');
     foreach($paramRules as $paramName => $rules){
-        $paramValue = I($way.'.'.$paramName);
-        if(!$paramValue){
-            //是否为必须参数
+        //是否为必须参数
+        if(!isset($temp[$paramName])){
             if(isset($rules[1])){
                 if($rules[1] === true)
                     showError(10006,$paramName.' is required.');
@@ -39,13 +39,13 @@ function validate(array $paramRules = [],$way = 'post'){
                         $params[$paramName] = $rules[1];//默认值
                     continue;
                 }
-            }else{
-                //是否可以为空或者为0
-                if(isset($rules[2]) && !$rules[2])
-                    showError(10006,$paramName.' can not empty.');
-                else
-                    continue;
             }
+        }
+        $paramValue = $temp[$paramName];
+        if(!$paramValue){
+            //是否可以为空或者为0
+            if(!isset($rules[2]) || $rules[2])
+                continue;
         }
         //参数验证
         if(isset($rules[0])){

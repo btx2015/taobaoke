@@ -96,14 +96,13 @@ class AttrController extends CommonController
                 'id'          => [['num'],true,false],
                 'name'        => [],
                 'cate_id'     => [['num']],
-                'attr_index'  => [['in'=>[0,1]]],
-                'input_type'  => [['in'=>[0,1,2]]],
+                'attr_index'  => [['in'=>[0,1]],false,false],
+                'input_type'  => [['in'=>[0,1,2]],false,false],
                 'input_value' => [],
             ];
             $data = validate($rule);
             if(!is_array($data))
                 showError(10006);//参数错误
-
             $attr = $model->where(['id' => $data['id']])->find();
             if(!$attr)
                 showError(20004);//不存在
@@ -125,7 +124,6 @@ class AttrController extends CommonController
                     showError(10006,'请输入选择项');
                 }
             }
-            var_dump($data);die;
             $res = $model->save($data);
             if($res === false)
                 showError(20002);//更新失败

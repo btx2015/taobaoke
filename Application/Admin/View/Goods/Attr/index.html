@@ -24,7 +24,7 @@
                                                    placeholder="属性名称" style="width: 100px">
                                         </div>
                                         <div class="form-group">
-                                            <select class="form-control" name="pid">
+                                            <select class="form-control" name="cate_id">
                                                 <option value="">商品类型</option>
                                                 <volist name="parent" id="item">
                                                     <option value="{$item.id}">{$item.name}</option>
@@ -200,7 +200,7 @@
                     formatter: function (value, grid, rows, state) {
                         var op = '';
                         if(editUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpens(\''+ rows.id+ '\');">编辑</button>&nbsp;';
                         if(delUrl)
                             op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
                         return op;
@@ -214,6 +214,33 @@
             }
         });
     });
+    function editOpens(id){
+        $('#save-modal').modal('show');
+        $.ajax({
+            type:'GET',
+            url:editUrl,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    $("input[name='id']").val(res.data['id']);
+                    $('#save-form').find(':input[type="text"]').each(function() {
+                        $(this).val(res.data[$(this).attr('name')]);
+                    });
+                    $("textarea[name='input_value']").val(res.data['input_value']);
+                    $("input:radio[name='attr_index']").eq(res.data['attr_index']).prop("checked",'checked');
+                    $("input:radio[name='input_type']").eq(res.data['input_type']).prop("checked",'checked');
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

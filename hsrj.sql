@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-03-28 00:59:23
+Date: 2019-03-31 22:11:54
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -516,6 +516,35 @@ INSERT INTO `tr_member_withdraw` VALUES ('1', '1', '100.00', '2', '1', '', '1553
 INSERT INTO `tr_member_withdraw` VALUES ('2', '1', '100.00', '2', '1', '审核通过', '1553065944', '1553065944', '2019-03-20 16:18:35', '2', '13588269863', '');
 INSERT INTO `tr_member_withdraw` VALUES ('3', '1', '100.00', '3', '1', '拒绝', '1553065944', '1553065944', '2019-03-20 16:18:28', '3', 'weixin', '');
 INSERT INTO `tr_member_withdraw` VALUES ('4', '1', '100.00', '3', '1', 'asd', '1553065944', '1553083773', '2019-03-20 20:09:33', '2', '13588269863', '');
+
+-- ----------------------------
+-- Table structure for `tr_product`
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_product`;
+CREATE TABLE `tr_product` (
+  `id` int(11) NOT NULL DEFAULT '0',
+  `title` varchar(60) DEFAULT '' COMMENT '商品标题',
+  `brief` varchar(90) DEFAULT '' COMMENT '商品副标题',
+  `cate_id` int(11) DEFAULT '0' COMMENT '分类id',
+  `price` decimal(10,2) DEFAULT '0.00' COMMENT '原价',
+  `coupon_price` decimal(10,2) DEFAULT '0.00' COMMENT '优惠券金额',
+  `real_price` decimal(10,2) DEFAULT '0.00' COMMENT '实际金额',
+  `start_time` int(11) DEFAULT '0' COMMENT '优惠券开始时间',
+  `end_time` int(11) DEFAULT '0' COMMENT '优惠券结束日期',
+  `total_amount` int(11) DEFAULT '0' COMMENT '优惠券总数量',
+  `amount` int(11) DEFAULT '0' COMMENT '剩余优惠券数量',
+  `url` varchar(255) DEFAULT '' COMMENT '优惠券链接',
+  `sale_num` int(11) DEFAULT '0' COMMENT '销量',
+  `sort` int(11) DEFAULT '0' COMMENT '商品排序',
+  `state` tinyint(1) DEFAULT '1',
+  `created_at` int(11) DEFAULT '0',
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_product
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `tr_spec`

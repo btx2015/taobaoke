@@ -1,0 +1,290 @@
+<include file="Public:header"/>
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<link href="__PUBLIC__/Admin/css/plugins/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
+</style>
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <!-- 筛选 start -->
+                        <div class="ibox-title">
+                            <div class="container-fluid">
+                                <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="product_sn"
+                                                   placeholder="商品编号" style="width: 100px">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="cate_id">
+                                                <option value="">商品类型</option>
+                                                <volist name="parent" id="item">
+                                                    <option value="{$item.id}">{$item.name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="state">
+                                                <option value="">请选择状态</option>
+                                                <option value="1">启用</option>
+                                                <option value="2">禁用</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-search">查询
+                                            </button>
+                                        </div>
+                                        <present name="buttonData.add">
+                                            <div class="form-group pull-right">
+                                                <button class="btn btn-sm btn-success" id="toolbar-create"
+                                                        route="{$buttonData.add.path}">{$buttonData.add.title}
+                                                </button>
+                                            </div>
+                                        </present>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- 筛选 end -->
+                        <div class="ibox-content">
+                            <!-- 表格 start -->
+                            <div class="jqGrid_wrapper">
+                                <table id="table"></table>
+                                <div id="pager"></div>
+                            </div>
+                            <!-- 表格 end -->
+                            <!-- 添加框 start -->
+                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content animated fadeIn">
+                                        <div class="modal-body">
+                                            <form class="form-horizontal" id="save-form">
+                                                <input type="hidden" name="id">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">商品编号</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="product_sn">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">商品分类</label>
+                                                    <div class="col-lg-10">
+                                                        <select name="cate_id" class="form-control">
+                                                            <volist name="parent" id="item">
+                                                                <option value="{$item.id}">{$item.name}</option>
+                                                            </volist>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">商品链接</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="url">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">标题</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="title">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">副标题</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="brief">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">商品原价</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="price">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠券金额</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="coupon_price">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠后价格</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="real_price">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠券链接</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="coupon_url">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠券开始时间</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="start_time">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠后结束时间</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="end_time">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠券总数量</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="total_amount">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠券剩余数量</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="amount">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">优惠券领取数量</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="used_amount">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">商品销量</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="sale_num">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">商品排序</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="sort">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 添加框 end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<include file="Public:methods"/>
+<!-- jqGrid -->
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var listUrl = window.location;
+    var addUrl = "{:U($buttonData['add']['path'])}";
+    var editUrl = "{:U($buttonData['edit']['path'])}";
+    var delUrl = "{:U($buttonData['del']['path'])}";
+    $(document).ready(function () {
+        var height = $(window).height();
+        $("#table").jqGrid({
+            url:listUrl,
+            mtype: 'POST',
+            datatype: "json",
+            autowidth: true,
+            shrinkToFit: true,
+            viewrecords: true,
+            hidegrid: false,
+            height: height - 250,
+            rowNum: 15,
+            rowList: [15, 30],
+            colNames: [ '商品编号','副标题','商品类型','原价','优惠券金额','开始时间','结束时间','排序','状态','操作'],
+            colModel: [
+                {name: 'product_sn',align:'center'},
+                {name: 'brief',align:'center'},
+                {name: 'cate_id_str',align:'center'},
+                {name: 'price',align:'center'},
+                {name: 'coupon_price',align:'center'},
+                {name: 'start_time_str',align:'center'},
+                {name: 'end_time_str',align:'center'},
+                {name: 'sort',align:'center'},
+                {name: 'state_str',align:'center',width:60,
+                    formatter: function (value, grid, rows, state) {
+                        var status,op = '<button type="button" class="btn btn-xs';
+                        if(rows.state == 1){
+                            op += ' btn-primary"';
+                            status = 2;
+                        }else{
+                            op += ' btn-warning"';
+                            status = 1;
+                        }
+                        if(editUrl)
+                            op += ' onclick="modify(' + rows.id + ','+ status +')";';
+                        return op + '">' + rows.state_str + '</button>';
+                    }
+                },
+                {name: 'operate', index: 'operate',width: 150,align:'center',
+                    formatter: function (value, grid, rows, state) {
+                        var op = '';
+                        if(editUrl)
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpens(\''+ rows.id+ '\');">编辑</button>&nbsp;';
+                        if(delUrl)
+                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
+                        return op;
+                    }
+                }
+            ],
+            pager: "#pager",
+            jsonReader:{
+                root:"data.list",
+                records:"data.total"
+            }
+        });
+    });
+    function editOpens(id){
+        $('#save-modal').modal('show');
+        $.ajax({
+            type:'GET',
+            url:editUrl,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    $("input[name='id']").val(res.data['id']);
+                    $('#save-form').find(':input[type="text"]').each(function() {
+                        $(this).val(res.data[$(this).attr('name')]);
+                    });
+                    $("textarea[name='input_value']").val(res.data['input_value']);
+                    $("input:radio[name='attr_index']").eq(res.data['attr_index']).prop("checked",'checked');
+                    $("input:radio[name='input_type']").eq(res.data['input_type']).prop("checked",'checked');
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>

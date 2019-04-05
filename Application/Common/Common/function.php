@@ -288,12 +288,20 @@ function beforeSave($model,$rule,$fields){
         showError(10006);//参数错误
 
     foreach($fields as $v){
-        if(isset($data[$v])){
+        if($v === 'id'){
             $record = $model->where([
-                $v => $data[$v]
+                'id' => $data['id']
             ])->find();
-            if($record && $record['id'] != $data['id'])
-                showError(20000);//存在同名
+            if(!$record)
+                showError(20004);
+        }else{
+            if(isset($data[$v])){
+                $record = $model->where([
+                    $v => $data[$v]
+                ])->find();
+                if($record && $record['id'] != $data['id'])
+                    showError(20000);//存在同名
+            }
         }
     }
 

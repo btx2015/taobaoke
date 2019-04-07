@@ -28,8 +28,16 @@
                                                    placeholder="手机号" style="width: 150px">
                                         </div>
                                         <div class="form-group">
+                                            <select class="form-control" name="channel_id">
+                                                <option value="">渠道</option>
+                                                <volist name="channel" id="item">
+                                                    <option value="{$item.id}">{$item.name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <select class="form-control" name="state">
-                                                <option value="">请选择状态</option>
+                                                <option value="">状态</option>
                                                 <option value="1">启用</option>
                                                 <option value="2">禁用</option>
                                             </select>
@@ -88,6 +96,16 @@
                                                     <label class="control-label col-lg-2">推荐人</label>
                                                     <div class="col-lg-10">
                                                         <input type="text" class="form-control" name="referee" placeholder="推荐人手机号（选填）">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">渠道</label>
+                                                    <div class="col-lg-10">
+                                                        <select class="form-control" name="channel_id">
+                                                            <volist name="channel" id="item">
+                                                                <option value="{$item.id}">{$item.name}</option>
+                                                            </volist>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -163,11 +181,12 @@
             rowNum: 15,
             rowList: [15, 30],
 //            multiselect: true,
-            colNames: [ '昵称','手机号','推荐人','余额','累计收益','状态','注册时间','最近登陆时间','操作'],
+            colNames: [ '昵称','手机号','推荐人','渠道','余额','累计收益','状态','注册时间','最近登陆时间','操作'],
             colModel: [
                 {name: 'username',align:'center'},
                 {name: 'phone',align:'center'},
                 {name: 'referee_id_str',align:'center'},
+                {name: 'channel_id_str',align:'center'},
                 {name: 'available_fund',align:'center'},
                 {name: 'total_income',align:'center'},
                 {name: 'state_str',align:'center',width:60,

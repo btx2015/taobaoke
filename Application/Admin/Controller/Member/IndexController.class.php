@@ -6,9 +6,11 @@ use Admin\Controller\CommonController;
 
 class IndexController extends CommonController
 {
-    const T_MEMBER = 'tr_member_info';
+    const T_MEMBER = 'tr_member';
 
     const T_FLOW = 'tr_member_fund_flow';
+
+    const T_CHANNEL = 'tr_channel';
 
     public function index(){
         if(IS_POST){
@@ -29,7 +31,8 @@ class IndexController extends CommonController
 
             $list = M(self::T_MEMBER)->alias('a')
                 ->join('left join '.self::T_MEMBER.' b on a.referee_id = b.id')
-                ->field('a.*,b.phone as referee_id_str')
+                ->join('left join '.self::T_CHANNEL.' c on a.channel_id = c.id')
+                ->field('a.*,b.username as referee_id_str,c.name as channel_id_str')
                 ->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
@@ -42,6 +45,8 @@ class IndexController extends CommonController
                 'total' =>M(self::T_MEMBER)->alias('a')->where($where)->count()
             ]);
         }else{
+            $channel = M(self::T_CHANNEL)->field('id,name')->where('state = 1')->select();
+            $this->assign('channel',$channel);
             $this->display();
         }
     }
@@ -49,12 +54,21 @@ class IndexController extends CommonController
     public function add(){
         $model = M(self::T_MEMBER);
         $rule = [
-            'username' => [[],true],
-            'phone'    => [[],true,false],
-            'password' => [['password'],true,true],
-            'referee'  => []
+            'username'   => [[],true],
+            'phone'      => [['phone'],true,false],
+            'password'   => [['password'],true,true],
+            'referee'    => [['phone']],
+            'channel_id' => [['num'],1]
         ];
         $data = beforeSave($model,$rule,['phone']);
+        if(isset($data['referee'])){
+            $referee = $model->where(['phone'=>$data['referee']])->find();
+            if(!$referee)
+                showError(20004,'推荐人不存在');
+            unset($data['referee']);
+            $data['referee_id'] = $referee['id'];
+        }
+
         $data['created_at'] = time();
         $insertId = $model->add($data);
         if(!$insertId)
@@ -66,18 +80,20 @@ class IndexController extends CommonController
         $model = M(self::T_MEMBER);
         if(IS_POST){
             $rule = [
-                'id'       => [['num']],
-                'username' => [],
-                'phone'    => [],
-                'password' => [['password']],
-                'state'    => [['in'=>[1,2]]]
+                'id'         => [['num']],
+                'username'   => [],
+                'phone'      => [],
+                'password'   => [['password']],
+                'state'      => [['in'=>[1,2]]],
+                'channel_id' => [['num']],
+                'referee'    => [['phone']]
             ];
             $data = beforeSave($model,$rule,['phone']);
             $user = $model->where(['id'=>$data['id']])->find();
             if(!$user)
                 showError(20004);//不存在
             if(isset($data['referee'])){
-                $refer = $model->where(['phone' => $data['phone']])->find();
+                $refer = $model->where(['phone' => $data['referee']])->find();
                 if(!$refer)
                     showError(20004,'推荐人不存在');
                 unset($data['referee']);

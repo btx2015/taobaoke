@@ -88,6 +88,9 @@ function validate(array $paramRules = [],$way = 'post'){
                     case 'password':
                         $paramValue = encodePassword($paramValue);
                         break;
+                    case 'percent':
+                        $paramValue = round($paramValue/100,2);
+                        break;
                     default:
                         break;
                 }
@@ -175,6 +178,9 @@ function handleRecords($rules,$records = []){
                             }else{
                                 $v[$key] = '-';
                             }
+                            break;
+                        case 'percent':
+                            $v[$key] = ($v[$field]*100).'%';
                             break;
                         default:
                             break;
@@ -329,4 +335,24 @@ function cateFormat($cate,$pid = 0,$level = 0){
         }
     }
     return $data;
+}
+
+function curlRequest($url,$params,$type = 'POST',$timeout = 5){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_HEADER, false);
+
+    if($type === 'POST'){
+        curl_setopt($ch, CURLOPT_POST,true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+    }
+
+    curl_setopt($ch, CURLOPT_TIMEOUT,$timeout);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER,true);
+    curl_setopt($ch,CURLOPT_SSL_VERIFYPEER , false);
+    curl_setopt($ch,CURLOPT_SSL_VERIFYHOST , false);
+    $result = curl_exec($ch);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+    return $result;
 }

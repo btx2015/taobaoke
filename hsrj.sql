@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-04-08 21:01:19
+Date: 2019-04-09 21:00:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -143,14 +143,16 @@ DROP TABLE IF EXISTS `tr_commission`;
 CREATE TABLE `tr_commission` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `settlement_sn` varchar(100) NOT NULL DEFAULT '' COMMENT '结算编号',
-  `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分佣总金额',
-  `channel_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道分佣金额',
-  `channel_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣渠道数量',
-  `channel_percent` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '渠道分佣占总金额百分比',
-  `member_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员分佣金额',
+  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣渠道数量',
+  `channel_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道收取的费用（未扣除平台费用）',
+  `fee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台费用',
+  `real_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道实际收入',
+  `member_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员分佣总金额',
   `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣会员数量',
-  `member_percent` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '会员分佣占总金额百分比',
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1开始结算 2结算成功 3已发放',
+  `channel_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '渠道分佣比例',
+  `referee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '一级推荐人分佣比例',
+  `grand_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '二级推荐人分佣比例',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1发起结算 2结算成功 3已发放',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -191,15 +193,12 @@ CREATE TABLE `tr_commission_order` (
   `special_id` varchar(255) NOT NULL DEFAULT '' COMMENT '会员ID',
   `adzone_id` varchar(255) NOT NULL DEFAULT '' COMMENT '推广位ID',
   `commission_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '佣金金额',
-  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1未结算 2已匹配 3未匹配 4 已结算',
+  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1未匹配 2已匹配 3已结算',
   `user_id` int(11) NOT NULL DEFAULT '0',
   `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人ID',
   `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
   `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
   `settlement_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
-  `channel_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '渠道分佣比例',
-  `referee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '以及推荐人分佣比例',
-  `grand_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '二级推荐人分佣比例',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -714,7 +713,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1554710667', '', '1554622895', '', '107', '0', '1548075651', '2019-04-07 12:13:40');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1554807146', '', '1554799551', '', '109', '0', '1548075651', '2019-04-07 12:13:40');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -760,7 +759,7 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
@@ -850,11 +849,15 @@ INSERT INTO `tr_sys_node` VALUES ('90', '渠道信息', 'channel/info/index', '8
 INSERT INTO `tr_sys_node` VALUES ('91', '添加', 'channel/info/add', '90', 'add', '9', '2', '1', '0', '2019-04-07 11:12:12');
 INSERT INTO `tr_sys_node` VALUES ('92', '编辑', 'channel/info/edit', '90', 'edit', '8', '2', '1', '0', '2019-04-07 11:12:14');
 INSERT INTO `tr_sys_node` VALUES ('93', '删除', 'channel/info/del', '90', 'del', '7', '2', '1', '0', '2019-04-07 11:12:21');
-INSERT INTO `tr_sys_node` VALUES ('94', '分佣管理', '', '0', '1', '95', '1', '1', '0', '2019-04-08 16:25:00');
+INSERT INTO `tr_sys_node` VALUES ('94', '佣金管理', '', '0', '1', '95', '1', '1', '0', '2019-04-09 16:46:15');
 INSERT INTO `tr_sys_node` VALUES ('95', '分佣记录', 'commission/settlement/index', '94', '1', '9', '1', '1', '0', '2019-04-08 17:12:36');
 INSERT INTO `tr_sys_node` VALUES ('96', '结算', 'commission/settlement/start', '95', 'settle', '9', '2', '1', '0', '2019-04-08 17:17:04');
 INSERT INTO `tr_sys_node` VALUES ('97', '明细', 'commission/settlement/detail', '95', 'detail', '8', '2', '1', '0', '2019-04-08 19:57:53');
 INSERT INTO `tr_sys_node` VALUES ('99', '发放', 'commission/settlement/pay', '95', 'pay', '7', '2', '1', '0', '2019-04-08 19:57:34');
+INSERT INTO `tr_sys_node` VALUES ('100', '佣金订单', 'commission/order/index', '94', '1', '8', '1', '1', '0', '2019-04-09 16:36:11');
+INSERT INTO `tr_sys_node` VALUES ('101', '同步订单', 'commission/order/add', '100', 'add', '9', '2', '1', '0', '2019-04-09 16:37:20');
+INSERT INTO `tr_sys_node` VALUES ('102', '数据匹配', 'commission/order/edit', '100', 'edit', '8', '2', '1', '0', '2019-04-09 16:37:54');
+INSERT INTO `tr_sys_node` VALUES ('103', '佣金明细', 'commission/detail/index', '94', '1', '7', '1', '1', '0', '2019-04-09 16:39:25');
 
 -- ----------------------------
 -- Table structure for tr_sys_role

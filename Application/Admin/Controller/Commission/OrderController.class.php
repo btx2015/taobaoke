@@ -15,7 +15,52 @@ class OrderController extends CommonController
     const T_CHANNEL = 'tr_channel';
 
     public function index(){
-        $this->display();
+        if(IS_POST){
+            $model = M(self::T_ORDER);
+            list($where,$pageNo,$pageSize) = before_query([
+                'page'        => [['num'],1],
+                'rows'        => [['num'],10],
+                'order_sn'    => [[],false,true,['like','order_sn']],
+                'state'       => [['in'=>[1,2,3]],false,true,['eq','state']],
+                'create_from' => [['time'],false,true,['egt','created_at']],
+                'create_to'   => [['time'],false,true,['elt','created_at']],
+            ]);
+            $list = $model->where($where)->page($pageNo,$pageSize)->order('state asc')->select();
+            $members = $channels = [];
+            if($list){
+                $memberId = [];
+                $fields = ['user_id','referee_id','grand_id'];
+                foreach($fields as $v){
+                    $memberId = array_merge($memberId,array_filter(array_unique(array_column($list,$v)),function($var){
+                        return $var ? 1 : 0;
+                    }));
+                }
+                $memberId = array_unique($memberId);
+                if($memberId){
+                    $members = M(self::T_MEMBER)->field('id,username')->where(['id' => ['in',$memberId]])->select();
+                    if($members){
+                        $members = array_column($members,'username','id');
+                    }
+                }
+                $channelId = array_column($list,'channel_id');
+                $channels = M(self::T_CHANNEL)->field('id,name')->where(['id'=>['in',$channelId]])->select();
+                if($channels){
+                    $channels = array_column($channels,'name','id');
+                }
+            }
+            returnResult([
+                'list' => handleRecords([
+                    'user_id'    => ['array_walk',$members,'user_id_str'],
+                    'referee_id' => ['array_walk',$members,'referee_id_str'],
+                    'grand_id'   => ['array_walk',$members,'grand_id_str'],
+                    'channel_id' => ['array_walk',$channels,'channel_id_str'],
+                    'state'      => ['translate','order_state','state_str'],
+                ],$list),
+                'total' => $model->where($where)->count()
+            ]);
+        }else{
+            $this->display();
+        }
     }
 
     public function add(){
@@ -45,11 +90,11 @@ class OrderController extends CommonController
                 'time' => $startTime,
                 'page' => $pageNo
             ]);
+            returnResult();
+        }else{
+            S('settleInfo',null);
+            showError(20004,'暂无未同步的订单');
         }
-        returnResult([
-            'time' => $startTime,
-            'page' => $pageNo
-        ]);
     }
 
     private function add_data($data){
@@ -115,29 +160,42 @@ class OrderController extends CommonController
 
     public function edit(){
         $model = M(self::T_ORDER);
-        $orders = $model->field('id,special_id')->where('state = 1')->select();
+        $orders = $model->field('id,special_id')->limit(100)->where('state = 1')->select();
         if(!$orders){
             showError(20004,'暂无未匹配的订单');
         }
         $memberId = array_unique(array_column($orders,'special_id'));
         $memberModel = M(self::T_MEMBER);
-        $members = $memberModel->field('id,referee_id,channel_id')
+        $members = $memberModel->field('id,special_id,referee_id,channel_id')
             ->where(['special_id' => ['in',$memberId]])->select();
         if(!$members){
             showError(20004,'未找到会员');
         }
-        //查询一级推荐人
+        //查询二级推荐人
         $refereeId = array_unique(array_column($members,'referee_id'));
         $referees = $memberModel->field('id,referee_id')
             ->where(['id' => ['in',$refereeId]])->select();
-        //查询二级推荐人
-        $parentId = array_unique(array_column($referees,'referee_id'));
-        $parents = $memberModel->field('id,referee_id')
-            ->where(['id' => ['in',$parentId]])->select();
-        //查询渠道
-        $channelId = array_unique(array_column($members,'channel_id'));
-        $channelModel = M(self::T_CHANNEL);
-        $channels = $channelModel->field('id,')
-            ->where()->select();
+        $referees = array_column($referees,'referee_id','id');
+
+        $members = array_column($members,null,'special_id');
+        //组装用户信息
+        array_walk($orders,function(&$v)use($members,$referees){
+            if(isset($members[$v['special_id']])){
+                $v['user_id'] = $members[$v['special_id']]['id'];
+                $v['referee_id'] = $members[$v['special_id']]['referee_id'];
+                $v['channel_id'] = $members[$v['special_id']]['channel_id'];
+                if(isset($referees[$v['referee_id']])){
+                    $v['grand_id'] = $referees[$v['referee_id']];
+                }else{
+                    $v['grand_id'] = 0;
+                }
+                $v['state'] = 2;
+            }
+        });
+        $res = saveAll($orders,self::T_ORDER);
+        if(!$res){
+            showError(20004,'匹配失败');
+        }
+        returnResult();
     }
 }

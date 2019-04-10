@@ -356,3 +356,24 @@ function curlRequest($url,$params,$type = 'POST',$timeout = 5){
     curl_close($ch);
     return $result;
 }
+
+function saveAll($records,$tableName){
+    $sql   = ''; //Sql
+    $lists = []; //记录集$lists
+    $ids   = [];
+    $pk    = 'id';
+    foreach ($records as $data) {
+        foreach ($data as $key => $value) {
+            if($pk === $key){
+                $ids[]=$value;
+            }else{
+                $lists[$key] .= sprintf("WHEN %u THEN '%s' ",$data[$pk],$value);
+            }
+        }
+    }
+    foreach ($lists as $key => $value) {
+        $sql.= sprintf("`%s` = CASE `%s` %s END,",$key,$pk,$value);
+    }
+    $sql = sprintf('UPDATE %s SET %s WHERE %s IN ( %s )',strtoupper($tableName),rtrim($sql,','),$pk,implode(',',$ids));
+    return M()->execute($sql);
+}

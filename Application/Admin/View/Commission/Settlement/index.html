@@ -21,13 +21,22 @@
                                     <div class="row">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="name"
-                                                   placeholder="渠道名称" style="width: 100px">
+                                                   placeholder="结算单号" style="width: 100px">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="state">
+                                                <option value="">渠道</option>
+                                                <volist name="channels" id="item">
+                                                    <option value="{$item.id}">{$item.name}</option>
+                                                </volist>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
                                                 <option value="">请选择状态</option>
-                                                <option value="1">启用</option>
-                                                <option value="2">禁用</option>
+                                                <option value="1">未结算</option>
+                                                <option value="2">未发放</option>
+                                                <option value="3">已发放</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
@@ -38,10 +47,10 @@
                                             <button class="btn btn-sm btn-primary" id="toolbar-search">查询
                                             </button>
                                         </div>
-                                        <present name="buttonData.add">
+                                        <present name="buttonData.settle">
                                             <div class="form-group pull-right">
-                                                <button class="btn btn-sm btn-success" id="toolbar-create"
-                                                        route="{$buttonData.add.path}">{$buttonData.add.title}
+                                                <button class="btn btn-sm btn-success" id="toolbar-create">
+                                                    {$buttonData.add.title}
                                                 </button>
                                             </div>
                                         </present>
@@ -63,53 +72,45 @@
                                     <div class="modal-content animated fadeIn">
                                         <div class="modal-body">
                                             <form class="form-horizontal" id="save-form">
-                                                <input type="hidden" name="id">
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">渠道名称</label>
+                                                    <label class="control-label col-lg-2">渠道</label>
                                                     <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="name">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">渠道ID</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="relation_id">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">推广位ID</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="pid">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">费用比例</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="fee_rate">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">一级推荐分佣比例</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="referee_rate">
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">二级推荐分佣比例</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="grand_rate">
+                                                        <select name="id" class="form-control">
+                                                            <volist name="channels" id="item">
+                                                                <option value="{$item.id}">{$item.name}</option>
+                                                            </volist>
+                                                        </select>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                            <button type="button" class="btn btn-primary" onclick="save()">保存</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <!-- 添加框 end -->
+
+                            <div class="modal inmodal" id="settle-modal" tabindex="-1" role="dialog"
+                                 data-backdrop="static" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content animated fadeIn">
+                                        <div class="modal-body">
+                                            <div class="spiner-example">
+                                                <div class="sk-spinner sk-spinner-chasing-dots">
+                                                    <div class="sk-dot1"></div>
+                                                    <div class="sk-dot2"></div>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-success" style="text-align: center">
+                                                <a class="alert-link" id="modal-text"></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,7 +120,6 @@
     </div>
 </div>
 <include file="Public:js"/>
-<include file="Public:methods"/>
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
@@ -128,10 +128,27 @@
 <script>
     var listUrl = window.location;
     var addUrl = "{:U($buttonData['add']['path'])}";
-    var editUrl = "{:U($buttonData['edit']['path'])}";
-    var delUrl = "{:U($buttonData['del']['path'])}";
+    var settleUrl = "{:U($buttonData['settle']['path'])}";
+    var payUrl = "{:U($buttonData['pay']['path'])}";
+    var detailUrl = "{:U($buttonData['detail']['path'])}";
     $(document).ready(function () {
         var height = $(window).height();
+        $(window).bind('resize', function () {
+            var width = $('.jqGrid_wrapper').width();
+            $('#table').setGridWidth(width);
+        });
+        $('#toolbar-create').click(function(){
+            $('#save-modal').modal('show');
+        });
+        $('#toolbar-edit').click(function(){
+            $('#save-modal').modal('show');
+            $('#modal-text').text('数据匹配中，请耐心等待。。。');
+            request(editUrl,"匹配完成");
+        });
+        $('#toolbar-search').click(reload);
+        $('#toolbar-reset').click(function(){
+            $('#toolbar-form')[0].reset();
+        });
         $("#table").jqGrid({
             url:listUrl,
             mtype: 'POST',
@@ -143,35 +160,37 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '名称','推广位ID','费用比例','一级分佣比例','二级分佣比例','状态','操作'],
+            colNames: [ '结算编号','渠道','总佣金','渠道佣金','服务费','用户总佣金','分佣用户数','状态','操作'],
             colModel: [
-                {name: 'name',align:'center'},
-                {name: 'pid',align:'center'},
-                {name: 'fee_rate_str',align:'center'},
-                {name: 'referee_rate_str',align:'center'},
-                {name: 'grand_rate_str',align:'center'},
-                {name: 'state_str',align:'center',width:60,
+                {name: 'settlement_sn',align:'center'},
+                {name: 'channel_id_str',align:'center'},
+                {name: 'total_amount',align:'center'},
+                {name: 'real_amount',align:'center'},
+                {name: 'fee_amount',align:'center'},
+                {name: 'member_amount',align:'center'},
+                {name: 'member_num',align:'center'},
+                {name: 'state_str',align:'center',width:70,
                     formatter: function (value, grid, rows, state) {
-                        var status,op = '<button type="button" class="btn btn-xs';
+                        var op = '<button type="button" class="btn btn-xs';
                         if(rows.state == 1){
-                            op += ' btn-primary"';
-                            status = 2;
-                        }else{
+                            op += ' btn-success"';
+                        }else if(rows.state == 2){
                             op += ' btn-warning"';
-                            status = 1;
+                        }else{
+                            op += ' btn-primary"';
                         }
-                        if(editUrl)
-                            op += ' onclick="modify(' + rows.id + ','+ status +')";';
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
                 {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
-                        if(editUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
-                        if(delUrl)
-                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
+                        if(settleUrl && rows.state === '1')
+                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="settle(\''+ rows.id+ '\');">结算</button>&nbsp;';
+                        if(payUrl && rows.state === '2')
+                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="pay(\''+ rows.id+ '\');">发放</button>&nbsp;';
+                        if(detailUrl && rows.state !== '1')
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="detailOpen(\''+ rows.id+ '\');">明细</button>&nbsp;';
                         return op;
                     }
                 }
@@ -183,6 +202,86 @@
             }
         });
     });
+    function reload(){
+        var postData = $('#toolbar-form').serialize();
+        $("#table").jqGrid('setGridParam', {
+            url : listUrl,
+            datatype:'json',
+            postData : postData,
+            page : 1
+        }).trigger("reloadGrid"); //重新载入
+    }
+    function save(){
+        $.ajax({
+            type:'POST',
+            url:addUrl,
+            data:$('#save-form').serialize(),
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    $('#save-form')[0].reset();
+                    $('#save-modal').modal('hide');
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
+    function request(url,id,text){
+        $.ajax({
+            type:'POST',
+            url:url,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    $('#settle-modal').modal('hide');
+                    swal({
+                        title:"",
+                        text: text,
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    reload()
+                }else{
+                    request(url,id,text)
+                }
+            }
+        });
+    }
+    function settle(id){
+        $('#settle-modal').modal('show');
+        $('#modal-text').text('佣金结算中，请耐心等待。。。');
+        request(settleUrl,id,'结算完成')
+    }
+    function pay(id){
+        $('#settle-modal').modal('show');
+        $('#modal-text').text('佣金发放中，请耐心等待。。。');
+        request(payUrl,id,'发放完成')
+    }
+    function detailOpen(id){
+        if(detailUrl){
+            window.location.href = detailUrl + '?id=' +id
+        }
+    }
 </script>
 </body>
 </html>

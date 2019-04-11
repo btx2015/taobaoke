@@ -24,6 +24,7 @@ class InfoController extends CommonController
 
             returnResult([
                 'list' => handleRecords([
+                    'channel_rate'  => ['percent',2,'channel_rate_str'],
                     'fee_rate'      => ['percent',2,'fee_rate_str'],
                     'referee_rate'  => ['percent',2,'referee_rate_str'],
                     'grand_rate'    => ['percent',2,'grand_rate_str'],
@@ -82,6 +83,7 @@ class InfoController extends CommonController
             $user['fee_rate'] = ($user['fee_rate']*100);
             $user['referee_rate'] = ($user['referee_rate']*100);
             $user['grand_rate'] = ($user['grand_rate']*100);
+            $user['channel_rate'] = ($user['channel_rate']*100);
             returnResult($user);
         }
     }

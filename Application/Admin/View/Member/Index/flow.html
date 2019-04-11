@@ -18,7 +18,7 @@
                         <div class="ibox-title">
                             <div class="container-fluid">
                                 <form class="form-inline" id="toolbar-form" onsubmit="return false;">
-                                    <input type="hidden" name="id" value="{$userId}">
+                                    <input type="hidden" name="user_id" value="{$userId}">
                                     <div class="row">
                                         <div class="form-group">
                                             <input type="text" id="toolbar-datepicker" name="create_from" class="form-control"
@@ -73,6 +73,7 @@
         var height = $(window).height();
         $("#table").jqGrid({
             url:listUrl,
+            postData:$('#toolbar-form').serialize(),
             mtype: 'POST',
             datatype: "json",
             autowidth: true,

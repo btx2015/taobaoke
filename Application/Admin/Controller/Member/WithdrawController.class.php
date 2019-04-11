@@ -10,7 +10,7 @@ class WithdrawController extends CommonController
 
     const T_WITHDRAW = 'tr_member_withdraw';
 
-    const T_MEMBER = 'tr_member_info';
+    const T_MEMBER = 'tr_member';
 
     const T_ADMIN = 'tr_sys_admin';
 

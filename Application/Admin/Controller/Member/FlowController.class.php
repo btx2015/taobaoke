@@ -10,7 +10,7 @@ class FlowController extends CommonController
 
     const T_FLOW = 'tr_member_fund_flow';
 
-    const T_MEMBER = 'tr_member_info';
+    const T_MEMBER = 'tr_member';
 
     public function index(){
         if(IS_POST){

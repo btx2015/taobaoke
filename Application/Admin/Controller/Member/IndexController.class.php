@@ -129,7 +129,6 @@ class IndexController extends CommonController
             $where = validate([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
-                'id'          => [['num'],false,true],
                 'user_id'     => [[],false,true],
                 'type'        => [[],false,true],
                 'create_from' => [['time'],false,true,['egt','created_at']],

@@ -83,9 +83,9 @@
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">费用比例</label>
+                                                    <label class="control-label col-lg-2">渠道分佣比例</label>
                                                     <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="fee_rate">
+                                                        <input type="text" class="form-control" name="channel_rate">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
@@ -98,6 +98,12 @@
                                                     <label class="control-label col-lg-2">二级推荐分佣比例</label>
                                                     <div class="col-lg-10">
                                                         <input type="text" class="form-control" name="grand_rate">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">服务费比例</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="fee_rate">
                                                     </div>
                                                 </div>
                                             </form>
@@ -143,13 +149,14 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '名称','推广位ID','费用比例','一级分佣比例','二级分佣比例','状态','操作'],
+            colNames: [ '名称','累计收益','渠道分佣比例','一级分佣比例','二级分佣比例','服务费比例','状态','操作'],
             colModel: [
                 {name: 'name',align:'center'},
-                {name: 'pid',align:'center'},
-                {name: 'fee_rate_str',align:'center'},
+                {name: 'total_income',align:'center'},
+                {name: 'channel_rate_str',align:'center'},
                 {name: 'referee_rate_str',align:'center'},
                 {name: 'grand_rate_str',align:'center'},
+                {name: 'fee_rate_str',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';

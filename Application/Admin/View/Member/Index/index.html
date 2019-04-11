@@ -189,7 +189,7 @@
                 {name: 'channel_id_str',align:'center'},
                 {name: 'available_fund',align:'center'},
                 {name: 'total_income',align:'center'},
-                {name: 'state_str',align:'center',width:60,
+                {name: 'state_str',align:'center',width:70,
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';
                         if(rows.state == 1){
@@ -206,7 +206,7 @@
                 },
                 {name: 'created_at_str',align:'center',width: 170},
                 {name: 'last_login_time_str',align:'center',width: 170},
-                {name: 'operate', index: 'operate',width: 200,align:'center',
+                {name: 'operate', index: 'operate',width: 250,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
                         if(editUrl)

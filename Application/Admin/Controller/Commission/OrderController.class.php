@@ -24,7 +24,7 @@ class OrderController extends CommonController
                 'state'       => [['in'=>[1,2,3]],false,true,['eq','state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
-            ]);
+            ],false);
             $list = $model->where($where)->page($pageNo,$pageSize)->order('state asc')->select();
             $members = $channels = [];
             if($list){

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-04-11 21:46:34
+Date: 2019-04-17 17:26:21
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -343,6 +343,61 @@ CREATE TABLE `tr_goods_spec_image` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for tr_items
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_items`;
+CREATE TABLE `tr_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` bigint(20) NOT NULL DEFAULT '0',
+  `itemid` bigint(20) NOT NULL DEFAULT '0' COMMENT '宝贝ID',
+  `itemtitle` varchar(255) NOT NULL DEFAULT '' COMMENT '宝贝标题',
+  `itemshorttitle` varchar(255) NOT NULL DEFAULT '' COMMENT '宝贝短标题',
+  `itemdesc` varchar(255) NOT NULL DEFAULT '' COMMENT '宝贝推荐语',
+  `itemprice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '在售价',
+  `itemsale` int(11) NOT NULL DEFAULT '0' COMMENT '宝贝月销量',
+  `itemsale2` int(11) NOT NULL DEFAULT '0' COMMENT '宝贝近2小时跑单',
+  `todaysale` int(11) NOT NULL DEFAULT '0' COMMENT '当天销量',
+  `itempic` varchar(255) NOT NULL DEFAULT '' COMMENT '宝贝主图原始图像',
+  `itempic_copy` varchar(255) NOT NULL DEFAULT '' COMMENT '推广长图',
+  `fqcat` int(11) NOT NULL DEFAULT '0' COMMENT '商品类目',
+  `itemendprice` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '宝贝券后价',
+  `shoptype` varchar(10) NOT NULL DEFAULT '' COMMENT '店铺类型',
+  `couponurl` varchar(255) NOT NULL DEFAULT '' COMMENT '优惠券链接',
+  `couponmoney` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '优惠券金额',
+  `is_brand` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否为品牌产品（1是）',
+  `is_live` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否为直播（1是）',
+  `guide_article` varchar(255) NOT NULL DEFAULT '' COMMENT '推广导购文案',
+  `videoid` int(11) NOT NULL DEFAULT '0' COMMENT '商品视频ID（id大于0的为有视频单，视频拼接地址http://cloud.video.taobao.com/play/u/1/p/1/e/6/t/1/+videoid+.mp4）',
+  `activity_type` varchar(255) NOT NULL DEFAULT '' COMMENT '活动类型：',
+  `planlink` varchar(255) NOT NULL DEFAULT '' COMMENT '营销计划链接',
+  `userid` bigint(20) NOT NULL DEFAULT '0' COMMENT '店主的userid',
+  `sellernick` varchar(255) NOT NULL DEFAULT '' COMMENT '店铺掌柜名',
+  `shopname` varchar(255) NOT NULL DEFAULT '' COMMENT '店铺名',
+  `tktype` varchar(30) NOT NULL DEFAULT '' COMMENT '佣金计划：',
+  `tkrates` float(7,4) NOT NULL DEFAULT '0.0000' COMMENT '佣金比例',
+  `cuntao` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否村淘（1是）',
+  `tkmoney` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '预计可得（宝贝价格 * 佣金比例 / 100）',
+  `couponreceive2` int(11) NOT NULL DEFAULT '0' COMMENT '当天优惠券领取量',
+  `couponsurplus` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券剩余量',
+  `couponnum` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券总数量',
+  `couponexplain` varchar(255) NOT NULL DEFAULT '' COMMENT '优惠券使用条件',
+  `couponstarttime` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券开始时间',
+  `couponendtime` int(11) NOT NULL DEFAULT '0' COMMENT '优惠券结束时间',
+  `start_time` int(11) NOT NULL DEFAULT '0' COMMENT '活动开始时间',
+  `end_time` int(11) NOT NULL DEFAULT '0' COMMENT '活动结束时间',
+  `starttime` int(11) NOT NULL DEFAULT '0' COMMENT '发布时间',
+  `report_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '举报处理条件',
+  `general_index` int(11) NOT NULL DEFAULT '0' COMMENT '好单指数',
+  `seller_name` varchar(255) NOT NULL DEFAULT '' COMMENT '放单人名号',
+  `discount` float(7,4) NOT NULL DEFAULT '0.0000' COMMENT '折扣力度',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_items
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for tr_manage_banner
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_manage_banner`;
@@ -649,7 +704,7 @@ CREATE TABLE `tr_product` (
   `total_amount` int(11) DEFAULT '0' COMMENT '优惠券总数量',
   `amount` int(11) DEFAULT '0' COMMENT '剩余优惠券数量',
   `used_amount` int(11) DEFAULT '0' COMMENT '优惠券领取数量',
-  `url` varchar(255) DEFAULT '' COMMENT '优惠券链接',
+  `url` varchar(255) DEFAULT '' COMMENT '商品链接',
   `coupon_url` varchar(255) DEFAULT '' COMMENT '优惠券链接',
   `sale_num` int(11) DEFAULT '0' COMMENT '销量',
   `sort` int(11) DEFAULT '0' COMMENT '商品排序',
@@ -729,7 +784,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1554989354', '', '1554981884', '', '118', '0', '1548075651', '2019-04-10 13:39:23');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1555487385', '', '1554989354', '', '119', '0', '1548075651', '2019-04-10 13:39:23');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');

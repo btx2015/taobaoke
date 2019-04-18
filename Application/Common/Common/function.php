@@ -357,11 +357,10 @@ function curlRequest($url,$params,$type = 'POST',$timeout = 5){
     return $result;
 }
 
-function saveAll($records,$tableName){
+function saveAll($records,$tableName,$pk = 'id'){
     $sql   = ''; //Sql
     $lists = []; //记录集$lists
     $ids   = [];
-    $pk    = 'id';
     foreach ($records as $data) {
         foreach ($data as $key => $value) {
             if($pk === $key){

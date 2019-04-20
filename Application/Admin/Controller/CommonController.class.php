@@ -16,7 +16,7 @@ class CommonController extends Controller
 
     public function _initialize()
     {
-        $this->path = strtolower(CONTROLLER_NAME.'/'.ACTION_NAME);
+        $this->path = CONTROLLER_NAME.'/'.ACTION_NAME;
 
         $this->getBasic();
 
@@ -70,7 +70,7 @@ class CommonController extends Controller
             return false;
         $path = $this->path;
         if($accessData[$this->path]['type'] != 1)
-            $path = strtolower(CONTROLLER_NAME.'/index');
+            $path = CONTROLLER_NAME.'/index';
         $active[$accessData[$path]['id']] = 1;
         if($accessData[$path]['pid'])
             $active[$accessData[$path]['pid']] = 1;

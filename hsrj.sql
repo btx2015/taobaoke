@@ -1,16 +1,16 @@
 /*
 Navicat MySQL Data Transfer
 
-Source Server         : localhost
-Source Server Version : 50553
-Source Host           : localhost:3306
+Source Server         : 192.168.1.162
+Source Server Version : 50536
+Source Host           : 192.168.1.162:3306
 Source Database       : hsrj
 
 Target Server Type    : MYSQL
-Target Server Version : 50553
+Target Server Version : 50536
 File Encoding         : 65001
 
-Date: 2019-04-17 17:26:21
+Date: 2019-04-20 16:33:15
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -347,7 +347,6 @@ CREATE TABLE `tr_goods_spec_image` (
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_items`;
 CREATE TABLE `tr_items` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` bigint(20) NOT NULL DEFAULT '0',
   `itemid` bigint(20) NOT NULL DEFAULT '0' COMMENT '宝贝ID',
   `itemtitle` varchar(255) NOT NULL DEFAULT '' COMMENT '宝贝标题',
@@ -390,11 +389,35 @@ CREATE TABLE `tr_items` (
   `general_index` int(11) NOT NULL DEFAULT '0' COMMENT '好单指数',
   `seller_name` varchar(255) NOT NULL DEFAULT '' COMMENT '放单人名号',
   `discount` float(7,4) NOT NULL DEFAULT '0.0000' COMMENT '折扣力度',
-  PRIMARY KEY (`id`)
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `down_type` varchar(255) NOT NULL DEFAULT '' COMMENT '下架原因',
+  `down_time` varchar(20) NOT NULL DEFAULT '',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_items
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for tr_items_sync
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_items_sync`;
+CREATE TABLE `tr_items_sync` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `start` tinyint(2) NOT NULL DEFAULT '0',
+  `end` tinyint(2) NOT NULL,
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1同步中 2完成',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1商品拉取 2商品下架',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_items_sync
 -- ----------------------------
 
 -- ----------------------------
@@ -784,7 +807,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1555487385', '', '1554989354', '', '119', '0', '1548075651', '2019-04-10 13:39:23');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1555745272', '', '1555744913', '', '130', '0', '1548075651', '2019-04-18 10:57:23');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -830,106 +853,110 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=105 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
 -- ----------------------------
-INSERT INTO `tr_sys_node` VALUES ('1', '首页', 'system/index/index', '0', '1', '99', '1', '1', '0', '2019-03-16 11:04:41');
+INSERT INTO `tr_sys_node` VALUES ('1', '首页', 'System/Index/index', '0', '1', '99', '1', '1', '0', '2019-04-20 03:07:06');
 INSERT INTO `tr_sys_node` VALUES ('2', '系统管理', '', '0', '1', '0', '1', '1', '0', '2019-03-20 22:34:02');
-INSERT INTO `tr_sys_node` VALUES ('3', '角色管理', 'system/role/index', '2', '1', '7', '1', '1', '0', '2019-03-07 22:54:22');
-INSERT INTO `tr_sys_node` VALUES ('6', '删除', 'system/role/del', '3', 'del', '7', '2', '1', '0', '2019-03-18 21:40:02');
-INSERT INTO `tr_sys_node` VALUES ('4', '添加', 'system/role/add', '3', 'add', '9', '2', '1', '0', '2019-03-18 21:39:27');
-INSERT INTO `tr_sys_node` VALUES ('5', '编辑', 'system/role/edit', '3', 'edit', '8', '2', '1', '0', '2019-03-18 21:39:28');
-INSERT INTO `tr_sys_node` VALUES ('8', '管理员', 'system/user/index', '2', '1', '8', '1', '1', '0', '2019-03-07 22:54:20');
-INSERT INTO `tr_sys_node` VALUES ('9', '添加', 'system/user/add', '8', 'add', '9', '2', '1', '0', '2019-03-18 21:39:29');
-INSERT INTO `tr_sys_node` VALUES ('7', '权限配置', 'system/role/access', '3', 'access', '6', '2', '1', '0', '2019-03-18 21:39:29');
-INSERT INTO `tr_sys_node` VALUES ('10', '编辑', 'system/user/edit', '8', 'edit', '8', '2', '1', '0', '2019-03-18 21:39:30');
-INSERT INTO `tr_sys_node` VALUES ('11', '删除', 'system/user/del', '8', 'del', '7', '2', '1', '0', '2019-03-18 21:39:31');
-INSERT INTO `tr_sys_node` VALUES ('21', '会员明细', 'member/index/flow', '17', 'flow', '6', '2', '1', '0', '2019-03-18 21:39:32');
-INSERT INTO `tr_sys_node` VALUES ('14', '系统设置', 'system/basic/index', '2', '1', '9', '1', '1', '0', '2019-03-18 18:50:35');
-INSERT INTO `tr_sys_node` VALUES ('15', '编辑', 'system/basic/edit', '14', 'edit', '9', '2', '1', '0', '2019-03-18 21:39:32');
+INSERT INTO `tr_sys_node` VALUES ('3', '角色管理', 'System/Role/index', '2', '1', '7', '1', '1', '0', '2019-04-20 03:07:11');
+INSERT INTO `tr_sys_node` VALUES ('6', '删除', 'System/Role/del', '3', 'del', '7', '2', '1', '0', '2019-04-20 03:07:17');
+INSERT INTO `tr_sys_node` VALUES ('4', '添加', 'System/Role/add', '3', 'add', '9', '2', '1', '0', '2019-04-20 03:07:24');
+INSERT INTO `tr_sys_node` VALUES ('5', '编辑', 'System/Role/edit', '3', 'edit', '8', '2', '1', '0', '2019-04-20 03:07:30');
+INSERT INTO `tr_sys_node` VALUES ('8', '管理员', 'System/User/index', '2', '1', '8', '1', '1', '0', '2019-04-20 03:07:37');
+INSERT INTO `tr_sys_node` VALUES ('9', '添加', 'System/User/add', '8', 'add', '9', '2', '1', '0', '2019-04-20 03:07:45');
+INSERT INTO `tr_sys_node` VALUES ('7', '权限配置', 'System/Role/access', '3', 'access', '6', '2', '1', '0', '2019-04-20 03:07:51');
+INSERT INTO `tr_sys_node` VALUES ('10', '编辑', 'System/User/edit', '8', 'edit', '8', '2', '1', '0', '2019-04-20 03:08:00');
+INSERT INTO `tr_sys_node` VALUES ('11', '删除', 'System/User/del', '8', 'del', '7', '2', '1', '0', '2019-04-20 03:08:07');
+INSERT INTO `tr_sys_node` VALUES ('21', '会员明细', 'Member/Index/flow', '17', 'flow', '6', '2', '1', '0', '2019-04-20 03:08:15');
+INSERT INTO `tr_sys_node` VALUES ('14', '系统设置', 'System/Basic/index', '2', '1', '9', '1', '1', '0', '2019-04-20 03:08:21');
+INSERT INTO `tr_sys_node` VALUES ('15', '编辑', 'System/Basic/edit', '14', 'edit', '9', '2', '1', '0', '2019-04-20 03:08:29');
 INSERT INTO `tr_sys_node` VALUES ('16', '会员管理', '', '0', '1', '98', '1', '1', '0', '2019-03-27 15:20:16');
-INSERT INTO `tr_sys_node` VALUES ('17', '会员信息', 'member/index/index', '16', '1', '9', '1', '1', '0', '2019-03-18 20:22:31');
-INSERT INTO `tr_sys_node` VALUES ('18', '添加', 'member/index/add', '17', 'add', '9', '2', '1', '0', '2019-03-18 21:39:33');
-INSERT INTO `tr_sys_node` VALUES ('19', '编辑', 'member/index/edit', '17', 'edit', '8', '2', '1', '0', '2019-03-18 21:39:34');
-INSERT INTO `tr_sys_node` VALUES ('20', '删除', 'member/index/del', '17', 'del', '7', '2', '1', '0', '2019-03-18 21:39:35');
-INSERT INTO `tr_sys_node` VALUES ('23', '会员明细', 'member/flow/index', '16', '1', '8', '1', '1', '0', '2019-03-20 10:59:41');
-INSERT INTO `tr_sys_node` VALUES ('24', '提现申请', 'member/withdraw/index', '16', '1', '7', '1', '1', '0', '2019-03-20 11:00:29');
-INSERT INTO `tr_sys_node` VALUES ('25', '审核', 'member/withdraw/audit', '24', 'audit', '9', '2', '1', '0', '2019-03-20 18:13:03');
-INSERT INTO `tr_sys_node` VALUES ('26', '分佣比例', 'member/fee/index', '16', '1', '6', '1', '3', '0', '2019-04-07 12:13:09');
-INSERT INTO `tr_sys_node` VALUES ('27', '编辑', 'member/fee/edit', '26', 'edit', '9', '2', '3', '0', '2019-04-07 12:13:10');
+INSERT INTO `tr_sys_node` VALUES ('17', '会员信息', 'Member/Index/index', '16', '1', '9', '1', '1', '0', '2019-04-20 03:08:36');
+INSERT INTO `tr_sys_node` VALUES ('18', '添加', 'Member/Index/add', '17', 'add', '9', '2', '1', '0', '2019-04-20 03:08:43');
+INSERT INTO `tr_sys_node` VALUES ('19', '编辑', 'Member/Index/edit', '17', 'edit', '8', '2', '1', '0', '2019-04-20 03:08:50');
+INSERT INTO `tr_sys_node` VALUES ('20', '删除', 'Member/Index/del', '17', 'del', '7', '2', '1', '0', '2019-04-20 03:08:57');
+INSERT INTO `tr_sys_node` VALUES ('23', '会员明细', 'Member/Flow/index', '16', '1', '8', '1', '1', '0', '2019-04-20 03:09:05');
+INSERT INTO `tr_sys_node` VALUES ('24', '提现申请', 'Member/Withdraw/index', '16', '1', '7', '1', '1', '0', '2019-04-20 03:09:12');
+INSERT INTO `tr_sys_node` VALUES ('25', '审核', 'Member/Withdraw/audit', '24', 'audit', '9', '2', '1', '0', '2019-04-20 03:09:19');
+INSERT INTO `tr_sys_node` VALUES ('26', '分佣比例', 'Member/Fee/index', '16', '1', '6', '1', '3', '0', '2019-04-20 03:09:28');
+INSERT INTO `tr_sys_node` VALUES ('27', '编辑', 'Member/Fee/edit', '26', 'edit', '9', '2', '3', '0', '2019-04-20 03:09:34');
 INSERT INTO `tr_sys_node` VALUES ('28', '运营管理', '', '0', '1', '96', '1', '1', '0', '2019-03-20 23:19:25');
-INSERT INTO `tr_sys_node` VALUES ('29', '轮播图', 'manage/banner/index', '28', '1', '9', '1', '1', '0', '2019-03-20 23:20:58');
-INSERT INTO `tr_sys_node` VALUES ('30', '添加', 'manage/banner/add', '29', 'add', '9', '2', '1', '0', '2019-03-20 23:21:32');
-INSERT INTO `tr_sys_node` VALUES ('31', '编辑', 'manage/banner/edit', '29', 'edit', '8', '2', '1', '0', '2019-03-20 23:23:01');
-INSERT INTO `tr_sys_node` VALUES ('32', '删除', 'manage/banner/del', '29', 'del', '7', '2', '1', '0', '2019-03-20 23:23:07');
-INSERT INTO `tr_sys_node` VALUES ('33', '系统公告', 'manage/notice/index', '28', '1', '7', '1', '1', '0', '2019-03-24 22:26:43');
-INSERT INTO `tr_sys_node` VALUES ('34', '添加', 'manage/notice/add', '33', 'add', '9', '2', '1', '0', '2019-03-23 10:04:36');
-INSERT INTO `tr_sys_node` VALUES ('35', '编辑', 'manage/notice/edit', '33', 'edit', '8', '2', '1', '0', '2019-03-23 10:04:42');
-INSERT INTO `tr_sys_node` VALUES ('36', '删除', 'manage/notice/del', '33', 'del', '7', '2', '1', '0', '2019-03-23 10:04:48');
-INSERT INTO `tr_sys_node` VALUES ('37', '新手指引', 'manage/guide/index', '28', '1', '6', '1', '1', '0', '2019-03-24 22:26:45');
-INSERT INTO `tr_sys_node` VALUES ('38', '添加', 'manage/guide/add', '37', 'add', '9', '2', '1', '0', '2019-03-23 10:07:41');
-INSERT INTO `tr_sys_node` VALUES ('39', '编辑', 'manage/guide/edit', '37', 'edit', '8', '2', '1', '0', '2019-03-23 10:07:48');
-INSERT INTO `tr_sys_node` VALUES ('40', '删除', 'manage/guide/del', '37', 'del', '7', '2', '1', '0', '2019-03-23 10:07:54');
+INSERT INTO `tr_sys_node` VALUES ('29', '轮播图', 'Manage/Banner/index', '28', '1', '9', '1', '1', '0', '2019-04-20 03:09:41');
+INSERT INTO `tr_sys_node` VALUES ('30', '添加', 'Manage/Banner/add', '29', 'add', '9', '2', '1', '0', '2019-04-20 03:09:47');
+INSERT INTO `tr_sys_node` VALUES ('31', '编辑', 'Manage/Banner/edit', '29', 'edit', '8', '2', '1', '0', '2019-04-20 03:09:55');
+INSERT INTO `tr_sys_node` VALUES ('32', '删除', 'Manage/Banner/del', '29', 'del', '7', '2', '1', '0', '2019-04-20 03:10:01');
+INSERT INTO `tr_sys_node` VALUES ('33', '系统公告', 'Manage/Notice/index', '28', '1', '7', '1', '1', '0', '2019-04-20 03:10:10');
+INSERT INTO `tr_sys_node` VALUES ('34', '添加', 'Manage/Notice/add', '33', 'add', '9', '2', '1', '0', '2019-04-20 03:10:18');
+INSERT INTO `tr_sys_node` VALUES ('35', '编辑', 'Manage/Notice/edit', '33', 'edit', '8', '2', '1', '0', '2019-04-20 03:10:26');
+INSERT INTO `tr_sys_node` VALUES ('36', '删除', 'Manage/Notice/del', '33', 'del', '7', '2', '1', '0', '2019-04-20 03:10:33');
+INSERT INTO `tr_sys_node` VALUES ('37', '新手指引', 'Manage/Guide/index', '28', '1', '6', '1', '1', '0', '2019-04-20 03:10:42');
+INSERT INTO `tr_sys_node` VALUES ('38', '添加', 'Manage/Guide/add', '37', 'add', '9', '2', '1', '0', '2019-04-20 03:10:47');
+INSERT INTO `tr_sys_node` VALUES ('39', '编辑', 'Manage/Guide/edit', '37', 'edit', '8', '2', '1', '0', '2019-04-20 03:10:54');
+INSERT INTO `tr_sys_node` VALUES ('40', '删除', 'Manage/Guide/del', '37', 'del', '7', '2', '1', '0', '2019-04-20 03:11:00');
 INSERT INTO `tr_sys_node` VALUES ('41', '常见问题', '', '0', '1', '6', '1', '1', '0', '2019-03-27 15:06:07');
-INSERT INTO `tr_sys_node` VALUES ('42', '分类管理', 'manage/faqcate/index', '41', '1', '9', '1', '1', '0', '2019-03-23 13:33:28');
-INSERT INTO `tr_sys_node` VALUES ('43', '添加', 'manage/faqcate/add', '42', 'add', '8', '2', '1', '0', '2019-03-23 13:56:41');
-INSERT INTO `tr_sys_node` VALUES ('44', '编辑', 'manage/faqcate/edit', '42', 'edit', '7', '2', '1', '0', '2019-03-23 13:56:41');
-INSERT INTO `tr_sys_node` VALUES ('45', '删除', 'manage/faqcate/del', '42', 'del', '6', '2', '1', '0', '2019-03-23 13:56:43');
-INSERT INTO `tr_sys_node` VALUES ('47', '添加', 'manage/faq/add', '46', 'add', '8', '2', '1', '0', '2019-03-23 13:34:20');
-INSERT INTO `tr_sys_node` VALUES ('48', '编辑', 'manage/faq/edit', '46', 'edit', '7', '2', '1', '0', '2019-03-23 13:34:10');
-INSERT INTO `tr_sys_node` VALUES ('49', '删除', 'manage/faq/del', '46', 'del', '6', '2', '1', '0', '2019-03-23 13:32:55');
-INSERT INTO `tr_sys_node` VALUES ('46', '文章列表', 'manage/faq/index', '41', '1', '9', '1', '1', '0', '2019-03-23 13:32:52');
+INSERT INTO `tr_sys_node` VALUES ('42', '分类管理', 'Manage/Faqcate/index', '41', '1', '9', '1', '1', '0', '2019-04-20 03:11:31');
+INSERT INTO `tr_sys_node` VALUES ('43', '添加', 'Manage/Faqcate/add', '42', 'add', '8', '2', '1', '0', '2019-04-20 03:11:39');
+INSERT INTO `tr_sys_node` VALUES ('44', '编辑', 'Manage/Faqcate/edit', '42', 'edit', '7', '2', '1', '0', '2019-04-20 03:11:46');
+INSERT INTO `tr_sys_node` VALUES ('45', '删除', 'Manage/Faqcate/del', '42', 'del', '6', '2', '1', '0', '2019-04-20 03:11:53');
+INSERT INTO `tr_sys_node` VALUES ('47', '添加', 'Manage/Faq/add', '46', 'add', '8', '2', '1', '0', '2019-04-20 03:12:00');
+INSERT INTO `tr_sys_node` VALUES ('48', '编辑', 'Manage/Faq/edit', '46', 'edit', '7', '2', '1', '0', '2019-04-20 03:12:06');
+INSERT INTO `tr_sys_node` VALUES ('49', '删除', 'Manage/Faq/del', '46', 'del', '6', '2', '1', '0', '2019-04-20 03:12:13');
+INSERT INTO `tr_sys_node` VALUES ('46', '文章列表', 'Manage/Faq/index', '41', '1', '9', '1', '1', '0', '2019-04-20 03:12:19');
 INSERT INTO `tr_sys_node` VALUES ('50', '社区管理', '', '0', '1', '5', '1', '1', '0', '2019-03-24 10:32:44');
-INSERT INTO `tr_sys_node` VALUES ('51', '社区分类', 'article/cate/index', '50', '1', '8', '1', '1', '0', '2019-03-24 17:07:14');
-INSERT INTO `tr_sys_node` VALUES ('52', '添加', 'article/cate/add', '51', 'add', '9', '2', '1', '0', '2019-03-24 10:39:28');
-INSERT INTO `tr_sys_node` VALUES ('53', '编辑', 'article/cate/edit', '51', 'edit', '8', '2', '1', '0', '2019-03-24 10:39:02');
-INSERT INTO `tr_sys_node` VALUES ('54', '删除', 'article/cate/del', '51', 'del', '7', '2', '1', '0', '2019-03-24 10:39:30');
-INSERT INTO `tr_sys_node` VALUES ('55', '文章列表', 'article/article/index', '50', '1', '9', '1', '1', '0', '2019-03-24 17:07:24');
-INSERT INTO `tr_sys_node` VALUES ('56', '添加', 'article/article/add', '55', 'add', '9', '2', '1', '0', '2019-03-24 10:39:32');
-INSERT INTO `tr_sys_node` VALUES ('57', '编辑', 'article/article/edit', '55', 'edit', '8', '2', '1', '0', '2019-03-24 10:39:33');
-INSERT INTO `tr_sys_node` VALUES ('58', '删除', 'article/article/del', '55', 'del', '7', '2', '1', '0', '2019-03-24 10:39:34');
-INSERT INTO `tr_sys_node` VALUES ('59', '导航管理', 'manage/nav/index', '28', '1', '8', '1', '1', '0', '2019-03-24 22:26:48');
-INSERT INTO `tr_sys_node` VALUES ('60', '添加', 'manage/nav/add', '59', 'add', '9', '2', '1', '0', '2019-03-24 22:27:22');
-INSERT INTO `tr_sys_node` VALUES ('61', '编辑', 'manage/nav/edit', '59', 'edit', '8', '2', '1', '0', '2019-03-24 22:27:23');
-INSERT INTO `tr_sys_node` VALUES ('62', '删除', 'manage/nav/del', '59', 'del', '7', '2', '1', '0', '2019-03-24 22:27:24');
+INSERT INTO `tr_sys_node` VALUES ('51', '社区分类', 'Article/Cate/index', '50', '1', '8', '1', '1', '0', '2019-04-20 03:12:25');
+INSERT INTO `tr_sys_node` VALUES ('52', '添加', 'Article/Cate/add', '51', 'add', '9', '2', '1', '0', '2019-04-20 03:12:33');
+INSERT INTO `tr_sys_node` VALUES ('53', '编辑', 'Article/Cate/edit', '51', 'edit', '8', '2', '1', '0', '2019-04-20 03:12:40');
+INSERT INTO `tr_sys_node` VALUES ('54', '删除', 'Article/Cate/del', '51', 'del', '7', '2', '1', '0', '2019-04-20 03:12:46');
+INSERT INTO `tr_sys_node` VALUES ('55', '文章列表', 'Article/Article/index', '50', '1', '9', '1', '1', '0', '2019-04-20 03:12:52');
+INSERT INTO `tr_sys_node` VALUES ('56', '添加', 'Article/Article/add', '55', 'add', '9', '2', '1', '0', '2019-04-20 03:13:00');
+INSERT INTO `tr_sys_node` VALUES ('57', '编辑', 'Article/Article/edit', '55', 'edit', '8', '2', '1', '0', '2019-04-20 03:13:08');
+INSERT INTO `tr_sys_node` VALUES ('58', '删除', 'Article/Article/del', '55', 'del', '7', '2', '1', '0', '2019-04-20 03:13:14');
+INSERT INTO `tr_sys_node` VALUES ('59', '导航管理', 'Manage/Nav/index', '28', '1', '8', '1', '1', '0', '2019-04-20 03:13:19');
+INSERT INTO `tr_sys_node` VALUES ('60', '添加', 'Manage/Nav/add', '59', 'add', '9', '2', '1', '0', '2019-04-20 03:13:27');
+INSERT INTO `tr_sys_node` VALUES ('61', '编辑', 'Manage/Nav/edit', '59', 'edit', '8', '2', '1', '0', '2019-04-20 03:13:33');
+INSERT INTO `tr_sys_node` VALUES ('62', '删除', 'Manage/Nav/del', '59', 'del', '7', '2', '1', '0', '2019-04-20 03:13:41');
 INSERT INTO `tr_sys_node` VALUES ('63', '商品管理', '', '0', '1', '97', '1', '1', '0', '2019-03-27 15:20:18');
-INSERT INTO `tr_sys_node` VALUES ('64', '商品信息', 'product/info/index', '63', '1', '9', '1', '1', '0', '2019-04-03 09:27:18');
-INSERT INTO `tr_sys_node` VALUES ('65', '添加', 'product/info/add', '64', 'add', '9', '2', '1', '0', '2019-04-03 09:27:33');
-INSERT INTO `tr_sys_node` VALUES ('66', '编辑', 'product/info/edit', '64', 'edit', '8', '2', '1', '0', '2019-04-03 09:27:47');
-INSERT INTO `tr_sys_node` VALUES ('67', '删除', 'product/info/del', '64', 'del', '7', '2', '1', '0', '2019-04-03 09:27:58');
-INSERT INTO `tr_sys_node` VALUES ('68', '商品分类', 'goods/cate/index', '63', '1', '8', '1', '1', '0', '2019-03-27 15:09:09');
-INSERT INTO `tr_sys_node` VALUES ('69', '添加', 'goods/cate/add', '68', 'add', '9', '2', '1', '0', '2019-03-27 15:12:10');
-INSERT INTO `tr_sys_node` VALUES ('70', '编辑', 'goods/cate/edit', '68', 'edit', '8', '2', '1', '0', '2019-03-27 15:12:12');
-INSERT INTO `tr_sys_node` VALUES ('71', '删除', 'goods/cate/del', '68', 'del', '7', '2', '1', '0', '2019-03-27 15:12:14');
-INSERT INTO `tr_sys_node` VALUES ('85', '添加', 'goods/attr/add', '76', 'add', '9', '2', '3', '0', '2019-04-03 09:28:50');
-INSERT INTO `tr_sys_node` VALUES ('86', '编辑', 'goods/attr/edit', '76', 'edit', '8', '2', '3', '0', '2019-04-03 09:28:50');
-INSERT INTO `tr_sys_node` VALUES ('87', '删除', 'goods/attr/del', '76', 'del', '7', '2', '3', '0', '2019-04-03 09:28:51');
-INSERT INTO `tr_sys_node` VALUES ('76', '属性列表', 'goods/cate/attr', '68', 'attr', '6', '3', '3', '0', '2019-04-03 09:28:30');
-INSERT INTO `tr_sys_node` VALUES ('77', '商品属性', 'goods/attr/index', '63', '1', '6', '1', '3', '0', '2019-04-03 09:28:28');
-INSERT INTO `tr_sys_node` VALUES ('78', '添加', 'goods/attr/add', '77', 'add', '9', '2', '3', '0', '2019-04-03 09:28:26');
-INSERT INTO `tr_sys_node` VALUES ('79', '编辑', 'goods/attr/edit', '77', 'edit', '8', '2', '3', '0', '2019-04-03 09:28:26');
-INSERT INTO `tr_sys_node` VALUES ('80', '删除', 'goods/attr/del', '77', 'del', '7', '2', '3', '0', '2019-04-03 09:28:25');
-INSERT INTO `tr_sys_node` VALUES ('81', '商品规格', 'goods/spec/index', '63', '1', '5', '1', '3', '0', '2019-04-03 09:28:21');
-INSERT INTO `tr_sys_node` VALUES ('82', '添加', 'goods/spec/add', '81', 'add', '9', '2', '3', '0', '2019-04-03 09:28:21');
-INSERT INTO `tr_sys_node` VALUES ('83', '编辑', 'goods/spec/edit', '81', 'edit', '8', '2', '3', '0', '2019-04-03 09:28:22');
-INSERT INTO `tr_sys_node` VALUES ('84', '删除', 'goods/spec/del', '81', 'del', '7', '2', '3', '0', '2019-04-03 09:28:23');
+INSERT INTO `tr_sys_node` VALUES ('64', '自营商品', 'Product/Info/index', '63', '1', '9', '1', '1', '0', '2019-04-20 03:13:47');
+INSERT INTO `tr_sys_node` VALUES ('65', '添加', 'Product/Info/add', '64', 'add', '9', '2', '1', '0', '2019-04-20 03:13:57');
+INSERT INTO `tr_sys_node` VALUES ('66', '编辑', 'Product/Info/edit', '64', 'edit', '8', '2', '1', '0', '2019-04-20 03:14:03');
+INSERT INTO `tr_sys_node` VALUES ('67', '删除', 'Product/Info/del', '64', 'del', '7', '2', '1', '0', '2019-04-20 03:14:10');
+INSERT INTO `tr_sys_node` VALUES ('68', '商品分类', 'Goods/Cate/index', '63', '1', '8', '1', '1', '0', '2019-04-20 03:14:19');
+INSERT INTO `tr_sys_node` VALUES ('69', '添加', 'Goods/Cate/add', '68', 'add', '9', '2', '1', '0', '2019-04-20 03:14:24');
+INSERT INTO `tr_sys_node` VALUES ('70', '编辑', 'Goods/Cate/edit', '68', 'edit', '8', '2', '1', '0', '2019-04-20 03:14:31');
+INSERT INTO `tr_sys_node` VALUES ('71', '删除', 'Goods/Cate/del', '68', 'del', '7', '2', '1', '0', '2019-04-20 03:14:36');
+INSERT INTO `tr_sys_node` VALUES ('85', '添加', 'Goods/Attr/add', '76', 'add', '9', '2', '3', '0', '2019-04-20 03:14:42');
+INSERT INTO `tr_sys_node` VALUES ('86', '编辑', 'Goods/Attr/edit', '76', 'edit', '8', '2', '3', '0', '2019-04-20 03:14:49');
+INSERT INTO `tr_sys_node` VALUES ('87', '删除', 'Goods/Attr/del', '76', 'del', '7', '2', '3', '0', '2019-04-20 03:14:57');
+INSERT INTO `tr_sys_node` VALUES ('76', '属性列表', 'Goods/Cate/attr', '68', 'attr', '6', '3', '3', '0', '2019-04-20 03:15:04');
+INSERT INTO `tr_sys_node` VALUES ('77', '商品属性', 'Goods/Attr/index', '63', '1', '6', '1', '3', '0', '2019-04-20 03:15:10');
+INSERT INTO `tr_sys_node` VALUES ('78', '添加', 'Goods/Attr/add', '77', 'add', '9', '2', '3', '0', '2019-04-20 03:15:18');
+INSERT INTO `tr_sys_node` VALUES ('79', '编辑', 'Goods/Attr/edit', '77', 'edit', '8', '2', '3', '0', '2019-04-20 03:15:26');
+INSERT INTO `tr_sys_node` VALUES ('80', '删除', 'Goods/Attr/del', '77', 'del', '7', '2', '3', '0', '2019-04-20 03:15:32');
+INSERT INTO `tr_sys_node` VALUES ('81', '商品规格', 'Goods/Spec/index', '63', '1', '5', '1', '3', '0', '2019-04-20 03:15:38');
+INSERT INTO `tr_sys_node` VALUES ('82', '添加', 'Goods/Spec/add', '81', 'add', '9', '2', '3', '0', '2019-04-20 03:15:44');
+INSERT INTO `tr_sys_node` VALUES ('83', '编辑', 'Goods/Spec/edit', '81', 'edit', '8', '2', '3', '0', '2019-04-20 03:15:49');
+INSERT INTO `tr_sys_node` VALUES ('84', '删除', 'Goods/Spec/del', '81', 'del', '7', '2', '3', '0', '2019-04-20 03:15:54');
 INSERT INTO `tr_sys_node` VALUES ('89', '渠道管理', '', '0', '1', '96', '1', '1', '0', '2019-04-07 10:24:01');
-INSERT INTO `tr_sys_node` VALUES ('90', '渠道信息', 'channel/info/index', '89', '1', '9', '1', '1', '0', '2019-04-07 10:24:22');
-INSERT INTO `tr_sys_node` VALUES ('91', '添加', 'channel/info/add', '90', 'add', '9', '2', '1', '0', '2019-04-07 11:12:12');
-INSERT INTO `tr_sys_node` VALUES ('92', '编辑', 'channel/info/edit', '90', 'edit', '8', '2', '1', '0', '2019-04-07 11:12:14');
-INSERT INTO `tr_sys_node` VALUES ('93', '删除', 'channel/info/del', '90', 'del', '7', '2', '1', '0', '2019-04-07 11:12:21');
+INSERT INTO `tr_sys_node` VALUES ('90', '渠道信息', 'Channel/Info/index', '89', '1', '9', '1', '1', '0', '2019-04-20 03:16:04');
+INSERT INTO `tr_sys_node` VALUES ('91', '添加', 'Channel/Info/add', '90', 'add', '9', '2', '1', '0', '2019-04-20 03:16:10');
+INSERT INTO `tr_sys_node` VALUES ('92', '编辑', 'Channel/Info/edit', '90', 'edit', '8', '2', '1', '0', '2019-04-20 03:16:24');
+INSERT INTO `tr_sys_node` VALUES ('93', '删除', 'Channel/Info/del', '90', 'del', '7', '2', '1', '0', '2019-04-20 03:16:34');
 INSERT INTO `tr_sys_node` VALUES ('94', '佣金管理', '', '0', '1', '95', '1', '1', '0', '2019-04-09 16:46:15');
-INSERT INTO `tr_sys_node` VALUES ('95', '分佣记录', 'commission/settlement/index', '94', '1', '9', '1', '1', '0', '2019-04-08 17:12:36');
-INSERT INTO `tr_sys_node` VALUES ('96', '结算', 'commission/settlement/settle', '95', 'settle', '9', '2', '1', '0', '2019-04-11 17:22:32');
-INSERT INTO `tr_sys_node` VALUES ('97', '明细', 'commission/settlement/detail', '95', 'detail', '8', '2', '1', '0', '2019-04-08 19:57:53');
-INSERT INTO `tr_sys_node` VALUES ('99', '发放', 'commission/settlement/pay', '95', 'pay', '7', '2', '1', '0', '2019-04-08 19:57:34');
-INSERT INTO `tr_sys_node` VALUES ('100', '佣金订单', 'commission/order/index', '94', '1', '8', '1', '1', '0', '2019-04-09 16:36:11');
-INSERT INTO `tr_sys_node` VALUES ('101', '同步订单', 'commission/order/add', '100', 'add', '9', '2', '1', '0', '2019-04-09 16:37:20');
-INSERT INTO `tr_sys_node` VALUES ('102', '数据匹配', 'commission/order/edit', '100', 'edit', '8', '2', '1', '0', '2019-04-09 16:37:54');
-INSERT INTO `tr_sys_node` VALUES ('103', '佣金明细', 'commission/detail/index', '94', '1', '7', '1', '1', '0', '2019-04-09 16:39:25');
-INSERT INTO `tr_sys_node` VALUES ('104', '添加', 'commission/settlement/add', '95', 'add', '9', '2', '1', '0', '2019-04-11 17:21:47');
+INSERT INTO `tr_sys_node` VALUES ('95', '分佣记录', 'Commission/Settlement/index', '94', '1', '9', '1', '1', '0', '2019-04-20 03:16:46');
+INSERT INTO `tr_sys_node` VALUES ('96', '结算', 'Commission/Settlement/settle', '95', 'settle', '9', '2', '1', '0', '2019-04-20 03:16:54');
+INSERT INTO `tr_sys_node` VALUES ('97', '明细', 'Commission/Settlement/detail', '95', 'detail', '8', '2', '1', '0', '2019-04-20 03:17:02');
+INSERT INTO `tr_sys_node` VALUES ('99', '发放', 'Commission/Settlement/pay', '95', 'pay', '7', '2', '1', '0', '2019-04-20 03:17:10');
+INSERT INTO `tr_sys_node` VALUES ('100', '佣金订单', 'Commission/Order/index', '94', '1', '8', '1', '1', '0', '2019-04-20 03:17:17');
+INSERT INTO `tr_sys_node` VALUES ('101', '同步订单', 'Commission/Order/add', '100', 'add', '9', '2', '1', '0', '2019-04-20 03:17:26');
+INSERT INTO `tr_sys_node` VALUES ('102', '数据匹配', 'Commission/Order/edit', '100', 'edit', '8', '2', '1', '0', '2019-04-20 03:17:33');
+INSERT INTO `tr_sys_node` VALUES ('103', '佣金明细', 'Commission/Detail/index', '94', '1', '7', '1', '1', '0', '2019-04-20 03:17:39');
+INSERT INTO `tr_sys_node` VALUES ('104', '添加', 'Commission/Settlement/add', '95', 'add', '9', '2', '1', '0', '2019-04-20 03:17:47');
+INSERT INTO `tr_sys_node` VALUES ('105', '三方商品', 'Goods/Item/index', '63', '1', '9', '1', '1', '0', '2019-04-20 03:17:53');
+INSERT INTO `tr_sys_node` VALUES ('106', '同步商品', 'Goods/Item/add', '105', 'add', '9', '2', '1', '0', '2019-04-20 03:17:59');
+INSERT INTO `tr_sys_node` VALUES ('107', '商品更新', 'Goods/Item/edit', '105', 'edit', '8', '2', '1', '0', '2019-04-20 03:18:05');
+INSERT INTO `tr_sys_node` VALUES ('108', '商品下架', 'Goods/Item/del', '105', 'del', '7', '2', '1', '0', '2019-04-20 03:18:14');
 
 -- ----------------------------
 -- Table structure for tr_sys_role

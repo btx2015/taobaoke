@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'system/public/login'   => '登录',
-    'system/public/captcha' => '图片验证码'
+    'System/Public/login'   => '登录',
+    'System/Public/captcha' => '图片验证码'
 ];

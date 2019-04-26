@@ -373,6 +373,6 @@ function saveAll($records,$tableName,$pk = 'id'){
     foreach ($lists as $key => $value) {
         $sql.= sprintf("`%s` = CASE `%s` %s END,",$key,$pk,$value);
     }
-    $sql = sprintf('UPDATE %s SET %s WHERE %s IN ( %s )',strtoupper($tableName),rtrim($sql,','),$pk,implode(',',$ids));
+    $sql = sprintf('UPDATE %s SET %s WHERE %s IN ( %s )',$tableName,rtrim($sql,','),$pk,implode(',',$ids));
     return M()->execute($sql);
 }

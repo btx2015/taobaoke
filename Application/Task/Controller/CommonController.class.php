@@ -8,7 +8,7 @@ class CommonController extends Controller
 {
     public function _initialize()
     {
-        if(!IS_CLI)
-            exit('not cli');
+//        if(!IS_CLI)
+//            exit('not cli');
     }
 }

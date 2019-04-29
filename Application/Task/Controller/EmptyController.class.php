@@ -5,6 +5,6 @@ namespace Task\Controller;
 class EmptyController extends CommonController
 {
     public function _empty(){
-        die();
+        die('cli');
     }
 }

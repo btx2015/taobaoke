@@ -33,7 +33,7 @@ class GoodsController extends CommonController
             exit();
         }
         if($result['code'] != 1){
-            Log::record('好单库接口请求错误，接口：'.$url.'；错误码：'.$result['code'].'；错误信息：'.$result['data'],'ERR');
+            Log::record('好单库接口请求错误，接口：'.$url.'；错误码：'.$result['code'].'；错误信息：'.$result['msg'],'ERR');
             $result['data'] = [];
         }
         return $result;
@@ -42,29 +42,27 @@ class GoodsController extends CommonController
     public function add_goods(){
         Log::record('商品上新开始','DEBUG');
         $pageNo = 1;
-        $request = true;
-        while($request){
+        while(true){
             echo $pageNo.PHP_EOL;
             $data = $this->api_request(self::ADD_URL,[
                 'nav'  => 3,
-                'back' => 1000,
+                'back' => 100,
                 'min_id' => $pageNo
             ]);
             if(empty($data['data']))
-                $request = false;
+                break;
             $this->add_data($data['data']);
             $pageNo = $data['min_id'];
         }
         Log::record('商品上新结束','DEBUG');
-        echo 'create success'.PHP_EOL;
+        die('create success'.PHP_EOL);
     }
 
     public function update_goods(){
         Log::record('商品更新开始','DEBUG');
         $pageNo = 1;
-        $request = true;
         $row = 0;
-        while($request){
+        while(true){
             echo 'mid_id:'.$pageNo.', total:'.$row.PHP_EOL;
             $data = $this->api_request(self::UPDATE_URL,[
                 'sort' => 1,
@@ -72,12 +70,12 @@ class GoodsController extends CommonController
                 'min_id' => $pageNo
             ]);
             if(empty($data['data']))
-                $request = false;
+                break;
             $row += $this->update_data($data['data']);
             $pageNo = $data['min_id'];
         }
         Log::record('商品更新结束','DEBUG');
-        echo 'update success, total:'.$row.PHP_EOL;
+        die('update success, total:'.$row.PHP_EOL);
     }
 
     public function delete_goods(){
@@ -95,7 +93,7 @@ class GoodsController extends CommonController
             }
         }
         Log::record('商品失效结束','DEBUG');
-        echo 'delete success, total:'.$res.PHP_EOL;
+        die('delete success, total:'.$res.PHP_EOL);
     }
 
     private function add_data($data){

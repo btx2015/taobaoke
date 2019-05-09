@@ -9,68 +9,59 @@
         <include file="Public:nav"/>
         <div class="ibox-content">
             <form class="form-horizontal" id="save-form">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">系统维护</label>
-                    <div class="col-sm-4 switch">
-                        <div class="onoffswitch" style="margin-top:6px;">
-                            <if condition="$basic.system_run eq 1">
-                            <input type="checkbox" checked class="onoffswitch-checkbox"
-                                    id="switcher" name="system_run">
-                            <else/>
-                            <input type="checkbox" class="onoffswitch-checkbox"
-                                    id="switcher" name="system_run">
-                            </if>
-                            <label class="onoffswitch-label" for="switcher">
-                                <span class="onoffswitch-inner"></span>
-                                <span class="onoffswitch-switch"></span>
-                            </label>
+                <volist name="basic" id="item">
+                    <if condition="$item.input_type eq 1">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{$item.config_title}</label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control"
+                                       name="{$item.id}" value="{$item.config_value}">
+                            </div>
+                            <div class="col-sm-5">
+                                <span class="help-block m-b-none">
+                                    {$item.note}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">系统名称</label>
-                    <div class="col-sm-4">
-                        <input type="text" class="form-control"
-                                name="system_name" value="{$basic.system_name}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">系统域名</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control"
-                                name="system_domain" value="{$basic.system_domain}">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">登录错误上限</label>
-                    <div class="col-sm-2">
-                        <div class="input-group">
-                        <input type="text" class="form-control"
-                                name="login_error" value="{$basic.login_error}">
-                        <span class="input-group-addon">次</span>
+                    <elseif condition="$item.input_type eq 2"/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{$item.config_title}</label>
+                            <div class="col-sm-4 switch">
+                                <volist name="item.input_option" id="options">
+                                    <div class="i-checks checkbox-inline">
+                                        <label>
+                                            <if condition="$item['config_value'] eq $options['value']">
+                                                <input type="radio" value="{$options.value}" name="{$item.id}" checked="">
+                                            <else/>
+                                                <input type="radio" value="{$options.value}" name="{$item.id}">
+                                            </if>
+                                            <i></i>{$options.label}
+                                        </label>
+                                    </div>
+                                </volist>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <span class="help-block m-b-none">
-                        密码错误次数达到上限后，禁止登录系统，填写0则表示可无限次数尝试
-                        </span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">登录有效时长</label>
-                    <div class="col-sm-2">
-                        <div class="input-group">
-                        <input type="text" class="form-control"
-                                name="login_overtime" value="{$basic.login_overtime}">
-                        <span class="input-group-addon">分钟</span>
+                    <elseif condition="$item.input_type eq 3"/>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">{$item.config_title}</label>
+                            <div class="col-sm-4 switch">
+                                <div class="onoffswitch" style="margin-top:6px;">
+                                    <if condition="$item.config_value eq 1">
+                                        <input type="checkbox" checked class="onoffswitch-checkbox"
+                                               id="switcher" name="{$item.id}">
+                                    <else/>
+                                        <input type="checkbox" class="onoffswitch-checkbox"
+                                               id="switcher" name="{$item.id}">
+                                    </if>
+                                    <label class="onoffswitch-label" for="switcher">
+                                        <span class="onoffswitch-inner"></span>
+                                        <span class="onoffswitch-switch"></span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <span class="help-block m-b-none">
-                        后台超过登录有效时长，未进行任何操作，再操作需要重新登录
-                        </span>
-                    </div>
-                </div>
+                    </if>
+                </volist>
                 <div class="form-group">
                     <div class="col-sm-2 col-sm-offset-2">
                         <button type="button" class="btn btn-primary" onclick="edit()">保存</button>

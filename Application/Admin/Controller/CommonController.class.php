@@ -36,8 +36,8 @@ class CommonController extends Controller
     private function getBasic(){
         $basic = S('basic_info');
         if(!$basic){
-            $basic = M('tr_sys_basic')
-                ->where('id=1')->find();
+            $basic = M('tr_sys_basic')->where('config_type = 1 AND state = 1')->select();
+            $basic = array_column($basic,'config_value','config_name');
             S('basic_info',$basic);
         }
         $this->basicInfo = $basic;

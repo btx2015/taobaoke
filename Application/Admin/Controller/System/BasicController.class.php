@@ -11,7 +11,11 @@ class BasicController extends CommonController
 
     public function index(){
         $model = M(self::T_BASIC);
-        $basic = $model->where('id = 1')->find();
+        $basic = $model->where('config_type = 1 AND state = 1')->order('sort desc')->select();
+        array_walk($basic,function(&$v){
+            if($v['input_option'])
+                $v['input_option'] = json_decode($v['input_option'],true);
+        });
         $this->assign('basic',$basic);
         $this->display();
     }

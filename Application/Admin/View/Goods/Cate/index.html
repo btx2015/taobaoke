@@ -1,10 +1,8 @@
 <include file="Public:header"/>
+<link href="__PUBLIC__/Admin/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
 <link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <!-- Sweet Alert -->
 <link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
-<style type="text/css">
-    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
-</style>
 <body>
 <div id="wrapper">
     <include file="Public:menu"/>
@@ -74,7 +72,7 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content animated fadeIn">
                                         <div class="modal-body">
-                                            <form class="form-horizontal" id="save-form">
+                                            <form class="form-horizontal" id="save-form" enctype="multipart/form-data">
                                                 <input type="hidden" name="id">
                                                 <div class="form-group">
                                                     <label class="control-label col-lg-2">分类名称</label>
@@ -99,11 +97,26 @@
                                                         <input type="text" class="form-control" name="sort">
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">图片</label>
+                                                    <div class="fileinput fileinput-new input-group col-lg-8 col-lg-offset-3" data-provides="fileinput">
+                                                        <div class="form-control" data-trigger="fileinput">
+                                                            <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                                            <span class="fileinput-filename"></span>
+                                                        </div>
+                                                        <span class="input-group-addon btn btn-default btn-file">
+                                                        <span class="fileinput-new">选择文件</span>
+                                                        <span class="fileinput-exists">替换</span>
+                                                        <input type="file" name="cate_upload">
+                                                    </span>
+                                                        <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">清除</a>
+                                                    </div>
+                                                </div>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                            <button type="button" class="btn btn-primary" onclick="upload()">保存</button>
                                         </div>
                                     </div>
                                 </div>
@@ -126,6 +139,7 @@
 <script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <!-- Sweet alert -->
 <script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <script>
     var listUrl = window.location;
     var addUrl = "{:U($buttonData['add']['path'])}";
@@ -145,9 +159,14 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '名称','上级分类','排序','状态','创建时间','操作'],
+            colNames: [ '名称','图片','上级分类','排序','状态','创建时间','操作'],
             colModel: [
                 {name: 'name',align:'center'},
+                {name: 'img',align:'center',
+                    formatter: function (value, grid, rows, state) {
+                        return '<img src="'+rows.img+'" style="width: 50px;"/>';
+                    }
+                },
                 {name: 'pid_str',align:'center'},
                 {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,
@@ -198,6 +217,46 @@
         if(attrUrl){
             window.location.href = attrUrl + '?id=' +id
         }
+    }
+
+    function upload(){
+        var formData = new FormData($("#save-form")[0]);
+        formData.append("file",$("#save-form")[0]);
+        var id = $('#save-form input[name="id"]').val();
+        var url = id !== '' ? editUrl : addUrl;
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            data:formData,
+            contentType: false,
+            processData: false,
+            success:function(res) {
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    $('#save-form')[0].reset();
+                    $('#save-modal').modal('hide');
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
     }
 </script>
 </body>

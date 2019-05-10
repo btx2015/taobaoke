@@ -3,11 +3,14 @@
 namespace Admin\Controller\Goods;
 
 use Admin\Controller\CommonController;
+use Think\Upload;
 
 class CateController extends CommonController
 {
     
     const T_CATE = 'tr_category';
+
+    const SAVE_PATH = '/cate_img/';
 
     public function index(){
         $model = M(self::T_CATE);
@@ -56,6 +59,19 @@ class CateController extends CommonController
             'sort' => [['num']],
         ];
         $data = beforeSave($model,$rule,['name']);
+        if(!isset($_FILES['cate_upload']))
+            showError(10006,'请上传图片');
+        if(!isset($_FILES['cate_upload']['size']) || !$_FILES['cate_upload']['size'])
+            showError(10006,'请上传图片');
+        $upload = new Upload(); // 实例化上传类
+        $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+        $upload->saveName = uniqid();
+        $info = $upload->upload();
+        if(!$info)
+            showError(20002,$upload->getError());
+        foreach ($info as $v){
+            $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+        }
         $data['created_at'] = time();
         $insertId = $model->add($data);
         if(!$insertId)
@@ -74,7 +90,19 @@ class CateController extends CommonController
                 'state' => [['in'=>[1,2,3]]]
             ];
             $data = beforeSave($model,$rule,['name']);
-
+            if(!isset($_FILES['cate_upload']))
+                showError(10006,'请上传图片');
+            if(!isset($_FILES['cate_upload']['size']) || !$_FILES['cate_upload']['size'])
+                showError(10006,'请上传图片');
+            $upload = new Upload(); // 实例化上传类
+            $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+            $upload->saveName = uniqid();
+            $info = $upload->upload();
+            if(!$info)
+                showError(20002,$upload->getError());
+            foreach ($info as $v){
+                $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+            }
             $role = $model->where(['id' => $data['id']])->find();
             if(!$role)
                 showError(20004);//不存在

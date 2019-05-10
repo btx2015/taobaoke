@@ -21,20 +21,18 @@ class BasicController extends CommonController
     }
 
     public function edit(){
-        $update = validate([
-            'system_name'    => [[]],
-            'system_domain'  => [[]],
-            'system_run'     => [['in' => [0,1]]],
-            'login_error'    => [['num']],
-            'login_overtime' => [['num']],
-        ]);
-        if(!is_array($update))
-            showError(10006);
-        $model = M(self::T_BASIC);
-        $res = $model->where('id=1')->save($update);
+        $records = [];
+        foreach($_POST as $id => $value){
+            $records[] = [
+                'id' => $id,
+                'config_value' => $value
+            ];
+        }
+        $res = saveAll($records,self::T_BASIC);
         if($res === false)
             showError(20002);
-        $basic = $model->where('id=1')->find();
+        $basic = M('tr_sys_basic')->where('config_type = 1 AND state = 1')->select();
+        $basic = array_column($basic,'config_value','config_name');
         $res = S('basic_info',$basic);
         if(!$res)
             showError(20002);

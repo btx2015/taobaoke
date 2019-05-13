@@ -376,3 +376,24 @@ function saveAll($records,$tableName,$pk = 'id'){
     $sql = sprintf('UPDATE %s SET %s WHERE %s IN ( %s )',$tableName,rtrim($sql,','),$pk,implode(',',$ids));
     return M()->execute($sql);
 }
+
+
+/**
+ * 日志
+ * @param string $message 日志内容
+ * @param string $path 日志所在文件夹
+ * @param string $file 日志名称
+ * @param string $level 日志等级
+ */
+function writeLog($message = '',$path = 'DEBUG',$file = 'debug',$level = 'DEBUG'){
+    $path = APP_PATH.'Runtime/Logs/'.$path.'/';
+    if(!is_dir($path)){
+        mkdir($path);
+    }
+    if($level === 'ERROR'){
+        $file .= '.error';
+    }
+    $des = $path.$file.'.'.date('Ymd').'.log';
+    $now = date('Y-m-d H:i:s');
+    error_log("[{$now}]"."{$message}\r\n",3,$des);
+}

@@ -11,38 +11,60 @@ use Think\log;
 
 class OrderController extends CommonController
 {
-    public function add(){
-        $startTime = I('post.time');
-        $pageNo = I('post.page');
-        if(!$startTime){
-            $settle = S('settleInfo');
-            if($settle){
-                $startTime = $settle['time'];
-                $pageNo = $settle['page'];
+
+    const T_ORDER = 'tr_commission_order';
+
+    const SYNC_PERIOD = 300;
+
+    public function order_sync(){
+        writeLog('订单同步开始','Task','order','DEBUG');
+        $basic = S('basic_info');
+        if(!isset($basic['tbk_app_key']) || $basic['tbk_app_key']
+            || !isset($basic['tbk_app_secret']) || $basic['tbk_app_secret']){
+            writeLog('淘宝客配置错误','Task','order','ERROR');
+            return false;
+        }
+
+        $startTime = strtotime(date('Y-m-d H:i')) - self::SYNC_PERIOD;
+        $startTime = date('Y-m-d H:i:s',$startTime);
+        $pageNo = 1;
+        $total = 0;
+        $tbk = new \Taobaoke($basic['tbk_app_key'],$basic['tbk_app_secret']);
+        while(true){
+            $params = [
+                'method' => 'taobao.tbk.order.get',
+                'fields' => 'trade_id,total_commission_fee,special_id,adzone_id,relation_id',
+                'start_time' => $startTime,
+                'span' => self::SYNC_PERIOD,
+                'page_no' => $pageNo,
+                'page_size' => 100,
+                'tk_status' => 3,
+                'order_query_type' => 'settle_time',
+                'order_scene' => 3
+            ];
+            $res = $tbk->request($params);
+            if($res['result'] === 'Y'){
+                if(empty($data)){
+                    $info = '订单同步完成。同步订单数量：'.$total;
+                    writeLog($info,'Task','order','DEBUG');
+                    return false;
+                }else{
+                    $insertId = $this->add_data($res['data']);
+                    if(!$insertId){
+                        $error = '订单保存失败。请求参数：'.json_encode($params);
+                        writeLog($error,'Task','order','ERROR');
+                        return false;
+                    }
+                    $total += count($res['data']);
+                    $pageNo ++;
+                }
             }else{
-                $startTime = strtotime(date('Y-m-d'));
-                $pageNo = 1;
+                $error = '淘宝客接口请求失败。请求参数：'.json_encode($params).'；返回结果：'.$res['msg'];
+                writeLog($error,'Task','order','ERROR');
+                return false;
             }
         }
-        $endTime = strtotime(date('Y-m-d',strtotime('+1 day')));
-        if($startTime < $endTime){
-            $data = $this->api_request($startTime,$pageNo);
-            if(empty($data)){
-                $startTime += 1200;
-                $pageNo = 1;
-            }else{
-                $this->add_data($data);
-                $pageNo ++;
-            }
-            S('settleInfo',[
-                'time' => $startTime,
-                'page' => $pageNo
-            ]);
-            returnResult();
-        }else{
-            S('settleInfo',null);
-            showError(20004,'暂无未同步的订单');
-        }
+        return true;
     }
 
     private function add_data($data){
@@ -58,52 +80,7 @@ class OrderController extends CommonController
             ];
         }
         $insertId = $model->addAll($order);
-        if(!$insertId){
-            Log::record(json_encode($order),'ERR');
-            showError(20001);
-        }
-        return true;
-    }
-
-    /**
-     * @param string $startTime 时间戳 订单查询开始时间
-     * @param int $pageNo 页数
-     * @return mixed
-     * 接口文档
-     * https://developer.alibaba.com/docs/api.htm?spm=a219a.7395905.0.0.29e675fex8tgK4&apiId=24527
-     */
-    private function api_request($startTime,$pageNo){
-        $appSecret = '43967a2c75599e4027f7b5ff698b604b';
-        $params = [
-            'method' => 'taobao.tbk.order.get',
-            'app_key' => '25521171',
-            'sign_method' => 'md5',
-            'timestamp' => date('Y-m-d H:i:s',time()),
-            'format' => 'json',
-            'v' => '2.0',
-            'fields' => 'trade_id,total_commission_fee,special_id,adzone_id,relation_id',
-            'start_time' => date('Y-m-d H:i:s',$startTime),
-            'span' => 1200,
-            'page_no' => $pageNo,
-            'page_size' => 100,
-            'tk_status' => 3,
-            'order_query_type' => 'settle_time',
-            'order_scene' => 3
-        ];
-        ksort($params);
-        $string = '';
-        foreach($params as $k => $v){
-            $string .= $k.$v;
-        }
-        $sign = md5($appSecret.$string.$appSecret);
-        $params['sign'] = strtoupper($sign);
-        $res = curlRequest('gw.api.taobao.com/router/rest',$params);
-        $result = json_decode($res,true);
-        if(isset($result['error_response']) || !isset($result['tbk_order_get_response'])){
-            Log::record($res,'ERR');
-            showError(10005);
-        }
-        return $result['tbk_order_get_response']['results'];
+        return $insertId;
     }
 
     public function edit(){

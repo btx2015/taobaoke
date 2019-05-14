@@ -381,19 +381,18 @@ function saveAll($records,$tableName,$pk = 'id'){
 /**
  * 日志
  * @param string $message 日志内容
- * @param string $path 日志所在文件夹
  * @param string $file 日志名称
  * @param string $level 日志等级
  */
-function writeLog($message = '',$path = 'DEBUG',$file = 'debug',$level = 'DEBUG'){
-    $path = APP_PATH.'Runtime/Logs/'.$path.'/';
+function writeLog($message = '',$file = 'debug',$level = 'DEBUG'){
+    $path = APP_PATH.'Runtime/Logs/'.date('Ymd').'/';
     if(!is_dir($path)){
         mkdir($path);
     }
     if($level === 'ERROR'){
         $file .= '.error';
     }
-    $des = $path.$file.'.'.date('Ymd').'.log';
-    $now = date('Y-m-d H:i:s');
+    $des = $path.$file.'.log';
+    $now = date('H:i:s');
     error_log("[{$now}]"."{$message}\r\n",3,$des);
 }

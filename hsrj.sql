@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-05-10 21:20:38
+Date: 2019-05-14 19:24:00
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -137,39 +137,6 @@ CREATE TABLE `tr_channel` (
 -- Records of tr_channel
 -- ----------------------------
 INSERT INTO `tr_channel` VALUES ('1', '自营', '', 'qeqw', '1', '0.1000', '0.1000', '0.0300', '0.0000', '0.00', '1554607305', '2019-04-11 20:26:22');
-
--- ----------------------------
--- Table structure for tr_commission
--- ----------------------------
-DROP TABLE IF EXISTS `tr_commission`;
-CREATE TABLE `tr_commission` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `settlement_sn` varchar(100) NOT NULL DEFAULT '' COMMENT '结算编号',
-  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
-  `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总佣金',
-  `channel_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道收取的费用（未扣除平台费用）',
-  `fee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台费用',
-  `real_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道实际收入',
-  `grand_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '二级推荐人总佣金',
-  `referee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '一级推荐人总佣金',
-  `member_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员分佣总金额',
-  `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣会员数量',
-  `fee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '服务费比例',
-  `channel_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '渠道分佣比例',
-  `referee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '一级推荐人分佣比例',
-  `grand_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '二级推荐人分佣比例',
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1发起结算 2结算成功 3已发放',
-  `settle_time` int(11) NOT NULL DEFAULT '0' COMMENT '结算时间',
-  `pay_time` int(11) NOT NULL DEFAULT '0' COMMENT '发放时间',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_commission
--- ----------------------------
-INSERT INTO `tr_commission` VALUES ('1', '20190411192803', '1', '10.00', '1.00', '0.10', '0.90', '0.00', '1.00', '9.00', '2', '0.0000', '0.1000', '0.1000', '0.0300', '3', '0', '0', '1554982083', '2019-04-11 20:26:22');
 
 -- ----------------------------
 -- Table structure for tr_commission_detail
@@ -432,7 +399,10 @@ CREATE TABLE `tr_manage_banner` (
   `title` varchar(60) NOT NULL DEFAULT '' COMMENT 'banner标题',
   `url` varchar(255) NOT NULL DEFAULT '' COMMENT '链接',
   `img` varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
+  `location` varchar(255) NOT NULL DEFAULT '' COMMENT '轮播所属位置 首页主index首页中indexad自营商城主ziying个人中心主myad影视中心video',
   `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '链接类型',
+  `parm` varchar(255) NOT NULL DEFAULT '' COMMENT '链接参数',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -442,16 +412,16 @@ CREATE TABLE `tr_manage_banner` (
 -- ----------------------------
 -- Records of tr_manage_banner
 -- ----------------------------
-INSERT INTO `tr_manage_banner` VALUES ('1', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('2', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('3', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('4', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('5', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('6', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('7', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('8', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('9', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '0', '1553156575', '2019-03-21 16:23:03');
-INSERT INTO `tr_manage_banner` VALUES ('10', '轮播i图12', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '1', '12', '1553156575', '2019-03-24 09:58:16');
+INSERT INTO `tr_manage_banner` VALUES ('1', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('2', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('3', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('4', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('5', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('6', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('7', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('8', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('9', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
+INSERT INTO `tr_manage_banner` VALUES ('10', '轮播i图12', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '12', '1553156575', '2019-03-24 09:58:16');
 
 -- ----------------------------
 -- Table structure for tr_manage_faq
@@ -784,6 +754,39 @@ CREATE TABLE `tr_product` (
 INSERT INTO `tr_product` VALUES ('0', 'sn0001', '房源管理', 'asda', '1', '1500.00', '100.00', '1400.00', '1553011200', '1584547200', '100', '90', '10', 'http://www.iqiyi.com/v_19rr8sbot0.html#vfrm=2-4-0-1', 'asda', '1234', '99', '1', '1554429639', '2019-04-05 10:19:03');
 
 -- ----------------------------
+-- Table structure for tr_settlement
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_settlement`;
+CREATE TABLE `tr_settlement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `settlement_sn` varchar(100) NOT NULL DEFAULT '' COMMENT '结算编号',
+  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总佣金',
+  `channel_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道收取的费用（未扣除平台费用）',
+  `fee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台费用',
+  `real_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道实际收入',
+  `grand_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '二级推荐人总佣金',
+  `referee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '一级推荐人总佣金',
+  `member_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员分佣总金额',
+  `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣会员数量',
+  `fee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '服务费比例',
+  `channel_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '渠道分佣比例',
+  `referee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '一级推荐人分佣比例',
+  `grand_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '二级推荐人分佣比例',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1发起结算 2结算成功 3已发放',
+  `settle_time` int(11) NOT NULL DEFAULT '0' COMMENT '结算时间',
+  `pay_time` int(11) NOT NULL DEFAULT '0' COMMENT '发放时间',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_settlement
+-- ----------------------------
+INSERT INTO `tr_settlement` VALUES ('1', '20190411192803', '1', '10.00', '1.00', '0.10', '0.90', '0.00', '1.00', '9.00', '2', '0.0000', '0.1000', '0.1000', '0.0300', '3', '0', '0', '1554982083', '2019-04-11 20:26:22');
+
+-- ----------------------------
 -- Table structure for tr_spec
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_spec`;
@@ -848,7 +851,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1557475103', '', '1557465787', '', '138', '0', '1548075651', '2019-04-18 10:57:23');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1557733598', '', '1557475103', '', '139', '0', '1548075651', '2019-04-18 10:57:23');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -877,7 +880,7 @@ CREATE TABLE `tr_sys_basic` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_basic
@@ -900,6 +903,9 @@ INSERT INTO `tr_sys_basic` VALUES ('15', '支持连续签到奖励', '2', 'sign_
 INSERT INTO `tr_sys_basic` VALUES ('16', '连续签到天数', '2', 'sign_count', '3', '1', '', '天', '1', '0', '0', '2019-05-10 13:52:52');
 INSERT INTO `tr_sys_basic` VALUES ('17', '连续签到奖励', '2', 'continue_award', '5', '1', '', '积分', '1', '0', '0', '2019-05-10 13:56:05');
 INSERT INTO `tr_sys_basic` VALUES ('18', '签到规则', '2', 'sign_rule', '连续签到可额外获得奖励', '4', '', '', '1', '0', '0', '2019-05-10 13:48:35');
+INSERT INTO `tr_sys_basic` VALUES ('19', '淘宝客appKey', '1', 'tbk_app_key', '25521171', '1', '', '', '1', '0', '0', '2019-05-13 11:05:55');
+INSERT INTO `tr_sys_basic` VALUES ('20', '淘宝客secret', '1', 'tbk_app_secret', '43967a2c75599e4027f7b5ff698b604b', '1', '', '', '1', '0', '0', '2019-05-13 15:47:12');
+INSERT INTO `tr_sys_basic` VALUES ('21', '好单库apiKey', '1', 'hdk_api_key', 'jifenbao', '1', '', '', '1', '0', '0', '2019-05-13 11:06:54');
 
 -- ----------------------------
 -- Table structure for tr_sys_basic_copy

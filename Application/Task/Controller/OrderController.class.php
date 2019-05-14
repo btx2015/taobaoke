@@ -7,52 +7,39 @@
  */
 
 namespace Task\Controller;
-use Think\log;
 
 class OrderController extends CommonController
 {
 
     const T_ORDER = 'tr_commission_order';
 
-    const SYNC_PERIOD = 300;
+    const SYNC_PERIOD = 300;//同步时间间隔 5分钟
 
-    public function order_sync(){
-        writeLog('订单同步开始','Task','order','DEBUG');
+    private function sync_order($params,$log = 'order'){
+        writeLog('订单同步开始',$log,'DEBUG');
         $basic = S('basic_info');
         if(!isset($basic['tbk_app_key']) || $basic['tbk_app_key']
             || !isset($basic['tbk_app_secret']) || $basic['tbk_app_secret']){
-            writeLog('淘宝客配置错误','Task','order','ERROR');
+            writeLog('淘宝客配置错误',$log,'ERROR');
             return false;
         }
 
-        $startTime = strtotime(date('Y-m-d H:i')) - self::SYNC_PERIOD;
-        $startTime = date('Y-m-d H:i:s',$startTime);
         $pageNo = 1;
         $total = 0;
         $tbk = new \Taobaoke($basic['tbk_app_key'],$basic['tbk_app_secret']);
         while(true){
-            $params = [
-                'method' => 'taobao.tbk.order.get',
-                'fields' => 'trade_id,total_commission_fee,special_id,adzone_id,relation_id',
-                'start_time' => $startTime,
-                'span' => self::SYNC_PERIOD,
-                'page_no' => $pageNo,
-                'page_size' => 100,
-                'tk_status' => 3,
-                'order_query_type' => 'settle_time',
-                'order_scene' => 3
-            ];
+            $params['page_no'] = $pageNo;
             $res = $tbk->request($params);
             if($res['result'] === 'Y'){
                 if(empty($data)){
                     $info = '订单同步完成。同步订单数量：'.$total;
-                    writeLog($info,'Task','order','DEBUG');
+                    writeLog($info,$log,'DEBUG');
                     return false;
                 }else{
                     $insertId = $this->add_data($res['data']);
                     if(!$insertId){
                         $error = '订单保存失败。请求参数：'.json_encode($params);
-                        writeLog($error,'Task','order','ERROR');
+                        writeLog($error,$log,'ERROR');
                         return false;
                     }
                     $total += count($res['data']);
@@ -60,7 +47,7 @@ class OrderController extends CommonController
                 }
             }else{
                 $error = '淘宝客接口请求失败。请求参数：'.json_encode($params).'；返回结果：'.$res['msg'];
-                writeLog($error,'Task','order','ERROR');
+                writeLog($error,$log,'ERROR');
                 return false;
             }
         }
@@ -81,6 +68,38 @@ class OrderController extends CommonController
         }
         $insertId = $model->addAll($order);
         return $insertId;
+    }
+
+    public function sync_settle(){
+        $time = strtotime(date('Y-m-d H:i')) - self::SYNC_PERIOD;
+        $startTime = date('Y-m-d H:i:s',$time);
+        $params = [
+            'method' => 'taobao.tbk.order.get',
+            'fields' => 'trade_id,total_commission_fee,special_id,adzone_id,relation_id',
+            'start_time' => $startTime,
+            'span' => self::SYNC_PERIOD,
+            'page_size' => 100,
+            'tk_status' => 3,
+            'order_query_type' => 'settle_time',
+            'order_scene' => 3
+        ];
+        return $this->sync_order($params,'order.settlement');
+    }
+
+    public function sync_pay(){
+        $time = strtotime(date('Y-m-d H:i')) - self::SYNC_PERIOD;
+        $startTime = date('Y-m-d H:i:s',$time);
+        $params = [
+            'method' => 'taobao.tbk.order.get',
+            'fields' => 'trade_id,total_commission_fee,special_id,adzone_id,relation_id',
+            'start_time' => $startTime,
+            'span' => self::SYNC_PERIOD,
+            'page_size' => 100,
+            'tk_status' => 12,
+            'order_query_type' => 'settle_time',
+            'order_scene' => 3
+        ];
+        return $this->sync_order($params,'order.pay');
     }
 
     public function edit(){

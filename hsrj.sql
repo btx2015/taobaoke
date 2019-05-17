@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-05-14 19:24:00
+Date: 2019-05-17 17:37:31
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -139,18 +139,79 @@ CREATE TABLE `tr_channel` (
 INSERT INTO `tr_channel` VALUES ('1', '自营', '', 'qeqw', '1', '0.1000', '0.1000', '0.0300', '0.0000', '0.00', '1554607305', '2019-04-11 20:26:22');
 
 -- ----------------------------
+-- Table structure for tr_commission
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_commission`;
+CREATE TABLE `tr_commission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `trade_parent_id` varchar(100) NOT NULL DEFAULT '' COMMENT '淘宝父订单号',
+  `trade_id` varchar(100) NOT NULL DEFAULT '' COMMENT '淘宝订单号',
+  `num_iid` varchar(100) NOT NULL DEFAULT '' COMMENT '商品ID',
+  `item_title` varchar(255) NOT NULL DEFAULT '' COMMENT '商品标题',
+  `item_num` smallint(4) NOT NULL DEFAULT '1' COMMENT '商品数量',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `pay_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '实际支付金额',
+  `seller_nick` varchar(255) NOT NULL DEFAULT '' COMMENT '卖家昵称',
+  `seller_shop_title` varchar(255) NOT NULL DEFAULT '' COMMENT '卖家店铺名称',
+  `commission` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '推广者获得的收入金额，对应联盟后台报表“预估收入”',
+  `commission_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '推广者获得的分成比率，对应联盟后台报表“分成比率”',
+  `create_time` varchar(50) NOT NULL DEFAULT '' COMMENT '淘客订单创建时间',
+  `earning_time` varchar(50) NOT NULL DEFAULT '' COMMENT '订单确认收货后且商家完成佣金支付的时间',
+  `tk_status` tinyint(2) NOT NULL DEFAULT '12' COMMENT '淘客订单状态，3：订单结算，12：订单付款， 13：订单失效，14：订单成功',
+  `tk3rd_type` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方服务来源，没有第三方服务，取值为“--”',
+  `tk3rd_pub_id` varchar(100) NOT NULL DEFAULT '' COMMENT '第三方推广者ID',
+  `order_type` varchar(255) NOT NULL DEFAULT '' COMMENT '订单类型，如天猫，淘宝',
+  `income_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '收入比率，卖家设置佣金比率+平台补贴比率',
+  `pub_share_pre_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '效果预估，付款金额*(佣金比率+补贴比率)*分成比率',
+  `subsidy_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '补贴比率',
+  `subsidy_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '补贴类型，天猫:1，聚划算:2，航旅:3，阿里云:4',
+  `terminal_type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '成交平台，PC:1，无线:2',
+  `auction_category` varchar(255) NOT NULL DEFAULT '' COMMENT '类目名称',
+  `site_id` varchar(100) NOT NULL DEFAULT '' COMMENT '来源媒体ID',
+  `site_name` varchar(255) NOT NULL DEFAULT '' COMMENT '来源媒体名称',
+  `adzone_id` varchar(100) NOT NULL DEFAULT '' COMMENT '广告位ID',
+  `adzone_name` varchar(255) NOT NULL DEFAULT '' COMMENT '广告位名称',
+  `alipay_total_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '付款金额',
+  `total_commission_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '佣金比率',
+  `subsidy_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '补贴金额',
+  `click_time` varchar(50) NOT NULL DEFAULT '' COMMENT '跟踪时间',
+  `relation_id` varchar(100) NOT NULL DEFAULT '' COMMENT '渠道关系ID',
+  `special_id` varchar(100) NOT NULL DEFAULT '' COMMENT '会员运营id',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '一级推荐人ID',
+  `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
+  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0 未匹配 1 已匹配 2 已结算',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `tb_paid_time` varchar(50) NOT NULL DEFAULT '' COMMENT '订单在淘宝拍下付款的时间',
+  `tk_paid_time` varchar(50) NOT NULL DEFAULT '' COMMENT '订单付款的时间，该时间同步淘宝，可能会略晚于买家在淘宝的订单创建时间',
+  `tk_order_role` varchar(11) NOT NULL DEFAULT '' COMMENT '二方：佣金收益的第一归属者； 三方：从其他淘宝客佣金中进行分成的推广者',
+  `refund_tag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '维权标签，0 含义为非维权 1 含义为维权订单。即如果订单发生维权退款，会给予提示标识。所有的维权推广订单也能在维权推广订单API查询。',
+  `tk_total_rate` varchar(20) NOT NULL DEFAULT '0' COMMENT '提成=收入比率*分成比率。指实际获得收益的比率',
+  `alimama_rate` varchar(20) NOT NULL DEFAULT '0' COMMENT '推广者赚取佣金后支付给阿里妈妈的技术服务费用的比率',
+  `alimama_share_fee` varchar(20) NOT NULL DEFAULT '0' COMMENT '技术服务费=结算金额*收入比率*技术服务费率。推广者赚取佣金后支付给阿里妈妈的技术服务费用',
+  `item_img` varchar(255) NOT NULL DEFAULT '' COMMENT '商品图片',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_commission
+-- ----------------------------
+INSERT INTO `tr_commission` VALUES ('4', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '2', '1', '0', '1', '1', '1557997213', '2019-05-16 19:49:34', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('10', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '3', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '0', '0', '0', '1558084466', '2019-05-17 17:14:26', '', '', '', '0', '0', '0', '0', '');
+
+-- ----------------------------
 -- Table structure for tr_commission_detail
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_commission_detail`;
 CREATE TABLE `tr_commission_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `settle_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID type为1时有效',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1分享分佣 2一级推荐分佣 3二级推荐分佣',
   `user_id` int(1) NOT NULL DEFAULT '0' COMMENT '分佣对象ID type为1 则是会员id',
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分佣金额',
-  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID type为1时有效',
   `descr` varchar(255) NOT NULL DEFAULT '' COMMENT '分佣来源描述',
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 未发放 2 已发放',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -159,35 +220,123 @@ CREATE TABLE `tr_commission_detail` (
 -- ----------------------------
 -- Records of tr_commission_detail
 -- ----------------------------
-INSERT INTO `tr_commission_detail` VALUES ('7', '1', '2', '1', '1.00', '1', '推荐分佣', '2', '1554985575', '2019-04-11 20:26:22');
-INSERT INTO `tr_commission_detail` VALUES ('8', '1', '1', '2', '8.00', '1', '分享下单成功分佣', '2', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_commission_detail` VALUES ('7', '1', '2', '1', '1.00', '推荐分佣', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_commission_detail` VALUES ('8', '1', '1', '2', '8.00', '分享下单成功分佣', '1554985575', '2019-04-11 20:26:22');
 
 -- ----------------------------
--- Table structure for tr_commission_order
+-- Table structure for tr_commission_v1
 -- ----------------------------
-DROP TABLE IF EXISTS `tr_commission_order`;
-CREATE TABLE `tr_commission_order` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_sn` varchar(255) NOT NULL DEFAULT '' COMMENT '订单编号',
-  `relation_id` varchar(255) NOT NULL DEFAULT '' COMMENT '渠道ID',
-  `special_id` varchar(255) NOT NULL DEFAULT '' COMMENT '会员ID',
-  `adzone_id` varchar(255) NOT NULL DEFAULT '' COMMENT '推广位ID',
-  `commission_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '佣金金额',
-  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1未匹配 2已匹配 3已结算',
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人ID',
+DROP TABLE IF EXISTS `tr_commission_v1`;
+CREATE TABLE `tr_commission_v1` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `trade_parent_id` varchar(100) NOT NULL DEFAULT '' COMMENT '淘宝父订单号',
+  `trade_id` varchar(100) NOT NULL DEFAULT '' COMMENT '淘宝订单号',
+  `num_iid` varchar(100) NOT NULL DEFAULT '' COMMENT '商品ID',
+  `item_title` varchar(255) NOT NULL DEFAULT '' COMMENT '商品标题',
+  `item_num` smallint(4) NOT NULL DEFAULT '1' COMMENT '商品数量',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `pay_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '实际支付金额',
+  `seller_nick` varchar(255) NOT NULL DEFAULT '' COMMENT '卖家昵称',
+  `seller_shop_title` varchar(255) NOT NULL DEFAULT '' COMMENT '卖家店铺名称',
+  `commission` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '推广者获得的收入金额，对应联盟后台报表“预估收入”',
+  `commission_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '推广者获得的分成比率，对应联盟后台报表“分成比率”',
+  `create_time` varchar(50) NOT NULL DEFAULT '' COMMENT '淘客订单创建时间',
+  `tk_status` tinyint(2) NOT NULL DEFAULT '12' COMMENT '淘客订单状态，3：订单结算，12：订单付款， 13：订单失效，14：订单成功',
+  `tk3rd_type` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方服务来源，没有第三方服务，取值为“--”',
+  `tk3rd_pub_id` varchar(100) NOT NULL DEFAULT '' COMMENT '第三方推广者ID',
+  `order_type` varchar(255) NOT NULL DEFAULT '' COMMENT '订单类型，如天猫，淘宝',
+  `income_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '收入比率，卖家设置佣金比率+平台补贴比率',
+  `pub_share_pre_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '效果预估，付款金额*(佣金比率+补贴比率)*分成比率',
+  `subsidy_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '补贴比率',
+  `subsidy_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '补贴类型，天猫:1，聚划算:2，航旅:3，阿里云:4',
+  `terminal_type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '成交平台，PC:1，无线:2',
+  `auction_category` varchar(255) NOT NULL DEFAULT '' COMMENT '类目名称',
+  `site_id` varchar(100) NOT NULL DEFAULT '' COMMENT '来源媒体ID',
+  `site_name` varchar(255) NOT NULL DEFAULT '' COMMENT '来源媒体名称',
+  `adzone_id` varchar(100) NOT NULL DEFAULT '' COMMENT '广告位ID',
+  `adzone_name` varchar(255) NOT NULL DEFAULT '' COMMENT '广告位名称',
+  `alipay_total_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '付款金额',
+  `total_commission_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '佣金比率',
+  `subsidy_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '补贴金额',
+  `click_time` varchar(50) NOT NULL DEFAULT '' COMMENT '跟踪时间',
+  `relation_id` varchar(100) NOT NULL DEFAULT '' COMMENT '渠道关系ID',
+  `special_id` varchar(100) NOT NULL DEFAULT '' COMMENT '会员运营id',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '一级推荐人ID',
   `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
   `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
-  `settlement_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
+  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0 未匹配 1 已匹配 2 已结算',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_commission_v1
+-- ----------------------------
+INSERT INTO `tr_commission_v1` VALUES ('1', '4.3576297717001E+17', '4.3576297717001E+17', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '0.00', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.00', '1.0000', '2019-05-06 13:22:53', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '0', '0', '0', '1557929185', '2019-05-15 22:06:25');
+INSERT INTO `tr_commission_v1` VALUES ('2', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '0.00', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.00', '1.0000', '2019-05-06 13:22:53', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '0', '0', '0', '1557989462', '2019-05-16 14:51:02');
+
+-- ----------------------------
+-- Table structure for tr_commission_v2
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_commission_v2`;
+CREATE TABLE `tr_commission_v2` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `trade_parent_id` varchar(100) NOT NULL DEFAULT '' COMMENT '淘宝父订单号',
+  `trade_id` varchar(100) NOT NULL DEFAULT '' COMMENT '淘宝订单号',
+  `item_id` varchar(100) NOT NULL DEFAULT '' COMMENT '商品ID',
+  `item_title` varchar(255) NOT NULL DEFAULT '' COMMENT '商品标题',
+  `item_num` smallint(4) NOT NULL DEFAULT '1' COMMENT '商品数量',
+  `item_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '单价',
+  `pay_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '实际支付金额',
+  `seller_nick` varchar(255) NOT NULL DEFAULT '' COMMENT '卖家昵称',
+  `seller_shop_title` varchar(255) NOT NULL DEFAULT '' COMMENT '卖家店铺名称',
+  `pub_share_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '推广者获得的收入金额，对应联盟后台报表“预估收入”',
+  `pub_share_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '推广者获得的分成比率，对应联盟后台报表“分成比率”',
+  `tk_create_time` varchar(50) NOT NULL DEFAULT '' COMMENT '淘客订单创建时间',
+  `tk_status` tinyint(2) NOT NULL DEFAULT '12' COMMENT '淘客订单状态，3：订单结算，12：订单付款， 13：订单失效，14：订单成功',
+  `flow_source` varchar(255) NOT NULL DEFAULT '' COMMENT '第三方服务来源，没有第三方服务，取值为“--”',
+  `pub_id` varchar(100) NOT NULL DEFAULT '' COMMENT '第三方推广者ID',
+  `order_type` varchar(255) NOT NULL DEFAULT '' COMMENT '订单类型，如天猫，淘宝',
+  `income_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '收入比率，卖家设置佣金比率+平台补贴比率',
+  `pub_share_pre_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '效果预估，付款金额*(佣金比率+补贴比率)*分成比率',
+  `subsidy_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '补贴比率',
+  `subsidy_type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '补贴类型，天猫:1，聚划算:2，航旅:3，阿里云:4',
+  `terminal_type` tinyint(1) NOT NULL DEFAULT '2' COMMENT '成交平台，PC:1，无线:2',
+  `item_category_name` varchar(255) NOT NULL DEFAULT '' COMMENT '类目名称',
+  `site_id` varchar(100) NOT NULL DEFAULT '' COMMENT '来源媒体ID',
+  `site_name` varchar(255) NOT NULL DEFAULT '' COMMENT '来源媒体名称',
+  `adzone_id` varchar(100) NOT NULL DEFAULT '' COMMENT '广告位ID',
+  `adzone_name` varchar(255) NOT NULL DEFAULT '' COMMENT '广告位名称',
+  `alipay_total_price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '付款金额',
+  `total_commission_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '佣金比率',
+  `subsidy_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '补贴金额',
+  `click_time` varchar(50) NOT NULL DEFAULT '' COMMENT '跟踪时间',
+  `relation_id` varchar(100) NOT NULL DEFAULT '' COMMENT '渠道关系ID',
+  `special_id` varchar(100) NOT NULL DEFAULT '' COMMENT '会员运营id',
+  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '一级推荐人ID',
+  `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
+  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0 未匹配 1 已匹配 2 已结算',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `tb_paid_time` varchar(50) NOT NULL DEFAULT '' COMMENT '订单在淘宝拍下付款的时间',
+  `tk_paid_time` varchar(50) NOT NULL DEFAULT '' COMMENT '订单付款的时间，该时间同步淘宝，可能会略晚于买家在淘宝的订单创建时间',
+  `tk_order_role` varchar(11) NOT NULL DEFAULT '' COMMENT '二方：佣金收益的第一归属者； 三方：从其他淘宝客佣金中进行分成的推广者',
+  `refund_tag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '维权标签，0 含义为非维权 1 含义为维权订单。即如果订单发生维权退款，会给予提示标识。所有的维权推广订单也能在维权推广订单API查询。',
+  `tk_total_rate` varchar(20) NOT NULL DEFAULT '0' COMMENT '提成=收入比率*分成比率。指实际获得收益的比率',
+  `alimama_rate` varchar(20) NOT NULL DEFAULT '0' COMMENT '推广者赚取佣金后支付给阿里妈妈的技术服务费用的比率',
+  `alimama_share_fee` varchar(20) NOT NULL DEFAULT '0' COMMENT '技术服务费=结算金额*收入比率*技术服务费率。推广者赚取佣金后支付给阿里妈妈的技术服务费用',
+  `item_img` varchar(255) NOT NULL DEFAULT '' COMMENT '商品图片',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of tr_commission_order
+-- Records of tr_commission_v2
 -- ----------------------------
-INSERT INTO `tr_commission_order` VALUES ('1', 'order20190321143212', '', 'x123456', '', '10.00', '3', '2', '1', '0', '1', '0', '0', '2019-04-11 20:26:15');
+INSERT INTO `tr_commission_v2` VALUES ('1', '4.3576297717001E+17', '4.3576297717001E+17', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '0.00', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.00', '1.0000', '2019-05-06 13:22:53', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '0', '0', '0', '1557929185', '2019-05-15 22:06:25', '', '', '', '0', '0', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for tr_goods
@@ -369,25 +518,6 @@ CREATE TABLE `tr_items` (
 
 -- ----------------------------
 -- Records of tr_items
--- ----------------------------
-
--- ----------------------------
--- Table structure for tr_items_sync
--- ----------------------------
-DROP TABLE IF EXISTS `tr_items_sync`;
-CREATE TABLE `tr_items_sync` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `start` tinyint(2) NOT NULL DEFAULT '0',
-  `end` tinyint(2) NOT NULL,
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1同步中 2完成',
-  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1商品拉取 2商品下架',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_items_sync
 -- ----------------------------
 
 -- ----------------------------
@@ -573,7 +703,7 @@ CREATE TABLE `tr_member` (
 -- Records of tr_member
 -- ----------------------------
 INSERT INTO `tr_member` VALUES ('1', 'admin', 'b1d1ab72336885719b522a1920d56e5c', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '1', '0', '0', '1552908886', '2019-03-18 19:34:46', '3.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0');
-INSERT INTO `tr_member` VALUES ('2', 'ceshi', '8198eee1cc2c105377e09ddb5df4709e', '13588272727', '1', '', '1', '', '0', '0', '', '0', '', '0', '1', 'x123456', '0', '1554609771', '2019-04-07 12:02:51', '24.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0');
+INSERT INTO `tr_member` VALUES ('2', 'ceshi', '8198eee1cc2c105377e09ddb5df4709e', '13588272727', '1', '', '1', '', '0', '0', '', '0', '', '0', '1', '558178813', '0', '1554609771', '2019-04-07 12:02:51', '24.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0');
 
 -- ----------------------------
 -- Table structure for tr_member_account
@@ -640,23 +770,6 @@ INSERT INTO `tr_member_fund_flow` VALUES ('1', '1', '100.00', '100.00', '1', '�
 INSERT INTO `tr_member_fund_flow` VALUES ('2', '1', '-100.00', '0.00', '2', '系统扣除', '1552994390');
 INSERT INTO `tr_member_fund_flow` VALUES ('7', '1', '1.00', '3.00', '1', '推荐分佣', '1554985582');
 INSERT INTO `tr_member_fund_flow` VALUES ('8', '2', '8.00', '24.00', '1', '分享下单成功分佣', '1554985582');
-
--- ----------------------------
--- Table structure for tr_member_pid
--- ----------------------------
-DROP TABLE IF EXISTS `tr_member_pid`;
-CREATE TABLE `tr_member_pid` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pid` varchar(255) NOT NULL DEFAULT '' COMMENT '阿里妈妈pid',
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户id',
-  `created_at` int(11) NOT NULL DEFAULT '0',
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_member_pid
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for tr_member_points
@@ -785,6 +898,56 @@ CREATE TABLE `tr_settlement` (
 -- Records of tr_settlement
 -- ----------------------------
 INSERT INTO `tr_settlement` VALUES ('1', '20190411192803', '1', '10.00', '1.00', '0.10', '0.90', '0.00', '1.00', '9.00', '2', '0.0000', '0.1000', '0.1000', '0.0300', '3', '0', '0', '1554982083', '2019-04-11 20:26:22');
+
+-- ----------------------------
+-- Table structure for tr_settlement_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_settlement_detail`;
+CREATE TABLE `tr_settlement_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `settle_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1分享分佣 2一级推荐分佣 3二级推荐分佣',
+  `user_id` int(1) NOT NULL DEFAULT '0' COMMENT '分佣对象ID type为1 则是会员id',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分佣金额',
+  `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID type为1时有效',
+  `descr` varchar(255) NOT NULL DEFAULT '' COMMENT '分佣来源描述',
+  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 未发放 2 已发放',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_settlement_detail
+-- ----------------------------
+INSERT INTO `tr_settlement_detail` VALUES ('7', '1', '2', '1', '1.00', '1', '推荐分佣', '2', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_settlement_detail` VALUES ('8', '1', '1', '2', '8.00', '1', '分享下单成功分佣', '2', '1554985575', '2019-04-11 20:26:22');
+
+-- ----------------------------
+-- Table structure for tr_settlement_order
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_settlement_order`;
+CREATE TABLE `tr_settlement_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `trade_id` varchar(255) NOT NULL DEFAULT '' COMMENT '订单编号',
+  `relation_id` varchar(255) NOT NULL DEFAULT '' COMMENT '渠道ID',
+  `special_id` varchar(255) NOT NULL DEFAULT '' COMMENT '会员ID',
+  `commission_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '佣金金额',
+  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1未匹配 2已匹配 3已结算',
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人ID',
+  `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
+  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `settlement_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_settlement_order
+-- ----------------------------
+INSERT INTO `tr_settlement_order` VALUES ('1', 'order20190321143212', '', 'x123456', '10.00', '3', '2', '1', '0', '1', '0', '0', '2019-04-11 20:26:15');
 
 -- ----------------------------
 -- Table structure for tr_spec
@@ -1070,21 +1233,3 @@ INSERT INTO `tr_sys_role` VALUES ('1', '超级管理员', '', '1', '1548145765',
 INSERT INTO `tr_sys_role` VALUES ('2', '管理员', '1,2,3,4,5,7,8,9,10', '1', '1548145765', '2019-03-16 16:55:19');
 INSERT INTO `tr_sys_role` VALUES ('3', '客服', '', '1', '1552632230', '2019-03-23 14:13:40');
 INSERT INTO `tr_sys_role` VALUES ('4', '运营', '', '1', '1552632386', '2019-03-15 15:31:52');
-
--- ----------------------------
--- Table structure for tr_ticket_cate
--- ----------------------------
-DROP TABLE IF EXISTS `tr_ticket_cate`;
-CREATE TABLE `tr_ticket_cate` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) NOT NULL DEFAULT '',
-  `state` tinyint(1) NOT NULL,
-  `sort` tinyint(2) NOT NULL DEFAULT '0',
-  `created_at` int(11) NOT NULL,
-  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of tr_ticket_cate
--- ----------------------------

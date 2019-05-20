@@ -21,8 +21,8 @@ class SettleController extends CommonController
         }
         S(self::SETTLE_LOCK,$time);
         $model = M(Scheme::SETTLE);
-        $where['state'] = 1;
         if(isset($_GET['id'])){//结算单ID
+            $where['state'] = ['in',[1,4]];
             $where['id'] = $_GET['id'];
             $settles = $model->where($where)->select();
             if(!$settles){
@@ -30,6 +30,7 @@ class SettleController extends CommonController
                 exit('Settlement is not exits');
             }
         }else{
+            $where['state'] = 1;
             if(isset($_GET['channel']))//渠道ID
                 $where['id'] = $_GET['channel'];
             $channels = M(Scheme::CHANNEL)->where($where)->select();
@@ -71,7 +72,7 @@ class SettleController extends CommonController
         foreach($settles as $settle){
             $res = $this->start($settle);
             if(!$res){
-                $result = $model->where(['id'=>$settle['id']])->save(['state'=>0]);
+                $result = $model->where(['id'=>$settle['id']])->save(['state'=>4]);
                 writeLog('结算单'.$settle['id'].'结算失败',$log,'ERROR');
                 echo 'Settlement:'.$settle['id'].' settle failed'.PHP_EOL;
                 if($result === false){
@@ -137,11 +138,11 @@ class SettleController extends CommonController
                     'order_id' => $order['id']
                 ];
                 $grandAmount = $refereeAmount = 0;
-                $channelAmount = round($settle['channel_rate'] * $order['commission_fee'],2);
+                $channelAmount = round($settle['channel_rate'] * $order['total_commission_fee'],2);
                 $channelTotalAmount += $channelAmount;
                 if($order['referee_id']){
                     $memberNum ++;
-                    $refereeAmount = round($settle['referee_rate'] * $order['commission_fee'],2);
+                    $refereeAmount = round($settle['referee_rate'] * $order['total_commission_fee'],2);
                     $refereeTotalAmount += $refereeAmount;
                     $userTotalAmount += $refereeAmount;
                     $details[] = array_merge($detail,[
@@ -153,7 +154,7 @@ class SettleController extends CommonController
                 }
                 if($order['grand_id']){
                     $memberNum ++;
-                    $grandAmount = round($settle['grand_rate'] * $order['commission_fee'],2);
+                    $grandAmount = round($settle['grand_rate'] * $order['total_commission_fee'],2);
                     $grandTotalAmount += $grandAmount;
                     $userTotalAmount += $grandAmount;
                     $details[] = array_merge($detail,[
@@ -163,7 +164,7 @@ class SettleController extends CommonController
                         'descr' => '推荐人推荐分佣'
                     ]);
                 }
-                $userAmount = $order['commission_fee'] - $channelAmount - $refereeAmount - $grandAmount;
+                $userAmount = $order['total_commission_fee'] - $channelAmount - $refereeAmount - $grandAmount;
                 $userTotalAmount += $userAmount;
                 $details[] = array_merge($detail,[
                     'type' => 1,

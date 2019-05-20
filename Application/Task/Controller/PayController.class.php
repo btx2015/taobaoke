@@ -12,7 +12,16 @@ use Common\Consts\Scheme;
 
 class PayController extends CommonController
 {
+
     public function pay(){
+        if(isset($_GET['id'])){
+
+        }else{
+
+        }
+    }
+
+    private function start(){
         $id = I('post.id');
         if(!$id)
             showError(10006);

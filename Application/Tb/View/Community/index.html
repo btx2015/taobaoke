@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html><head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!-- <script src="__PUBLIC__/Tb/js/mui.min.js"></script> -->
+		<!-- <script src="__PUBLIC__/Tb/js/md5.min.js"></script> -->
+		<script type="text/javascript">
+/**
+ * 图片懒加载
+ * @param {Object} DOMElement
+ * 
+ * @author fanrong33
+ * @version 1.0.1 build 20150709
+ */
+function lazyload(obj, callback){
+    var debug = false; // 默认打印调试日志
+    if(obj.getAttribute('data-loaded')){
+       return; 
+    }
+
+    var image_url = obj.getAttribute('data-src');
+    debug && console.log(image_url);
+
+
+    // 1. 转换网络图片地址为本地缓存图片路径，判断该图片是否存在本地缓存
+    // http://...jpg -> md5
+    // 缓存目录 _downloads/image/(md5).jpg
+    var image_md5           = md5(image_url);
+    var local_image_url     = '_downloads/image/'+image_md5+'.jpg'; // 缓存本地图片url
+    var absolute_image_path = plus.io.convertLocalFileSystemURL(local_image_url); // 平台绝对路径
+
+
+    // new temp_img 用于判断图片文件是否存在
+    var temp_img = new Image();
+    temp_img.src = absolute_image_path;
+    temp_img.onload = function(){
+        debug && console.log('存在本地缓存图片文件'+local_image_url+'，直接显示');
+
+        // 1.1 存在，则直接显示（本地已缓存，不需要淡入动画）
+        obj.setAttribute('src', absolute_image_path);
+        obj.setAttribute('data-loaded', true);
+        callback && callback();
+
+        return;
+    }
+    temp_img.onerror = function(){
+        debug && console.log('不存在本地缓存图片文件');
+
+        // 1.2 不存在则进行加载图片
+        var img = new Image();
+        img.src = image_url; // 传过来的图片路径在这里用
+        img.onload = function(){
+            var that = this;
+
+            obj.setAttribute('src', image_url);
+            obj.setAttribute('data-loaded', true);
+            // obj.classList.add('img-animation');
+            callback && callback();
+
+            // 1.3 下载图片缓存到本地
+            debug && console.log('开始下载图片'+image_url+' 缓存到本地: '+local_image_url);
+
+            var download_task = plus.downloader.createDownload(image_url, {
+                filename: local_image_url // filename:下载任务在本地保存的文件路径
+            }, function(download, status) {
+                if(status != 200){
+                    // 下载失败,删除本地临时文件
+                    debug && console.log('下载失败,status'+status);
+                    if(local_image_url != null){
+                        plus.io.resolveLocalFileSystemURL(local_image_url, function(entry) {
+                            entry.remove(function(entry) {
+                                debug && console.log("临时文件删除成功" + local_image_url);
+                            }, function(e) {
+                                debug && console.log("临时文件删除失败" + local_image_url);
+                            });
+                        });
+                    }
+                }
+            });
+            download_task.start();
+        }
+    }
+
+}
+
+		</script>
+		<link rel="stylesheet" href="__PUBLIC__/Tb/css/mui.min.css">
+		<style>
+	
+			.mui-fullscreen{
+				/*top: 29px;*/
+				
+			}
+			.mui-segmented-control.mui-scroll-wrapper{
+				height: 40px;
+				
+			}
+			.mui-segmented-control.mui-scroll-wrapper .mui-scroll{
+				height: 40px;
+				
+			}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{
+				color: #FF0000;
+			}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active:after{
+				height: 2px;
+				display: block;
+				width: 100%;
+				background: #FF0000;
+				content: '';
+				margin-top: -2px;
+			}
+			.mui-pull-top-tips {
+				position: absolute;
+				top: -20px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			.mui-bar~.mui-pull-top-tips {
+				top: 24px;
+			}
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			.mui-card{
+				/* border-radius: 5px; */
+				margin: 10px 0 0 0;
+			}
+			.mui-card-content{
+				padding: 15px 15px 0 15px;
+			}
+			.mui-card-content p{
+				font-weight: lighter;
+				font-size: 16px;
+				color: #666 !important;
+				font-family: 'webfont' !important;
+			}
+			.mui-card-content img{
+				max-width: 70%;
+			}
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			.mui-pull-bottom-tips{
+				background: #F7F7F7;
+			}
+			.mui-pull-top-tips .mui-pull-loading {
+				/*-webkit-backface-visibility: hidden;
+				-webkit-transition-duration: 400ms;
+				transition-duration: 400ms;*/
+				
+				margin: 0;
+			}
+			.mui-pull-top-wrapper .mui-icon,
+			.mui-pull-top-wrapper .mui-spinner {
+				margin-top: 7px;
+			}
+			.mui-pull-top-wrapper .mui-icon.mui-reverse {
+				/*-webkit-transform: rotate(180deg) translateZ(0);*/
+			}
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #F7F7F7;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			.mui-pull-top-canvas {
+				overflow: hidden;
+				background-color: #fafafa;
+				border-radius: 40px;
+				box-shadow: 0 4px 10px #bbb;
+				width: 40px;
+				height: 40px;
+				margin: 0 auto;
+			}
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #FFFFFF;
+			}
+			.mui-slider .mui-slider-group .mui-slider-item img{
+				width: auto;
+			}
+			.mui-card-footer{
+				justify-content: flex-end;
+				-webkit-justify-content:flex-end;
+			}
+			.mui-card-footer::before, .mui-card-header::after{
+				height: 0;
+			}
+			.mui-btn-danger{
+				background: #FFD7D7;
+				padding: 0 10px;
+				border: none;
+				border-radius: 15px;
+				/* height: 30px !important; */
+				line-height: 30px !important;
+				color: #FF4646;
+				font-size: 13px;
+			}
+			.mui-btn-danger{
+				background: #FFD7D7;
+				padding: 0 10px;
+				border: none;
+				border-radius: 15px;
+				/* height: 30px !important; */
+				line-height: 30px !important;
+				color: #FF4646;
+				font-size: 13px;
+			}
+			.mui-btn-danger:enabled:active{
+				color: #FF4646;
+				background: #FFD7D7;
+				border: none;
+			}
+			.mui-card-content p img{
+				display: none;
+			}
+			.tlist .mui-control-item{
+				min-width: 100px;
+			}
+		</style>
+	</head>
+	<body class="mui-plus mui-android mui-android-9">
+		
+		<div class="mui-content">
+			<!-- <div style="height: 29px;background: #FFFFFF;"></div> -->
+			<div id="slider" class="mui-slider mui-fullscreen">
+				<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<div class="mui-scroll tlist">
+						<foreach name="cates" item="cate">
+							<a class="mui-control-item <if condition='($cate["isone"] eq 1)'>mui-active</if>" href="#con{$cate.id}">{$cate.name}</a>
+						</foreach>
+					</div>
+				</div>
+				<div class="mui-slider-group">
+					<foreach name="cates" item="cate">
+						<div class="mui-slider-item mui-control-content <if condition='($cate["isone"] eq 1)'>mui-active</if>" id="con{$cate.id}">
+							<div class="mui-scroll-wrapper">
+								<div class="mui-scroll">
+									<div class="sqlist">
+										<foreach name="cate.children" item="children">
+											<div class="mui-card">
+												<div class="mui-card-header mui-card-media">
+													<img src="__PUBLIC__/Tb/img/l1.png">
+													<div class="mui-media-body">
+														{$children.title}
+														<p>发表于 {$children.updated_at}</p>
+													</div>
+												</div>
+												<div class="mui-card-content">
+													<p>{$children.content|htmlspecialchars_decode}</p>
+													<img src="{$children.img}" style="width: 70%;">
+												</div>
+												<div class="mui-card-footer">
+													<button type="button" onclick="shareSystem({$children.id})" class="mui-btn mui-btn-danger">分享</button>
+												</div>
+											</div>
+											<input id="childrenHref{$children.id}" type="hidden" value="http://jx.tangrenjuhui.com/index.php/Tb/Community/community/id/{$children.id}.html">
+											<input id="childrenTitle{$children.id}" type="hidden" value="唐人聚惠">
+											<input id="childrenDes{$children.id}" type="hidden" value="{$children.intro|mb_substr=0,25}">
+										</foreach>
+									</div>
+								</div>
+							</div>
+						</div>
+					</foreach>
+				</div>
+			</div>
+		</div>
+
+		<script src="__PUBLIC__/Tb/js/mui.min.js"></script>
+		<script src="__PUBLIC__/Tb/js/mui.pullToRefresh.js"></script>
+		<script src="__PUBLIC__/Tb/js/mui.pullToRefresh.material.js"></script>
+		<script src="__PUBLIC__/Tb/js/jquery.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				// alert(1);
+				// $("#sliderSegmentedControl").scrollLeft(600);
+				$(".mui-slider-group").on("touchstart", function(e) {
+					startX = e.originalEvent.changedTouches[0].pageX;
+				});
+				$(".mui-slider-group").on("touchend", function(e) {
+					moveEndX = e.originalEvent.changedTouches[0].pageX;
+					X = moveEndX - startX;
+					var fixDiv = $(".tlist>.mui-active");
+					var oneDivWidth = fixDiv.width();
+					var divs = $(".tlist").find(".mui-control-item");
+					var fixDivIndex = divs.index(fixDiv);
+					var fixDivScrollTop = fixDivIndex * 100;
+					var divCurrentScrollTop = $("#sliderSegmentedControl").scrollLeft();
+					if ( X > 0 ) {
+						if(divCurrentScrollTop >= fixDivScrollTop-100 && fixDivScrollTop <= divCurrentScrollTop + 300 ){
+							// console.log('LLL'+fixDivScrollTop);
+							$("#sliderSegmentedControl").scrollLeft(fixDivScrollTop-100);
+							
+						}
+					}else if ( X < 0 ) {
+						if(fixDivScrollTop + 100 - 200 > divCurrentScrollTop){
+							$("#sliderSegmentedControl").scrollLeft(fixDivScrollTop-100);
+						}
+					}
+				});
+			})
+		</script>
+		<script>
+			mui.init();
+			(function($) {
+				//阻尼系数
+				var deceleration = mui.os.ios?0.003:0.0009;
+				$('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration:deceleration
+				});
+				$.plusReady(function() {
+					
+					$.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
+						$(pullRefreshEl).pullToRefresh({
+							down: {
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										location.reload();
+									}, 1000);
+								}
+							},
+							up: {
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										var ul = self.element.querySelector('.sqlist');
+										
+										var w=plus.nativeUI.showWaiting("", {style:"black",color:"#FF0000",background:"rgba(255,255,255,0.7)",loading:{icon:"_www/images/dengdai.png",interval:'150',height:'80px'},size:'100px'});
+										$.ajax("http://jx.tangrenjuhui.com/index.php/Tb/Community/getpage.html", {
+											
+											dataType: 'json',
+											type: 'get',
+											timeout: 10000,
+											success: function(rsp) {
+												setTimeout(function(){
+													w.setTitle('');
+													w.close();
+													self.endPullUpToRefresh('true');
+												},1000);
+												$.each(rsp.data,function(index,item){
+													var list = '<div class="mui-card"><div class="mui-card-header mui-card-media"><img src="__PUBLIC__/Tb/img/l1.png"><div class="mui-media-body">'+item.title+'<p>发表于 '+item.updated_at+'</p></div></div><div class="mui-card-content"><p>'+item.content+'</p><img src="'+item.img+'" style="width: 70%;"></div><div class="mui-card-footer"><button type="button" onclick="shareSystem('+item.id+')" class="mui-btn mui-btn-danger">分享</button></div></div><input id="childrenHref'+item.id+'" type="hidden" value="http://jx.tangrenjuhui.com/index.php/Tb/Community/community/id/'+item.id+'.html"><input id="childrenTitle'+item.id+'" type="hidden" value="唐人聚惠"><input id="childrenDes'+item.id+'" type="hidden" value="'+item.intro+'">';
+													ul.innerHTML = ul.innerHTML + list;
+												})
+												
+												// console.log(JSON.stringify(rsp));
+												// w.setTitle('');
+												// w.close();
+												// self.endPullUpToRefresh('true');
+											},
+											error: function(xhr, type, errorThrown) {
+												
+											}
+										});
+										// setTimeout(function(){
+										// 	w.setTitle('');
+										// 	w.close();
+										// 	self.endPullUpToRefresh('true');
+										// },1000);
+									}, 100);
+								}
+							}
+							
+						});
+					});
+					
+				})
+			})(mui);
+		</script>
+		
+		<script type="text/javascript">
+
+			mui.plusReady(function () {
+				if(plus.navigator.isImmersedStatusbar()) {  
+					// 兼容immersed状态栏模式            
+					// 获取状态栏高度并根据业务需求处理，这里重新计算了子窗口的偏移位置           
+					var lhgd = (Math.round(plus.navigator.getStatusbarHeight())+44);
+					document.querySelector('.mui-slider-group').style.top = lhgd + 'px';  
+					document.querySelector('.mui-control-item').style.marginTop = (lhgd-44) + 'px'; 
+					document.querySelector('.tlist').style.height = lhgd + 'px'; 
+					document.querySelector('#sliderSegmentedControl').style.height = lhgd + 'px'; 
+					
+				} 
+				updateSerivces();
+				if(plus.os.name=="Android"){
+					main = plus.android.runtimeMainActivity();
+					Intent = plus.android.importClass("android.content.Intent");
+					File = plus.android.importClass("java.io.File");
+					Uri = plus.android.importClass("android.net.Uri");
+				}
+
+			})
+        function shareMessage(msg,s){
+            
+            // alert(JSON.stringify(msg));
+            s.send( msg, function(){
+                alert("分享到\""+s.description+"\"成功！ " );
+                
+            }, function(e){
+                alert( "分享到\""+s.description+"\"失败: "+JSON.stringify(e) );
+            
+            } );
+        }
+        function updateSerivces(){
+            plus.share.getServices( function(s){
+                shares={};
+                for(var i in s){
+                    var t=s[i];
+                    shares[t.id]=t;
+                }
+            }, function(e){
+                alert("获取分享服务列表失败："+e.message );
+            } );
+        }
+        function shareAction(sb,bh,id) {
+            if(!sb||!sb.s){
+                alert("无效的分享服务！");
+                return;
+            }
+            var sharehrefDes = document.getElementById('childrenDes'+id);
+			var sharehref = document.getElementById('childrenHref'+id);
+			var sharehrefTitle = document.getElementById('childrenTitle'+id);
+			// alert('sharehrefDes'+id);return false;
+            var msg={content:sharehrefDes.value,extra:{scene:sb.x}};
+            if(bh){
+                msg.href=sharehref.value;
+                if(sharehrefTitle&&sharehrefTitle.value!=""){
+                    msg.title=sharehrefTitle.value;
+                }
+                if(sharehrefDes&&sharehrefDes.value!=""){
+                    msg.content=sharehrefDes.value;
+                }
+                msg.thumbs=["https://img.alicdn.com/imgextra/i2/1653734047/O1CN01ADJo7d1flZNmbdbgs_!!0-item_pic.jpg_2200x2200Q100s50.jpg_.webp"];
+                msg.pictures=["https://img.alicdn.com/imgextra/i2/1653734047/O1CN01ADJo7d1flZNmbdbgs_!!0-item_pic.jpg_2200x2200Q100s50.jpg_.webp"];
+            }else{
+                if(pic&&pic.realUrl){
+                    msg.pictures=[pic.realUrl];
+                }
+            }
+            // 发送分享
+            if ( sb.s.authenticated ) {
+                // alert("---已授权---");
+                shareMessage(msg,sb.s);
+            } else {
+                // alert("---未授权---");
+                sb.s.authorize( function(){
+                        shareMessage(msg,sb.s);
+                    },function(e){
+                        alert("认证授权失败："+e.code+" - "+e.message );
+                    
+                });
+            }
+        }
+		function shareSystem(id){
+			var shareBts=[];
+			// 更新分享列表
+			var ss=shares['weixin'];
+			ss&&ss.nativeClient&&(shareBts.push({title:'微信朋友圈',s:ss,x:'WXSceneTimeline'}),
+			shareBts.push({title:'微信好友',s:ss,x:'WXSceneSession'}));
+			ss=shares['qq'];
+			ss&&ss.nativeClient&&shareBts.push({title:'QQ',s:ss});
+			// 弹出分享列表
+			shareBts.length>0?plus.nativeUI.actionSheet({title:'分享链接',cancel:'取消',buttons:shareBts},function(e){
+				(e.index>0)&&shareAction(shareBts[e.index-1],true,id);
+			}):plus.nativeUI.alert('当前环境无法支持分享链接操作!');
+		}
+		</script>
+
+	
+</body></html>

@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<!-- <link href="__PUBLIC__/Tb/css/mui.css" rel="stylesheet" /> -->
+		<script src="__PUBLIC__/Tb/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var size = ($(window).width()/75*4);
+			$('html').css('font-size',size+'px');
+		</script>
+		<style type="text/css">
+html {
+
+    color: #000;
+    background: #fff;
+
+}
+* {
+
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+}
+body, dd, div, dl, dt, h1, h2, h3, h4, h5, h6, html, li, ol, p, strong, td, ul {
+
+    padding: 0;
+    margin: 0;
+    font-family: PingFang,Microsoft Yahei,Arial;
+
+}
+a, del, ins {
+
+    text-decoration: none;
+
+}
+a {
+
+    color: #00c;
+    outline: none;
+    color: #a3afba;
+
+}
+.banner img {
+
+    width: 100%;
+
+}
+fieldset, img {
+
+    border: 0;
+
+}
+.question dl {
+
+    margin: 0 .875rem;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    padding: .75rem 0;
+    border-bottom: .025rem solid #ebebeb;
+
+}
+.question dl dd::after {
+
+    content: "";
+    width: .425rem;
+    height: .75rem;
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    background: url(__PUBLIC__/Tb/img/icon_right.jpg) no-repeat;
+    -webkit-background-size: 100% 100%;
+    background-size: 100%;
+    margin-top: -.375rem;
+
+}
+.question dl dd {
+
+    line-height: .875rem;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    padding-right: 1rem;
+    position: relative;
+
+}
+.question dl dd a {
+
+    color: #2e2e2e;
+    font-size: .75rem;
+
+}
+.question .service {
+
+    color: #e16c6e;
+    font-size: .7rem;
+    text-align: center;
+    margin-top: 1rem;
+
+}
+.question .service img {
+
+    width: 1.15rem;
+    margin-right: .5rem;
+
+}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="question">
+			<div class="banner">
+				<a href="./queryOrder.html"><img src="__PUBLIC__/Tb/img/bigtt1.png"></a>
+			</div>
+			<foreach name="question" item="qu">
+				<dl>
+					<dt>·</dt>
+					<dd>
+						<a href="answer/id/{$qu['id']}.html">{$qu['title']}</a>
+					</dd>
+				</dl>
+			</foreach>
+			
+			<div class="service">
+				<i>
+					<img src="__PUBLIC__/Tb/img/ic_yiwen_question_kefu.png" alt="">
+				</i>
+				还有疑问？请联系专属客服
+			</div>
+		</div>
+		<script src="__PUBLIC__/Tb/js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function () {
+				
+			    mui("dd").on('tap','a',function(){
+					var url = 'http://jx.tangrenjuhui.com/index.php/Tb/Faq/'+this.getAttribute('href');
+					// alert(url);return false;
+					var tit = '常见问题';
+					mui.openWindow({url: '_www/html/h5.html',extras: {url:url,title:tit}});
+					
+				})
+			})
+		</script>
+	</body>
+
+</html>

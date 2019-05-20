@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="__PUBLIC__/Tb/css/mui.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-card{
+				border-radius: 13px;
+			}
+			.mui-card-content{
+				padding: 15px 15px 0 15px;
+			}
+			.mui-card-content p{
+				font-weight: lighter;
+				font-size: 16px;
+				color: #666 !important;
+				font-family: 'webfont' !important;
+			}
+			.mui-card-content img{
+				width: 100%;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title">{$article['title']}</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-card">
+				<div class="mui-card-header mui-card-media">
+					<img src="__PUBLIC__/Tb/img/logo.png">
+					<div class="mui-media-body">
+						{$article['author']}
+						<p>发表于 {$article['updated_at']}</p>
+					</div>
+				</div>
+				<div class="mui-card-content">
+					
+					{$article['content']|htmlspecialchars_decode}
+				</div>
+				
+			</div>
+		</div>
+		<script src="__PUBLIC__/Tb/js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</body>
+
+</html>

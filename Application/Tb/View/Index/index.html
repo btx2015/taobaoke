@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link rel="stylesheet" href="__PUBLIC__/Tb/css/mui.css">
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/Tb/fonts/iconfont.css"/>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/Tb/css/index.css"/>
+	</head>
+
+	<body>
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div id="item1" class="mui-scroll">
+				<div id="slider" class="mui-slider" >
+				  <div class="mui-slider-group mui-slider-loop banner">
+					
+				  </div>
+				  <div class="mui-slider-indicator bannerin">
+					
+				  </div>
+				</div>
+				<div class="tttip mui-hidden">
+					<div class="tt">
+						<span>头条</span>
+					</div>
+					<div class="notice">
+						
+					</div>
+				</div>
+				<div id="Gallery" class="mui-slider navslider">
+					<div class="mui-slider-group navsg">
+					</div>
+					<div class="mui-slider-indicator navsi">
+					</div>
+				</div>
+				<div id="sliders" class="mui-slider" >
+				  <div class="mui-slider-group mui-slider-loop ggbanner">
+					
+				  </div>
+				</div>
+				<ul class="mui-table-view mui-grid-view sgqg mui-hidden">
+					
+				</ul>
+				<div class="hhyxtit mui-hidden">
+					
+					<h4><img class="hhyxicon" src="images/hhyx.png" >好货优选</h4>
+					
+				</div>
+				<ul id="hhyx" class="mui-table-view hhyx">
+					<li class="mui-table-view-cell mui-media" v-for="item in items">
+						<a href="javascript:;" :data-itemid="item.itemid" @tap="open_detail(item)">
+							<img class="mui-media-object mui-pull-left" v-lazy="item.itempic" :key="item.itempic">
+							<div class="mui-media-body">
+								<h5>{{item.itemtitle}}</h5>
+								<p class="mui-ellipsis">{{item.itemdesc}}</p>
+								<p class="hhyxprice">
+									<span class="spricered">¥ <span>{{item.itemendprice}}</span></span>
+									<del>¥{{item.itemprice}}</del>
+									<span class="gmrs"><span>{{item.itemsale}}</span> 人已购买</span>
+								</p>
+								<p class="hhyxygsy">
+									<span>
+										<span class="quan">券</span><span class="quane">¥<span>{{item.couponmoney}}</span></span>
+									</span>
+									<span class="ygsy">预估收益¥<span>{{item.tkmoney}}</span></span>
+								</p>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="__PUBLIC__/Tb/js/mui.min.js"></script>
+		<script src="__PUBLIC__/Tb/js/mui.lazyload.js"></script>
+		<script src="__PUBLIC__/Tb/js/mui.lazyload.img.js"></script>
+		<script src="__PUBLIC__/Tb/js/noticeUp.js"></script>
+		<script src="__PUBLIC__/Tb/js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__PUBLIC__/Tb/js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__PUBLIC__/Tb/js/md5.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__PUBLIC__/Tb/js/index.js" type="text/javascript" charset="utf-8"></script>
+		<script src="__PUBLIC__/Tb/js/vue-lazyload.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			// mui.init();
+			(function($) {
+				
+				$.plusReady(function() {
+					
+					//循环初始化所有下拉刷新，上拉加载。
+					$.each(document.querySelectorAll('.mui-slider-item.mui-control-content'), function(index, pullRefreshEl) {
+						$(pullRefreshEl).pullToRefresh({
+							down: {
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										self.endPullDownToRefresh();
+										location.reload();
+									}, 1000);
+								}
+							}
+						});
+					});
+					
+					
+				});
+			})(mui);
+			function convert(items) {
+				var newItems = [];
+				items.forEach(function(item) {
+					
+					newItems.push({
+						itemtitle: item.itemtitle,
+						itemsale: item.itemsale,
+						itemendprice: item.itemendprice,
+						itemdesc: item.itemdesc,
+						itempic: item.itempic,
+						itemprice: item.itemprice,
+						couponmoney: item.couponmoney,
+						tkmoney: item.tkmoney,
+						itemid: item.itemid
+					});
+				});
+				return newItems;
+			}
+			Vue.use(VueLazyload,{
+				error: 'images/zwt_400.png',
+				loading: 'images/zwt_400.png',
+			});
+			var hhyx = new Vue({
+				el: '#hhyx',
+				data: {
+					items: [] //列表信息流数据
+				}
+			});
+			var webview_detail = null;
+			var isClick = true;
+			function open_detail(item) {
+				//触发子窗口变更新闻详情
+				if(isClick) {
+					isClick = false;
+					// console.log(JSON.stringify(item));
+					mui.fire(webview_detail, 'get_detail', {
+						itemtitle: item.itemtitle,
+						itemsale: item.itemsale,
+						itemendprice: item.itemendprice,
+						itemdesc: item.itemdesc,
+						itempic: item.itempic,
+						itemprice: item.itemprice,
+						couponmoney: item.couponmoney,
+						tkmoney: item.tkmoney,
+						itemid: item.itemid
+					});
+
+					
+					setTimeout(function() {
+						setTimeout(function() {
+							isClick = true;
+							// webview_detail.show("slide-in-right", 300);
+							
+						}, 300);
+						// isClick = true;
+						webview_detail.show("slide-in-right", 300);
+						
+					}, 150);
+				}else{
+					return false;
+				}
+			}
+			mui.init({
+				pullRefresh: {
+					container: '#hhyx',
+					up: {
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+			
+			var count = 1;
+			function pullupRefresh(){
+				count++;
+				mui('#hhyx').pullRefresh().endPullupToRefresh();
+				// mui.get("http://jx.tangrenjuhui.com/index.php/Tb/Type/goodslist.html",{type:type,token:user,page:count}, function(rsp) {
+				// 	if(rsp.data && rsp.data.length > 0) {
+				// 		hhyx.items = convert(rsp.data).concat(hhyx.items);
+				// 	}
+				// },'json');
+				console.log(count);
+				mui.ajax('http://jx.tangrenjuhui.com/index.php/Tb/Type/hhyx.html',{
+					data:{
+						page:count
+					},
+					dataType:'json',//服务器返回json格式数据
+					type:'get',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data){
+						if(data.data && data.data.length > 0) {
+							hhyx.items = hhyx.items.concat(convert(data.data));
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						console.log(type);
+					}
+				});
+			}
+			mui.plusReady(function () {
+				webview_detail = mui.preload({
+					url: 'html/goodsdetail.html',
+					id: 'goodsdetail',
+					styles: {
+						"render": "always",
+						"popGesture": "hide",
+						"bounce": "vertical"
+					}
+				});
+				var user = plus.storage.getItem("user");
+				mui.get("http://jx.tangrenjuhui.com/index.php/Tb/Type/hhyx.html",{token:user}, function(rsp) {
+					if(rsp.data && rsp.data.length > 0) {
+						hhyx.items = convert(rsp.data).concat(hhyx.items);
+						document.querySelector('.hhyxtit').classList.remove('mui-hidden');
+					}
+				},'json');
+				
+			})
+		</script>
+	</body>
+
+</html>

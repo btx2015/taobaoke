@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="__PUBLIC__/Tb/css/mui.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-card{
+				border-radius: 13px;
+			}
+			.mui-card-content{
+				padding: 15px 15px 0 15px;
+			}
+			.mui-card-content p{
+				font-weight: lighter;
+				font-size: 16px;
+				color: #666 !important;
+				font-family: 'webfont' !important;
+			}
+			.mui-content img{
+				width: 100%;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			
+		</div>
+		<script src="__PUBLIC__/Tb/js/mui.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			mui.plusReady(function() {
+				var shouquan = plus.webview.getWebviewById('shouquan')
+                // var self = plus.webview.currentWebview();
+                var goodsdetail = plus.webview.getWebviewById('goodsdetail')
+                mui.fire(goodsdetail, 'refreshs');
+				shouquan.close();
+
+            });
+			// var self = plus.webview.currentWebview();
+		</script>
+	</body>
+
+</html>

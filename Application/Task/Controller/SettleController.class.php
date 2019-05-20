@@ -9,8 +9,17 @@ class SettleController extends CommonController
 
     const LIMIT = 100;//每次结算订单数量
 
+    const SETTLE_LOCK = 'settle_lock';//结算锁
+
     public function create(){
         $log = 'settle.create';
+        $lock = S(self::SETTLE_LOCK);
+        $time = time();
+        if($lock){
+            writeLog('正在结算',$log,'ERROR');
+            exit('Settling now ! please wait');
+        }
+        S(self::SETTLE_LOCK,$time);
         $model = M(Scheme::SETTLE);
         $where['state'] = 1;
         if(isset($_GET['id'])){//结算单ID
@@ -30,7 +39,6 @@ class SettleController extends CommonController
             }
             $settles = [];
             $prefix = date('Ymd');
-            $time = time();
             foreach($channels as $channel){
                 $settles[] = [
                     'settlement_sn'=> $prefix.uniqid(),
@@ -56,11 +64,28 @@ class SettleController extends CommonController
                 $insertId ++;
             });
         }
-        writeLog('遍历结算单',$log,'DEBUG');
-        echo 'Settlement foreach.'.PHP_EOL;
+        writeLog('结算开始',$log,'DEBUG');
+        echo 'Settlement Start.'.PHP_EOL;
+        $total = count($settles);
+        $success = 0;
         foreach($settles as $settle){
             $res = $this->start($settle);
+            if(!$res){
+                $result = $model->where(['id'=>$settle['id']])->save(['state'=>0]);
+                writeLog('结算单'.$settle['id'].'结算失败',$log,'ERROR');
+                echo 'Settlement:'.$settle['id'].' settle failed'.PHP_EOL;
+                if($result === false){
+                    writeLog('结算单'.$settle['id'].'结算失败状态修改失败',$log,'ERROR');
+                    echo 'Settlement:'.$settle['id'].' updated failed'.PHP_EOL;
+                }
+                continue;
+            }
+            $success ++;
         }
+        writeLog('结算结束',$log,'DEBUG');
+        echo 'Settlement Complete.Total:'.$total.';Success:'.$success.PHP_EOL;
+        S(self::SETTLE_LOCK,null);
+        return true;
     }
 
     private function start($settle){
@@ -153,7 +178,8 @@ class SettleController extends CommonController
             if(!$res){
                 M()->rollback();
                 writeLog('分佣明细添加失败',$log,'ERROR');
-                exit('Commission details created failed');
+                echo 'Commission details created failed'.PHP_EOL;
+                return false;
             }
             $page ++;
         }
@@ -163,7 +189,8 @@ class SettleController extends CommonController
             if($res === false){
                 M()->rollback();
                 writeLog('订单状态修改失败',$log,'ERROR');
-                exit('Orders state updated failed');
+                echo 'Orders state updated failed'.PHP_EOL;
+                return false;
             }
         }
         //更新结算单信息
@@ -184,7 +211,8 @@ class SettleController extends CommonController
         if(!$res){
             M()->rollback();
             writeLog('结算单信息修改失败',$log,'ERROR');
-            exit('Settlement updated failed');
+            echo 'Settlement updated failed'.PHP_EOL;
+            return false;
         }
         M()->commit();
         writeLog('结算单ID：'.$settle['id'].'结算完成',$log,'DEBUG');

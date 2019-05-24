@@ -105,7 +105,7 @@ class SettleController extends CommonController
         }
         writeLog('结算单ID：'.$settle['id'].'开始结算。',$log,'DEBUG');
         echo 'Settlement:'.$settle['id'].' start.'.PHP_EOL;
-        $orderModel = M(Scheme::COMMISSION);
+        $orderModel = M(Scheme::S_ORDER);
         $detailModel = M(Scheme::S_DETAIL);
         $page = 1;
         $totalAmount = 0;//总佣金

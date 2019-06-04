@@ -1,0 +1,121 @@
+<include file="Public:header"/>
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
+</style>
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <div class="ibox-content">
+                            <!-- 表格 start -->
+                            <div class="jqGrid_wrapper">
+                                <table id="table"></table>
+                                <div id="pager"></div>
+                            </div>
+                            <!-- 表格 end -->
+                            <!-- 添加框 start -->
+                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content animated fadeIn">
+                                        <div class="modal-body">
+                                            <form class="form-horizontal" id="save-form">
+                                                <input type="hidden" name="id">
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">等级名称</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="name">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">分佣比例</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="rate">
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
+                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 添加框 end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<include file="Public:methods"/>
+<!-- jqGrid -->
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
+<!-- Sweet alert -->
+<script src="__PUBLIC__/Admin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script>
+    var listUrl = window.location;
+    var editUrl = "{:U($buttonData['edit']['path'])}";
+    $(document).ready(function () {
+        var height = $(window).height();
+        $("#table").jqGrid({
+            url:listUrl,
+            mtype: 'POST',
+            datatype: "json",
+            autowidth: true,
+            shrinkToFit: true,
+            viewrecords: true,
+            hidegrid: false,
+            height: height - 250,
+            rowNum: 15,
+            rowList: [15, 30],
+            colNames: [ '等级名称','分佣比例','状态','更新时间','操作'],
+            colModel: [
+                {name: 'name',align:'center'},
+                {name: 'rate',align:'center'},
+                {name: 'state_str',align:'center',width:70,
+                    formatter: function (value, grid, rows, state) {
+                        var status,op = '<button type="button" class="btn btn-xs';
+                        if(rows.state == 1){
+                            op += ' btn-primary"';
+                            status = 2;
+                        }else{
+                            op += ' btn-warning"';
+                            status = 1;
+                        }
+                        if(editUrl)
+                            op += ' onclick="modify(' + rows.id + ','+ status +')";';
+                        return op + '">' + rows.state_str + '</button>';
+                    }
+                },
+                {name: 'updated_at',align:'center',width: 170},
+                {name: 'operate', index: 'operate',width: 250,align:'center',
+                    formatter: function (value, grid, rows, state) {
+                        var op = '';
+                        if(editUrl)
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
+                        return op;
+                    }
+                }
+            ],
+            pager: "#pager",
+            jsonReader:{
+                root:"data.list",
+                records:"data.total"
+            }
+        });
+    });
+</script>
+</body>
+</html>

@@ -35,8 +35,11 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label class="control-label col-lg-2">分佣比例</label>
-                                                    <div class="col-lg-10">
-                                                        <input type="text" class="form-control" name="rate">
+                                                    <div class="col-lg-5">
+                                                        <div class="input-group m-b">
+                                                            <input type="text" class="form-control" name="rate">
+                                                            <span class="input-group-addon">%</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </form>
@@ -83,8 +86,8 @@
             colNames: [ '等级名称','分佣比例','状态','更新时间','操作'],
             colModel: [
                 {name: 'name',align:'center'},
-                {name: 'rate',align:'center'},
-                {name: 'state_str',align:'center',width:70,
+                {name: 'rate_str',align:'center'},
+                {name: 'state_str',align:'center',
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';
                         if(rows.state == 1){
@@ -99,8 +102,8 @@
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
-                {name: 'updated_at',align:'center',width: 170},
-                {name: 'operate', index: 'operate',width: 250,align:'center',
+                {name: 'updated_at',align:'center'},
+                {name: 'operate', index: 'operate',align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
                         if(editUrl)

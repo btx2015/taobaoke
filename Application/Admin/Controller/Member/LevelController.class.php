@@ -15,7 +15,8 @@ class LevelController extends CommonController
             $list = $model->select();
             returnResult([
                 'list' => handleRecords([
-                    'state'           => ['translate','state','state_str'],
+                    'state' => ['translate','state','state_str'],
+                    'rate'  => ['percent','','rate_str']
                 ],$list),
                 'total' =>$model->count()
             ]);
@@ -45,6 +46,7 @@ class LevelController extends CommonController
             $level = $model->where('id ='.$id)->find();
             if(!$level)
                 showError(20004);//不存在
+            $level['rate'] = $level['rate']*100;
             returnResult($level);
         }
     }

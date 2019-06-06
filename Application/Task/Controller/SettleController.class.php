@@ -24,8 +24,8 @@ class SettleController extends CommonController
         if(isset($_GET['id'])){//结算单ID
             $where['state'] = ['in',[1,4]];
             $where['id'] = $_GET['id'];
-            $settles = $model->where($where)->select();
-            if(!$settles){
+            $settle = $model->where($where)->find();
+            if(!$settle){
                 writeLog('结算单不存在',$log,'ERROR');
                 exit('Settlement is not exits');
             }

@@ -3,6 +3,7 @@
 namespace Admin\Controller\Member;
 
 use Admin\Controller\CommonController;
+use Common\Consts\Scheme;
 
 class IndexController extends CommonController
 {
@@ -14,6 +15,7 @@ class IndexController extends CommonController
 
     public function index(){
         if(IS_POST){
+            $model = M(Scheme::USER);
             list($where,$pageNo,$pageSize) = before_query([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
@@ -29,10 +31,10 @@ class IndexController extends CommonController
                 'login_to'    => [['time'],false,true,['elt','a.login_time']],
             ],'a');
 
-            $list = M(self::T_MEMBER)->alias('a')
-                ->join('left join '.self::T_MEMBER.' b on a.referee_id = b.id')
-                ->join('left join '.self::T_CHANNEL.' c on a.channel_id = c.id')
-                ->field('a.*,b.username as referee_id_str,c.name as channel_id_str')
+            $list = $model->alias('a')
+                ->join('left join '.Scheme::USER.' b on a.referee_id = b.id')
+                ->join('left join '.Scheme::U_LEVEL.' c on a.level = c.id')
+                ->field('a.*,b.username as referee_id_str,c.name as level_str')
                 ->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
@@ -41,11 +43,12 @@ class IndexController extends CommonController
                     'created_at'      => ['time','Y-m-d H:i:s','created_at_str'],
                     'login_time'      => ['time','Y-m-d H:i:s','login_time_str'],
                     'last_login_time' => ['time','Y-m-d H:i:s','last_login_time_str'],
+                    'partner_id'      => ['isset',['是','否'],'partner_id_str'],
                 ],$list),
-                'total' =>M(self::T_MEMBER)->alias('a')->where($where)->count()
+                'total' => $model->alias('a')->where($where)->count()
             ]);
         }else{
-            $channel = M(self::T_CHANNEL)->field('id,name')->where('state = 1')->select();
+            $channel = [];
             $this->assign('channel',$channel);
             $this->display();
         }

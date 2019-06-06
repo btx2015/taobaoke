@@ -182,6 +182,9 @@ function handleRecords($rules,$records = []){
                         case 'percent':
                             $v[$key] = ($v[$field]*100).'%';
                             break;
+                        case 'isset':
+                                $v[$key] = $v[$field] ? $rule[1][0] : $rule[1][1];
+                            break;
                         default:
                             break;
                     }
@@ -288,7 +291,7 @@ function before_query($rule,$alias = ''){
     return [$where,$pageNo,$pageSize];
 }
 
-function beforeSave($model,$rule,$fields){
+function beforeSave($model,$rule,$fields = []){
     $data = validate($rule);
     if(!is_array($data))
         showError(10006);//参数错误

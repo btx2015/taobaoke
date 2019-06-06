@@ -28,14 +28,6 @@
                                                    placeholder="手机号" style="width: 150px">
                                         </div>
                                         <div class="form-group">
-                                            <select class="form-control" name="channel_id">
-                                                <option value="">渠道</option>
-                                                <volist name="channel" id="item">
-                                                    <option value="{$item.id}">{$item.name}</option>
-                                                </volist>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
                                             <select class="form-control" name="state">
                                                 <option value="">状态</option>
                                                 <option value="1">启用</option>
@@ -167,6 +159,7 @@
     var editUrl = "{:U($buttonData['edit']['path'])}";
     var delUrl = "{:U($buttonData['del']['path'])}";
     var flowUrl = "{:U($buttonData['flow']['path'])}";
+    var partnerUrl = "{:U($buttonData['partner']['path'])}";
     $(document).ready(function () {
         var height = $(window).height();
         $("#table").jqGrid({
@@ -180,15 +173,15 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-//            multiselect: true,
-            colNames: [ '昵称','手机号','推荐人','渠道','余额','累计收益','状态','注册时间','最近登陆时间','操作'],
+            colNames: [ '昵称','手机号','推荐人','等级','余额','累计收益','合伙人','状态','注册时间','最近登陆时间','操作'],
             colModel: [
                 {name: 'username',align:'center'},
                 {name: 'phone',align:'center'},
                 {name: 'referee_id_str',align:'center'},
-                {name: 'channel_id_str',align:'center'},
+                {name: 'level_str',align:'center'},
                 {name: 'available_fund',align:'center'},
                 {name: 'total_income',align:'center'},
+                {name: 'partner_id_str',align:'center'},
                 {name: 'state_str',align:'center',width:70,
                     formatter: function (value, grid, rows, state) {
                         var status,op = '<button type="button" class="btn btn-xs';
@@ -206,15 +199,21 @@
                 },
                 {name: 'created_at_str',align:'center',width: 170},
                 {name: 'last_login_time_str',align:'center',width: 170},
-                {name: 'operate', index: 'operate',width: 250,align:'center',
+                {name: 'operate', index: 'operate',width: 100,align:'left',cellattr: addCellAttr,
                     formatter: function (value, grid, rows, state) {
-                        var op = '';
+                        var op = '<div class="btn-group">';
+                        op += '<button data-toggle="dropdown" class="btn btn-warning btn-xs dropdown-toggle">';
+                        op += '操作 <span class="caret"></span></button>';
+                        op += '<ul class="dropdown-menu" style="min-width: 60px;">';
                         if(editUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
+                            op += '<li><a style="padding:0" onclick="editOpen(\''+ rows.id+ '\');">编辑</a></li>';
                         if(flowUrl)
-                            op += '<button type="button" class="btn btn-warning btn-xs" onclick="flowOpen(\''+ rows.id+ '\');">会员明细</button>&nbsp;';
+                            op += '<li><a style="padding:0" onclick="flowOpen(\''+ rows.id+ '\');">会员明细</a></li>';
+                        if(partnerUrl && rows.partner_id == '0')
+                            op += '<li><a style="padding:0" onclick="toBePartner(\''+ rows.id+ '\');">合伙人</a></li>';
                         if(delUrl)
-                            op += '<button type="button" class="btn btn-danger btn-xs" onclick="modify(\''+ rows.id+ '\',3);">删除</button>';
+                            op += '<li><a style="padding:0" onclick="modify(\''+ rows.id+ '\',3);">删除</a></li>';
+                        op += '</ul></div>'
                         return op;
                     }
                 }
@@ -238,6 +237,55 @@
         if(flowUrl){
             window.location.href = flowUrl + '?id=' +id
         }
+    }
+    function addCellAttr(rowId, val, rawObject, cm, rdata) {
+        if(rawObject.planId == null ){
+            return "style='overflow:visible'";
+        }
+    }
+    function toBePartner(id){
+        swal({
+            title: '',
+            text: "确认将该用户升级为合伙人吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonText: "确认",
+            cancelButtonText: "取消",
+            closeOnConfirm:false,
+            closeOnCancel:true
+        },function(isConfirm){
+            if(isConfirm){
+                $.ajax({
+                    type:'POST',
+                    url:partnerUrl,
+                    data:{member_id:id},
+                    dataType:'json',
+                    success: function(res){
+                        if(res.code !== 1){
+                            swal({
+                                title:"失败",
+                                text: res.code + res.msg,
+                                type: "error",
+                                confirmButtonText: "确认"
+                            });
+                        }else{
+                            swal({
+                                title:"",
+                                text: "成功",
+                                type: "success",
+                                showConfirmButton:false,
+                                timer: 1000
+                            });
+                            $("#table").jqGrid('setGridParam', {
+                                url : listUrl,
+                                datatype:'json',
+                                page : 1
+                            }).trigger("reloadGrid"); //重新载入
+                        }
+                    }
+                });
+            }
+        })
     }
 </script>
 </body>

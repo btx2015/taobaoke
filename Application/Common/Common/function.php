@@ -89,7 +89,7 @@ function validate(array $paramRules = [],$way = 'post'){
                         $paramValue = encodePassword($paramValue);
                         break;
                     case 'percent':
-                        $paramValue = round($paramValue/100,2);
+                        $paramValue = round($paramValue/100,4);
                         break;
                     default:
                         break;

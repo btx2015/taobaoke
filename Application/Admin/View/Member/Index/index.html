@@ -28,6 +28,14 @@
                                                    placeholder="手机号" style="width: 150px">
                                         </div>
                                         <div class="form-group">
+                                            <select class="form-control" name="level">
+                                                <option value="">等级</option>
+                                                <volist name="level" id="item">
+                                                    <option value="{$item.id}">{$item.name}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <select class="form-control" name="state">
                                                 <option value="">状态</option>
                                                 <option value="1">启用</option>

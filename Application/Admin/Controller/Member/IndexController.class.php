@@ -23,6 +23,7 @@ class IndexController extends CommonController
                 'username'    => [[],false,true,['like','a.username']],
                 'name'        => [[],false,true,['like','a.name']],
                 'phone'       => [['phone'],false,true,['like','a.phone']],
+                'level'       => [['num'],false,true,['eq','a.level']],
                 'state'       => [['in'=>[1,2]],false,true,['eq','a.state']],
                 'login_ip'    => [[],false,true,['like','a.login_ip']],
                 'create_from' => [['time'],false,true,['egt','a.created_at']],
@@ -48,8 +49,9 @@ class IndexController extends CommonController
                 'total' => $model->alias('a')->where($where)->count()
             ]);
         }else{
-            $channel = [];
-            $this->assign('channel',$channel);
+            $level = M(Scheme::U_LEVEL)->where(['state'=>1])
+                ->field('id,name')->select();
+            $this->assign('level',$level);
             $this->display();
         }
     }

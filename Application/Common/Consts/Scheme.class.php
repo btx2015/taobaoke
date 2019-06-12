@@ -36,14 +36,17 @@ class Scheme
     const U_POINTS = 'tr_member_points';
     const U_SIGN = 'tr_member_sign';
     const U_WITHDRAW = 'tr_member_withdraw';
-    const U_LEVEL = 'tr_member_level';
     const U_PARTNER = 'tr_partners';
+    const U_LEVEL = 'tr_member_level';
 
     const PRODUCT = 'tr_product';
 
     const SETTLE = 'tr_settlement';
-    const S_ORDER = 'tr_settlement_order';
     const S_DETAIL = 'tr_settlement_detail';
+    const S_ORDER = 'tr_settlement_order';
+    const S_PAY = 'tr_settlement_pay';
+    const S_STAT = 'tr_settlement_stat';
+    const S_RATE = 'tr_settlement_rate';
 
     const SYS_ADMIN = 'tr_sys_admin';
     const SYS_BASIC = 'tr_sys_basic';

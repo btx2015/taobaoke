@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: leasin
- * Date: 2019/5/20
- * Time: 15:21
- */
 
 namespace Task\Controller;
 

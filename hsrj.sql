@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-06-06 17:40:12
+Date: 2019-06-12 22:06:37
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -211,7 +211,7 @@ CREATE TABLE `tr_commission_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID type为1时有效',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1分享分佣 2一级推荐分佣 3二级推荐分佣',
-  `user_id` int(1) NOT NULL DEFAULT '0' COMMENT '分佣对象ID type为1 则是会员id',
+  `member_id` int(1) NOT NULL DEFAULT '0' COMMENT '会员id',
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分佣金额',
   `descr` varchar(255) NOT NULL DEFAULT '' COMMENT '分佣来源描述',
   `created_at` int(11) NOT NULL DEFAULT '0',
@@ -701,16 +701,17 @@ CREATE TABLE `tr_member` (
   `wx_nickname` varchar(255) NOT NULL DEFAULT '',
   `member_points` int(11) NOT NULL DEFAULT '0' COMMENT '会员积分',
   `last_settle` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '上月结算金额',
-  `referee_map` longblob COMMENT '推荐关系 推荐人id逗号分隔',
+  `referee_map` longtext COMMENT '推荐关系 推荐人id逗号分隔',
   `partner_id` int(11) NOT NULL DEFAULT '0' COMMENT '合伙人id',
+  `referee_count` int(11) NOT NULL DEFAULT '0' COMMENT '推荐会员数量',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member
 -- ----------------------------
-INSERT INTO `tr_member` VALUES ('1', 'admin', 'b1d1ab72336885719b522a1920d56e5c', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '1', '0', '', '1', '1552908886', '2019-03-18 19:34:46', '3.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', null, '0');
-INSERT INTO `tr_member` VALUES ('2', 'ceshi', '8198eee1cc2c105377e09ddb5df4709e', '13588272727', '1', '', '1', '', '0', '0', '', '0', '', '0', '1', '558178813', '', '2', '1554609771', '2019-04-07 12:02:51', '24.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', null, '2');
+INSERT INTO `tr_member` VALUES ('1', 'admin', 'b1d1ab72336885719b522a1920d56e5c', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '1', '0', '', '3', '1552908886', '2019-03-18 19:34:46', '3.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', null, '0', '0');
+INSERT INTO `tr_member` VALUES ('2', 'ceshi', '8198eee1cc2c105377e09ddb5df4709e', '13588272727', '1', '', '1', '', '0', '0', '', '0', '', '0', '1', '558178813', '', '2', '1554609771', '2019-04-07 12:02:51', '24.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '1', '2', '0');
 
 -- ----------------------------
 -- Table structure for tr_member_account
@@ -784,21 +785,20 @@ INSERT INTO `tr_member_fund_flow` VALUES ('8', '2', '8.00', '24.00', '1', '分�
 DROP TABLE IF EXISTS `tr_member_level`;
 CREATE TABLE `tr_member_level` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(60) NOT NULL DEFAULT '' COMMENT '等级名称',
-  `rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '分佣比例',
-  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `member_id` int(11) NOT NULL DEFAULT '0',
+  `old_level` int(11) NOT NULL DEFAULT '1',
+  `new_level` int(11) NOT NULL DEFAULT '2',
+  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1申请升级 2升级成功',
+  `admin_id` int(11) NOT NULL DEFAULT '0',
+  `up_time` int(11) NOT NULL DEFAULT '0' COMMENT '审核通过时间',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member_level
 -- ----------------------------
-INSERT INTO `tr_member_level` VALUES ('1', '超级运营商', '0.0800', '1', '1559640604', '2019-06-04 17:30:19');
-INSERT INTO `tr_member_level` VALUES ('2', '普通运营商', '0.1800', '1', '1559640604', '2019-06-04 17:30:20');
-INSERT INTO `tr_member_level` VALUES ('3', '超级会员', '0.1000', '1', '1559640604', '2019-06-04 17:30:20');
-INSERT INTO `tr_member_level` VALUES ('4', '普通会员', '0.5000', '1', '1559640604', '2019-06-04 22:13:01');
 
 -- ----------------------------
 -- Table structure for tr_member_points
@@ -889,10 +889,12 @@ INSERT INTO `tr_partners` VALUES ('2', '2', '0.0012', '0.00', '1', '1559790258',
 DROP TABLE IF EXISTS `tr_partner_flow`;
 CREATE TABLE `tr_partner_flow` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `partner_id` int(11) NOT NULL DEFAULT '0' COMMENT '合伙人id',
+  `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '合伙人id',
   `settle_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算id',
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入',
   `income` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '合伙人所在分支结算总收入',
+  `rate` float(10,4) NOT NULL DEFAULT '0.0000',
+  `order_id` longblob NOT NULL,
   `created_at` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -941,20 +943,11 @@ DROP TABLE IF EXISTS `tr_settlement`;
 CREATE TABLE `tr_settlement` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `settlement_sn` varchar(100) NOT NULL DEFAULT '' COMMENT '结算编号',
-  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
   `total_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '总佣金',
-  `channel_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道收取的费用（未扣除平台费用）',
-  `fee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '平台费用',
-  `real_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '渠道实际收入',
-  `grand_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '二级推荐人总佣金',
-  `referee_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '一级推荐人总佣金',
-  `member_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '会员分佣总金额',
-  `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣会员数量',
-  `fee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '服务费比例',
-  `channel_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '渠道分佣比例',
-  `referee_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '一级推荐人分佣比例',
-  `grand_rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '二级推荐人分佣比例',
-  `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0取消结算发放 1发起结算 2结算成功 3已发放 4结算失败 5发放失败',
+  `pay_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发放金额',
+  `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣会员总数量',
+  `rate_info` varchar(255) NOT NULL DEFAULT '0.0000' COMMENT '分佣比例json',
+  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0取消结算发放 1发起结算 2结算成功 3已发放 4结算失败 5发放失败',
   `settle_time` int(11) NOT NULL DEFAULT '0' COMMENT '结算时间',
   `pay_time` int(11) NOT NULL DEFAULT '0' COMMENT '发放时间',
   `created_at` int(11) NOT NULL DEFAULT '0',
@@ -965,7 +958,7 @@ CREATE TABLE `tr_settlement` (
 -- ----------------------------
 -- Records of tr_settlement
 -- ----------------------------
-INSERT INTO `tr_settlement` VALUES ('1', '20190411192803', '1', '10.00', '1.00', '0.10', '0.90', '0.00', '1.00', '9.00', '2', '0.0000', '0.1000', '0.1000', '0.0300', '3', '0', '0', '1554982083', '2019-04-11 20:26:22');
+INSERT INTO `tr_settlement` VALUES ('1', '20190411192803', '100.00', '78.00', '2', '{\"1\":\"0.5000\",\"2\":\"0.1000\",\"3\":\"0.1800\",\"4\":\"0.0800\"}', '2', '1560338760', '0', '1554982083', '2019-06-12 19:26:00');
 
 -- ----------------------------
 -- Table structure for tr_settlement_detail
@@ -974,22 +967,24 @@ DROP TABLE IF EXISTS `tr_settlement_detail`;
 CREATE TABLE `tr_settlement_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `settle_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
-  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1分享分佣 2一级推荐分佣 3二级推荐分佣',
-  `user_id` int(1) NOT NULL DEFAULT '0' COMMENT '分佣对象ID type为1 则是会员id',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1自购分佣 2分享分佣 3推荐分佣',
+  `member_id` int(1) NOT NULL DEFAULT '0' COMMENT '分佣对象ID type为1 则是会员id',
+  `member_level` tinyint(1) NOT NULL,
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分佣金额',
   `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID type为1时有效',
+  `partner_id` int(11) NOT NULL DEFAULT '0' COMMENT '合伙人id',
   `descr` varchar(255) NOT NULL DEFAULT '' COMMENT '分佣来源描述',
   `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 未发放 2 已发放',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_settlement_detail
 -- ----------------------------
-INSERT INTO `tr_settlement_detail` VALUES ('7', '1', '2', '1', '1.00', '1', '推荐分佣', '2', '1554985575', '2019-04-11 20:26:22');
-INSERT INTO `tr_settlement_detail` VALUES ('8', '1', '1', '2', '8.00', '1', '分享下单成功分佣', '2', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_settlement_detail` VALUES ('36', '1', '1', '2', '2', '60.00', '1', '0', '自购分佣', '1', '1560338760', '2019-06-12 19:26:00');
+INSERT INTO `tr_settlement_detail` VALUES ('37', '1', '4', '1', '3', '18.00', '1', '0', '运营商分佣', '1', '1560338760', '2019-06-12 19:26:00');
 
 -- ----------------------------
 -- Table structure for tr_settlement_order
@@ -1002,11 +997,8 @@ CREATE TABLE `tr_settlement_order` (
   `special_id` varchar(255) NOT NULL DEFAULT '' COMMENT '会员ID',
   `commission_fee` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '佣金金额',
   `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1未匹配 2已匹配 3已结算',
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '推荐人ID',
-  `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
-  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
-  `settlement_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算ID',
+  `member_id` int(11) NOT NULL DEFAULT '0',
+  `create_time` varchar(255) DEFAULT '',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -1015,7 +1007,66 @@ CREATE TABLE `tr_settlement_order` (
 -- ----------------------------
 -- Records of tr_settlement_order
 -- ----------------------------
-INSERT INTO `tr_settlement_order` VALUES ('1', 'order20190321143212', '', 'x123456', '10.00', '3', '2', '1', '0', '1', '0', '0', '2019-04-11 20:26:15');
+INSERT INTO `tr_settlement_order` VALUES ('1', 'order20190321143212', '', 'x123456', '100.00', '3', '2', '', '0', '2019-06-12 19:26:00');
+
+-- ----------------------------
+-- Table structure for tr_settlement_pay
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_settlement_pay`;
+CREATE TABLE `tr_settlement_pay` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `settle_id` int(11) NOT NULL DEFAULT '0',
+  `member_id` int(11) NOT NULL DEFAULT '0',
+  `amount` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_settlement_pay
+-- ----------------------------
+INSERT INTO `tr_settlement_pay` VALUES ('12', '1', '2', '60.00', '1560338760');
+INSERT INTO `tr_settlement_pay` VALUES ('13', '1', '1', '18.00', '1560338760');
+
+-- ----------------------------
+-- Table structure for tr_settlement_rate
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_settlement_rate`;
+CREATE TABLE `tr_settlement_rate` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(60) NOT NULL DEFAULT '' COMMENT '等级名称',
+  `rate` float(10,4) NOT NULL DEFAULT '0.0000' COMMENT '分佣比例',
+  `state` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_settlement_rate
+-- ----------------------------
+INSERT INTO `tr_settlement_rate` VALUES ('4', '第四次分佣比例', '0.0800', '1', '1559640604', '2019-06-11 10:17:44');
+INSERT INTO `tr_settlement_rate` VALUES ('3', '第三次分佣比例', '0.1800', '1', '1559640604', '2019-06-11 10:17:49');
+INSERT INTO `tr_settlement_rate` VALUES ('2', '第二次分佣比例', '0.1000', '1', '1559640604', '2019-06-11 10:17:32');
+INSERT INTO `tr_settlement_rate` VALUES ('1', '第一次分佣比例', '0.5000', '1', '1559640604', '2019-06-11 10:17:25');
+
+-- ----------------------------
+-- Table structure for tr_settlement_stat
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_settlement_stat`;
+CREATE TABLE `tr_settlement_stat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `settle_id` int(11) NOT NULL DEFAULT '0' COMMENT '结算单ID',
+  `level_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员等级',
+  `amount` decimal(12,2) NOT NULL DEFAULT '0.00' COMMENT '该等级会员总收入',
+  `num` int(11) NOT NULL DEFAULT '0' COMMENT '该等级参与分佣人数',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_settlement_stat
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for tr_spec
@@ -1082,7 +1133,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1559802623', '', '1559799033', '', '150', '0', '1548075651', '2019-06-04 21:25:43');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1560344364', '', '1559802623', '', '151', '0', '1548075651', '2019-06-04 21:25:43');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -1279,10 +1330,8 @@ INSERT INTO `tr_sys_node` VALUES ('107', '商品更新', 'Goods/Item/edit', '105
 INSERT INTO `tr_sys_node` VALUES ('108', '商品下架', 'Goods/Item/del', '105', 'del', '7', '2', '1', '0', '2019-04-20 03:18:14');
 INSERT INTO `tr_sys_node` VALUES ('109', '每日任务', 'Manage/Task/index', '28', '1', '9', '1', '1', '0', '2019-05-10 10:01:30');
 INSERT INTO `tr_sys_node` VALUES ('110', '编辑', 'Manage/Task/edit', '109', 'edit', '8', '2', '1', '0', '2019-05-10 10:01:57');
-INSERT INTO `tr_sys_node` VALUES ('111', '会员等级', 'Member/Level/index', '16', '1', '0', '1', '1', '0', '2019-06-05 09:59:23');
-INSERT INTO `tr_sys_node` VALUES ('112', '编辑', 'Member/Level/edit', '111', 'edit', '0', '2', '1', '0', '2019-06-04 22:10:25');
 INSERT INTO `tr_sys_node` VALUES ('113', '合伙人', 'Member/Partner/index', '16', '1', '0', '1', '1', '0', '2019-06-05 09:59:54');
-INSERT INTO `tr_sys_node` VALUES ('117', '合伙人', 'Member/Partner/add', '17', 'partner', '6', '2', '1', '0', '2019-06-06 10:46:16');
+INSERT INTO `tr_sys_node` VALUES ('117', '添加', 'Member/Partner/add', '17', 'partner', '6', '2', '1', '0', '2019-06-12 21:38:10');
 INSERT INTO `tr_sys_node` VALUES ('115', '编辑', 'Member/Partner/edit', '113', 'edit', '8', '2', '1', '0', '2019-06-05 10:01:14');
 INSERT INTO `tr_sys_node` VALUES ('116', '删除', 'Member/Partner/del', '113', 'del', '7', '2', '1', '0', '2019-06-05 10:01:20');
 

@@ -23,7 +23,7 @@ class IndexController extends CommonController
                 'username'    => [[],false,true,['like','a.username']],
                 'name'        => [[],false,true,['like','a.name']],
                 'phone'       => [['phone'],false,true,['like','a.phone']],
-                'level'       => [['num'],false,true,['eq','a.level']],
+                'level'       => [['num'],false,true,['eq','level']],
                 'state'       => [['in'=>[1,2]],false,true,['eq','a.state']],
                 'login_ip'    => [[],false,true,['like','a.login_ip']],
                 'create_from' => [['time'],false,true,['egt','a.created_at']],
@@ -34,12 +34,12 @@ class IndexController extends CommonController
 
             $list = $model->alias('a')
                 ->join('left join '.Scheme::USER.' b on a.referee_id = b.id')
-                ->join('left join '.Scheme::U_LEVEL.' c on a.level = c.id')
-                ->field('a.*,b.username as referee_id_str,c.name as level_str')
+                ->field('a.*,b.username as referee_id_str')
                 ->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
                 'list' => handleRecords([
+                    'level'           => ['translate','member_level','level_str'],
                     'state'           => ['translate','state','state_str'],
                     'created_at'      => ['time','Y-m-d H:i:s','created_at_str'],
                     'login_time'      => ['time','Y-m-d H:i:s','login_time_str'],
@@ -49,8 +49,7 @@ class IndexController extends CommonController
                 'total' => $model->alias('a')->where($where)->count()
             ]);
         }else{
-            $level = M(Scheme::U_LEVEL)->where(['state'=>1])
-                ->field('id,name')->select();
+            $level = C('translate')['member_level'];
             $this->assign('level',$level);
             $this->display();
         }

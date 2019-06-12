@@ -25,14 +25,6 @@
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
-                                                <option value="">渠道</option>
-                                                <volist name="channels" id="item">
-                                                    <option value="{$item.id}">{$item.name}</option>
-                                                </volist>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <select class="form-control" name="state">
                                                 <option value="">请选择状态</option>
                                                 <option value="1">未结算</option>
                                                 <option value="2">未发放</option>
@@ -160,14 +152,11 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '结算编号','渠道','总佣金','渠道佣金','服务费','用户总佣金','分佣用户数','状态','操作'],
+            colNames: [ '结算编号','总佣金','发放佣金','分佣用户数','状态','结算时间','发放时间','操作'],
             colModel: [
                 {name: 'settlement_sn',align:'center'},
-                {name: 'channel_id_str',align:'center'},
                 {name: 'total_amount',align:'center'},
-                {name: 'real_amount',align:'center'},
-                {name: 'fee_amount',align:'center'},
-                {name: 'member_amount',align:'center'},
+                {name: 'pay_amount',align:'center'},
                 {name: 'member_num',align:'center'},
                 {name: 'state_str',align:'center',width:70,
                     formatter: function (value, grid, rows, state) {
@@ -182,6 +171,8 @@
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
+                {name: 'settle_time_str',align:'center'},
+                {name: 'pay_time_str',align:'center'},
                 {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';

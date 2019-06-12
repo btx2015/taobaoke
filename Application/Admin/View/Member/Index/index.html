@@ -30,8 +30,8 @@
                                         <div class="form-group">
                                             <select class="form-control" name="level">
                                                 <option value="">等级</option>
-                                                <volist name="level" id="item">
-                                                    <option value="{$item.id}">{$item.name}</option>
+                                                <volist name="level" id="item" key="k">
+                                                    <option value="{k}">{$item}</option>
                                                 </volist>
                                             </select>
                                         </div>

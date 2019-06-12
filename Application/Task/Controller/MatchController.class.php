@@ -13,12 +13,12 @@ class MatchController extends CommonController
         $log = 'match.settle';
         writeLog('开始匹配用户',$log,'DEBUG');
         echo 'Matching start'.PHP_EOL;
-        $model = M(Scheme::COMMISSION);
+        $model = M(Scheme::S_ORDER);
         $orderMatch = $orderTotal = 0;//未匹配订单数量 = 匹配成功订单数量 = 0
         $run = true;
         $page = 1;
         while($run){
-            $orders = $model->field('id,special_id')
+            $orders = $model->field('id,special_id,relation_id')
                 ->limit(self::LIMIT)->page($page)->where('state = 0')->select();
             if(!$orders){
                 writeLog('暂无未匹配的订单',$log,'DEBUG');
@@ -26,38 +26,36 @@ class MatchController extends CommonController
                 break;
             }
             $orderMatch += count($orders);
-            $memberId = array_unique(array_column($orders,'special_id'));
+            $specialId = array_unique(array_column($orders,'special_id'));
             $memberModel = M(Scheme::USER);
-            $members = $memberModel->field('id,special_id,referee_id,channel_id')
-                ->where(['special_id' => ['in',$memberId]])->select();
-            if(!$members){
-                writeLog('以下special_id未找到会员。'.json_encode($memberId),$log,'ERROR');
+            $memberSpecials = $memberModel->field('id,special_id')
+                ->where(['special_id' => ['in',$specialId]])->select();
+            if(!$memberSpecials){
+                writeLog('以下special_id未找到会员。'.json_encode($specialId),$log,'ERROR');
                 continue;
             }
-            //查询二级推荐人
-            $refereeId = array_unique(array_column($members,'referee_id'));
-            $referees = $memberModel->field('id,referee_id')
-                ->where(['id' => ['in',$refereeId]])->select();
-            $referees = array_column($referees,'referee_id','id');
+            $memberSpecials = array_column($memberSpecials,'id','special_id');
+            $relationId = array_unique(array_column($orders,'relation_id'));
+            $memberRelations = $memberModel->field('id,relation_id')
+                ->where(['relation_id' => ['in',$relationId]])->select();
+            if(!$memberRelations){
+                writeLog('以下special_id未找到会员。'.json_encode($relationId),$log,'ERROR');
+                continue;
+            }
+            $memberRelations = array_column($memberRelations,'id','relation_id');
 
-            $members = array_column($members,null,'special_id');
-            $total = 0;
-            //组装用户信息
-            array_walk($orders,function(&$v)use($members,$referees,&$total){
-                if(isset($members[$v['special_id']])){
-                    $v['user_id'] = $members[$v['special_id']]['id'];
-                    $v['referee_id'] = $members[$v['special_id']]['referee_id'];
-                    $v['channel_id'] = $members[$v['special_id']]['channel_id'];
-                    if(isset($referees[$v['referee_id']])){
-                        $v['grand_id'] = $referees[$v['referee_id']];
-                    }else{
-                        $v['grand_id'] = 0;
-                    }
-                    $v['state'] = 1;
+            array_walk($orders,function(&$v)use($memberSpecials,$memberRelations,&$total){
+                if(isset($v['special_id']) && isset($memberSpecials[$v['special_id']])){
+                    $v['member_id'] = $memberSpecials[$v['special_id']];
+                }else if(isset($v['relation_id']) && isset($memberRelations[$v['relation_id']])){
+                    $v['member_id'] = $memberSpecials[$v['relation_id']];
+                }
+                if($v['member_id']){
                     $total ++;
                 }
             });
-            $res = saveAll($orders,Scheme::COMMISSION);
+
+            $res = saveAll($orders,Scheme::S_ORDER);
             if(!$res){
                 writeLog('数据保存失败，原因：'.$res,$log,'ERROR');
                 echo 'Data Saved Failed'.PHP_EOL;
@@ -91,34 +89,31 @@ class MatchController extends CommonController
                 break;
             }
             $orderMatch += count($orders);
-            $memberId = array_unique(array_column($orders,'special_id'));
+            $specialId = array_unique(array_column($orders,'special_id'));
             $memberModel = M(Scheme::USER);
-            $members = $memberModel->field('id,special_id,referee_id,channel_id')
-                ->where(['special_id' => ['in',$memberId]])->select();
-            if(!$members){
-                writeLog('以下special_id未找到会员。'.json_encode($memberId),$log,'ERROR');
+            $memberSpecials = $memberModel->field('id,special_id')
+                ->where(['special_id' => ['in',$specialId]])->select();
+            if(!$memberSpecials){
+                writeLog('以下special_id未找到会员。'.json_encode($specialId),$log,'ERROR');
                 continue;
             }
-            //查询二级推荐人
-            $refereeId = array_unique(array_column($members,'referee_id'));
-            $referees = $memberModel->field('id,referee_id')
-                ->where(['id' => ['in',$refereeId]])->select();
-            $referees = array_column($referees,'referee_id','id');
+            $memberSpecials = array_column($memberSpecials,'id','special_id');
+            $relationId = array_unique(array_column($orders,'relation_id'));
+            $memberRelations = $memberModel->field('id,relation_id')
+                ->where(['relation_id' => ['in',$relationId]])->select();
+            if(!$memberRelations){
+                writeLog('以下special_id未找到会员。'.json_encode($relationId),$log,'ERROR');
+                continue;
+            }
+            $memberRelations = array_column($memberRelations,'id','relation_id');
 
-            $members = array_column($members,null,'special_id');
-            $total = 0;
-            //组装用户信息
-            array_walk($orders,function(&$v)use($members,$referees,&$total){
-                if(isset($members[$v['special_id']])){
-                    $v['user_id'] = $members[$v['special_id']]['id'];
-                    $v['referee_id'] = $members[$v['special_id']]['referee_id'];
-                    $v['channel_id'] = $members[$v['special_id']]['channel_id'];
-                    if(isset($referees[$v['referee_id']])){
-                        $v['grand_id'] = $referees[$v['referee_id']];
-                    }else{
-                        $v['grand_id'] = 0;
-                    }
-                    $v['state'] = 1;
+            array_walk($orders,function(&$v)use($memberSpecials,$memberRelations,&$total){
+                if(isset($v['special_id']) && isset($memberSpecials[$v['special_id']])){
+                    $v['member_id'] = $memberSpecials[$v['special_id']];
+                }else if(isset($v['relation_id']) && isset($memberRelations[$v['relation_id']])){
+                    $v['member_id'] = $memberSpecials[$v['relation_id']];
+                }
+                if($v['member_id']){
                     $total ++;
                 }
             });

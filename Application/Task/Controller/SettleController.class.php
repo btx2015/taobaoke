@@ -15,7 +15,7 @@ class SettleController extends CommonController
 
     public function settle(){
         S(self::SETTLE_LOCK,null);
-        $log = 'settle.create';
+        $log = 'settle';
 
         if(!isset($_GET['id'])){//结算单ID
             writeLog('结算单id不存在',$log,'ERROR');
@@ -56,7 +56,7 @@ class SettleController extends CommonController
 
         //获取上个月升级用户
         $startTime = strtotime(date('Y-m-01', strtotime('-1 month')));
-        $endTime = strtotime(date('Y-m-t', strtotime('-1 month')));
+        $endTime = strtotime(date('Y-m-01'));
         $levelModel = M(Scheme::U_LEVEL);
         $levelUpMembers = $levelModel
             ->where([
@@ -73,7 +73,6 @@ class SettleController extends CommonController
         $logic = D('Settle','Logic');
         $memberModel = M(Scheme::USER);
         $detailModel = M(Scheme::S_DETAIL);
-        $page = 1;
         $totalAmount = 0;//总佣金
         $payAmount = 0;//用户分佣金额
         $orderIds = [];//订单
@@ -87,6 +86,7 @@ class SettleController extends CommonController
 
         M()->startTrans();
         foreach($orderMembers as $orderMember){
+            $page = 1;
             //查询用户
             $member = $memberModel
                 ->field('id,level,referee_id,referee_map')
@@ -112,7 +112,6 @@ class SettleController extends CommonController
                 if(!$orders){
                     writeLog($member['id'].'用户订单结算完成。',$log,'DEBUG');
                     echo 'No orders to settle'.PHP_EOL;
-                    S(self::SETTLE_LOCK,null);
                     break;
                 }
                 //遍历订单
@@ -215,5 +214,108 @@ class SettleController extends CommonController
             exit('Settlement updated failed'.PHP_EOL);
         }
         exit('Settlement failed'.PHP_EOL);
+    }
+
+    public function settle_pay(){
+        $log = 'settle';
+        writeLog('结算开始',$log,'DEBUG');
+        echo 'Settlement Start.'.PHP_EOL;
+        $orderModel = M(Scheme::COMMISSION);
+        //查询所有下单用户
+        $orderMembers = $orderModel
+            ->distinct(true)
+            ->field('member_id')
+            ->where(['state' => 1])
+            ->select();
+        if(!$orderMembers){
+            writeLog('暂无订单未结算。',$log,'DEBUG');
+            echo 'No orders to settle'.PHP_EOL;
+        }
+        $rate = M(Scheme::S_RATE)->where(['state'=>1])->select();
+        $rateInfo = array_column($rate,'rate','id');
+
+        $time = time();
+        $logic = D('Settle','Logic');
+        $memberModel = M(Scheme::USER);
+        $orderIds = [];//订单
+        $detailInfo = [];//分佣明细
+        M()->startTrans();
+        foreach($orderMembers as $orderMember){
+            $page = 1;
+            //查询用户
+            $member = $memberModel
+                ->field('id,level,referee_id,referee_map')
+                ->where(['id' => $orderMember['member_id']])
+                ->find();
+            $refereeMap = explode(',',$member['referee_map']);
+            //查询推荐体系
+            $refereeInfo = M(Scheme::USER)
+                ->field('id,level,referee_id,partner_id')
+                ->where(['id' => ['in',$refereeMap]])
+                ->order('id desc')
+                ->select();
+            $refereeInfo = array_column($refereeInfo,null,'id');
+            $partner = $logic->getPartner($refereeInfo);
+            $objects = $logic->getObjects($member,$refereeInfo,[],[]);
+            while(true){
+                echo $page.PHP_EOL;
+                $orders = $orderModel
+                    ->where(['member_id'=>$member['id'],'state' => 2])
+                    ->limit(self::LIMIT)
+                    ->page($page)
+                    ->select();
+                if(!$orders){
+                    writeLog($member['id'].'用户订单结算完成。',$log,'DEBUG');
+                    echo 'No orders to settle'.PHP_EOL;
+                    S(self::SETTLE_LOCK,null);
+                    break;
+                }
+                //遍历订单
+                foreach($orders as $order){
+                    $orderIds[] = $order['id'];
+                    //获取分佣对象 计算佣金
+                    $amounts = $logic->cal($objects,$rateInfo,$order);
+                    $detail = [
+                        'order_id'   => $order['id'],
+                        'created_at' => $time
+                    ];
+                    foreach($amounts as $amount){
+                        //生成结算明细
+                        $amount['partner_id'] = $partner;
+                        $amount['descr'] = $this->type[$amount['type']];
+                        $detailInfo[] = array_merge($detail,$amount);
+                    }
+                }
+                $page ++;
+            }
+        }
+
+        //生成分佣明细
+        if($detailInfo){
+            $detailModel = M(Scheme::C_DETAIL);
+            $res = $detailModel->addAll($detailInfo);
+            if(!$res){
+                M()->rollback();
+                writeLog('分佣明细添加失败',$log,'ERROR');
+                echo 'Commission details created failed'.PHP_EOL;
+            }
+        }
+
+        //批量更新订单状态
+        if($orderIds){
+            $res = $orderModel->where(['id' => ['in',$orderIds]])->setField('state',3);
+            if($res === false){
+                M()->rollback();
+                writeLog('订单状态修改失败',$log,'ERROR');
+                echo 'Orders state updated failed'.PHP_EOL;
+            }
+        }
+
+        M()->commit();
+
+        writeLog('结算结束',$log,'DEBUG');
+        echo 'Settlement Complete.'.PHP_EOL;
+
+        return true;
     }
 }

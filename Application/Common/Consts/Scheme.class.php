@@ -7,8 +7,8 @@ class Scheme
     const ARTICLE = 'tr_article';
     const A_CATE = 'tr_article_cate';
 
-    const CHANNEL = 'tr_channel';
     const COMMISSION = 'tr_commission';
+    const C_DETAIL = 'tr_commission_detail';
 
     const GOODS = 'tr_goods';
     const G_CATE = 'tr_category';

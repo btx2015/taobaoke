@@ -44,15 +44,17 @@ class SettleLogic extends \Think\Model
         return $amounts;
     }
 
-    public function getObjects($memberInfo,$refereeInfo,$order,$levelUp){
+    public function getObjects($memberInfo,$refereeInfo,$order = [],$levelUp = []){
         $createTime = strtotime($order['create_time']);
         //获取订单生成时用户级别
-        $memberInfo = $this->getLevel($memberInfo,$createTime,$levelUp);
+        if($levelUp)
+            $memberInfo = $this->getLevel($memberInfo,$createTime,$levelUp);
         $objects[$memberInfo['level']] = $memberInfo;
         //查询推荐体系
         if($memberInfo['level'] < 4 && $memberInfo['referee_id']){
             $referee = $refereeInfo[$memberInfo['referee_id']];
-            $referee = $this->getLevel($referee,$createTime,$levelUp);
+            if($levelUp)
+                $referee = $this->getLevel($referee,$createTime,$levelUp);
             if($referee['level'] == 4){//推荐人是超级运营商
                 $objects[4] = $referee;
             }else{
@@ -60,7 +62,8 @@ class SettleLogic extends \Think\Model
                     $objects[3] = $referee;
                     if($referee['referee_id']){
                         $parentReferee = $refereeInfo[$referee['referee_id']];
-                        $parentReferee = $this->getLevel($parentReferee,$createTime,$levelUp);
+                        if($levelUp)
+                            $parentReferee = $this->getLevel($parentReferee,$createTime,$levelUp);
                         //推荐人的推荐人是超级运营商
                         if($parentReferee['level'] == 4){
                             $objects[4] = $parentReferee;
@@ -71,7 +74,9 @@ class SettleLogic extends \Think\Model
                     //查找运营商
                     foreach($refereeInfo as $v){
                         if($v['level'] > 2 ){
-                            $parentReferee = $this->getLevel($v,$createTime,$levelUp);
+                            $parentReferee = $v;
+                            if($levelUp)
+                                $parentReferee = $this->getLevel($parentReferee,$createTime,$levelUp);
                             if($parentReferee['level'] < 3){
                                 continue;
                             }
@@ -79,7 +84,8 @@ class SettleLogic extends \Think\Model
                             //运营商是普通运营商
                             if($parentReferee['level'] != 4 && $parentReferee['referee_id']) {
                                 $grandReferee = $refereeInfo[$parentReferee['referee_id']];
-                                $grandReferee = $this->getLevel($grandReferee, $createTime, $levelUp);
+                                if($levelUp)
+                                    $grandReferee = $this->getLevel($grandReferee, $createTime, $levelUp);
                                 if ($grandReferee['level'] != 4) {
                                     continue;
                                 }

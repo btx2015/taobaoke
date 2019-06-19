@@ -73,7 +73,7 @@ class MatchController extends CommonController
     }
 
     public function match_pay(){
-        $log = 'match.settle';
+        $log = 'match.pay';
         writeLog('开始匹配用户',$log,'DEBUG');
         echo 'Matching start'.PHP_EOL;
         $model = M(Scheme::COMMISSION);

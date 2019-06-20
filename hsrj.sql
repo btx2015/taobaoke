@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-06-12 22:06:37
+Date: 2019-06-20 19:45:45
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -175,10 +175,7 @@ CREATE TABLE `tr_commission` (
   `click_time` varchar(50) NOT NULL DEFAULT '' COMMENT '跟踪时间',
   `relation_id` varchar(100) NOT NULL DEFAULT '' COMMENT '渠道关系ID',
   `special_id` varchar(100) NOT NULL DEFAULT '' COMMENT '会员运营id',
-  `user_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `referee_id` int(11) NOT NULL DEFAULT '0' COMMENT '一级推荐人ID',
-  `grand_id` int(11) NOT NULL DEFAULT '0' COMMENT '二级推荐人ID',
-  `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '渠道ID',
+  `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态 0 未匹配 1 已匹配 2 已结算',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -190,18 +187,14 @@ CREATE TABLE `tr_commission` (
   `alimama_rate` varchar(20) NOT NULL DEFAULT '0' COMMENT '推广者赚取佣金后支付给阿里妈妈的技术服务费用的比率',
   `alimama_share_fee` varchar(20) NOT NULL DEFAULT '0' COMMENT '技术服务费=结算金额*收入比率*技术服务费率。推广者赚取佣金后支付给阿里妈妈的技术服务费用',
   `item_img` varchar(255) NOT NULL DEFAULT '' COMMENT '商品图片',
-  `user_profit` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '用户预估收益',
-  `referee_porfit` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '一级推荐人预估收益',
-  `grand_profit` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '二级推荐人预估收益',
-  `channel_profit` decimal(10,0) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_commission
 -- ----------------------------
-INSERT INTO `tr_commission` VALUES ('4', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.00', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '2', '1', '0', '1', '1', '1557997213', '2019-05-16 19:49:34', '', '', '', '0', '0', '0', '0', '', '0.00', '0.00', '0.00', null);
-INSERT INTO `tr_commission` VALUES ('10', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '3', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.00', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '0', '0', '0', '1558084466', '2019-05-17 17:14:26', '', '', '', '0', '0', '0', '0', '', '0.00', '0.00', '0.00', null);
+INSERT INTO `tr_commission` VALUES ('4', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.00', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '2', '1', '1557997213', '2019-05-16 19:49:34', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('10', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '3', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.00', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '1558084466', '2019-05-17 17:14:26', '', '', '', '0', '0', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for tr_commission_detail
@@ -212,6 +205,7 @@ CREATE TABLE `tr_commission_detail` (
   `order_id` int(11) NOT NULL DEFAULT '0' COMMENT '订单ID type为1时有效',
   `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1分享分佣 2一级推荐分佣 3二级推荐分佣',
   `member_id` int(1) NOT NULL DEFAULT '0' COMMENT '会员id',
+  `partner_id` int(11) NOT NULL DEFAULT '0' COMMENT '合伙人id',
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '分佣金额',
   `descr` varchar(255) NOT NULL DEFAULT '' COMMENT '分佣来源描述',
   `created_at` int(11) NOT NULL DEFAULT '0',
@@ -222,8 +216,8 @@ CREATE TABLE `tr_commission_detail` (
 -- ----------------------------
 -- Records of tr_commission_detail
 -- ----------------------------
-INSERT INTO `tr_commission_detail` VALUES ('7', '1', '2', '1', '1.00', '推荐分佣', '1554985575', '2019-04-11 20:26:22');
-INSERT INTO `tr_commission_detail` VALUES ('8', '1', '1', '2', '8.00', '分享下单成功分佣', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_commission_detail` VALUES ('7', '1', '2', '1', '0', '1.00', '推荐分佣', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_commission_detail` VALUES ('8', '1', '1', '2', '0', '8.00', '分享下单成功分佣', '1554985575', '2019-04-11 20:26:22');
 
 -- ----------------------------
 -- Table structure for tr_commission_v1
@@ -1133,7 +1127,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1560344364', '', '1559802623', '', '151', '0', '1548075651', '2019-06-04 21:25:43');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1560390753', '', '1560344364', '', '152', '0', '1548075651', '2019-06-04 21:25:43');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');

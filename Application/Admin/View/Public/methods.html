@@ -9,11 +9,11 @@
         });
         $('#toolbar-search').click(function(){
             var postData = $('#toolbar-form').serialize();
+            postData = postData + '&page=' + $('#table').getGridParam('page') + '&rows=' + $('#table').getGridParam('rowNum');
             $("#table").jqGrid('setGridParam', {
                 url : listUrl,
                 datatype:'json',
-                postData : postData,
-                page : 1
+                postData : postData
             }).trigger("reloadGrid"); //重新载入
         });
         $('#toolbar-reset').click(function(){

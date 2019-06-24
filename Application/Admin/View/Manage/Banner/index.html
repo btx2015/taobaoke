@@ -21,6 +21,16 @@
                                                    placeholder="标题" style="width: 150px">
                                         </div>
                                         <div class="form-group">
+                                            <select class="form-control" name="location">
+                                                <option value="">请选择位置</option>
+                                                <option value="index">首页主</option>
+                                                <option value="indexad">首页中</option>
+                                                <option value="ziying">自营商城主</option>
+                                                <option value="myad">个人中心主</option>
+                                                <option value="video">影视中心</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <select class="form-control" name="state">
                                                 <option value="">请选择状态</option>
                                                 <option value="1">启用</option>
@@ -66,21 +76,44 @@
                                         <form class="form-horizontal" id="save-form" enctype="multipart/form-data">
                                             <input type="hidden" name="id">
                                             <div class="form-group">
+                                                <label class="control-label col-lg-2">位置</label>
+                                                <div class="col-lg-10">
+                                                    <select class="form-control" name="location">
+                                                        <option value="">请选择位置</option>
+                                                        <option value="index">首页主</option>
+                                                        <option value="indexad">首页中</option>
+                                                        <option value="ziying">自营商城主</option>
+                                                        <option value="myad">个人中心主</option>
+                                                        <option value="video">影视中心</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="control-label col-lg-2">标题</label>
                                                 <div class="col-lg-10">
                                                     <input type="text" class="form-control" name="title">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label col-lg-2">链接</label>
+                                                <label class="control-label col-lg-2">跳转链接</label>
                                                 <div class="col-lg-10">
                                                     <input type="text" class="form-control" name="url">
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label col-lg-2">排序</label>
+                                                <label class="control-label col-lg-2">链接类型</label>
                                                 <div class="col-lg-10">
-                                                    <input type="text" class="form-control" name="sort">
+                                                    <select class="form-control" name="type">
+                                                        <option value="">请选择类型</option>
+                                                        <option value="1">内部链接</option>
+                                                        <option value="2">外部链接</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-lg-2">链接参数</label>
+                                                <div class="col-lg-10">
+                                                    <input type="text" class="form-control" name="parm">
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -141,7 +174,7 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '标题','图片','链接','排序','状态','创建时间','操作'],
+            colNames: [ '标题','图片','位置','链接','排序','状态','创建时间','操作'],
             colModel: [
                 {name: 'title',align:'center'},
                 {name: 'img',align:'center',
@@ -149,6 +182,7 @@
                         return '<img src="'+rows.img+'" style="width: 50px;"/>';
                     }
                 },
+                {name: 'location_str',align:'center'},
                 {name: 'url',align:'center'},
                 {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,

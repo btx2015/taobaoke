@@ -19,6 +19,8 @@ class BannerController extends CommonController
                 'state'       => [['in'=>[1,2]],false,true,['eq','state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
+                'location'    => [],
+                'type'        => [],
             ]);
 
             $model = M(self::T_BANNER);
@@ -26,8 +28,10 @@ class BannerController extends CommonController
 
             returnResult([
                 'list' => handleRecords([
-                    'state'           => ['translate','state','state_str'],
-                    'created_at'      => ['time','Y-m-d H:i:s','created_at_str'],
+                    'state'      => ['translate','state','state_str'],
+                    'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
+                    'location'   => ['translate','banner_location','location_str'],
+                    'type'       => ['translate','url_type','type_str']
                 ],$list),
                 'total' => $model->where($where)->count()
             ]);
@@ -41,7 +45,9 @@ class BannerController extends CommonController
         $rule = [
             'title' => [[],true,false],
             'url'   => [[],true,false],
-            'sort'  => [['num']]
+            'sort'  => [['num']],
+            'type'  => ['eq' => [1,2]],
+            'location' => []
         ];
         $data = beforeSave($model,$rule,['title']);
         if(!isset($_FILES['banner_upload']))
@@ -72,7 +78,9 @@ class BannerController extends CommonController
                 'title' => [],
                 'url'   => [[],false,true],
                 'state' => [['in'=>[1,2,3]]],
-                'sort'  => [['num']]
+                'sort'  => [['num']],
+                'type'  => ['eq' => [1,2]],
+                'location' => []
             ];
             $data = beforeSave($model,$rule,['title']);
             $user = $model->where(['id'=>$data['id']])->find();

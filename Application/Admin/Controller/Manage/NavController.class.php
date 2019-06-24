@@ -21,6 +21,7 @@ class NavController extends CommonController
                 'state'       => [['in'=>[1,2]],false,true,['eq','state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
+                'type'        => []
             ]);
 
             $model = M(self::T_NAV);
@@ -28,8 +29,9 @@ class NavController extends CommonController
 
             returnResult([
                 'list' => handleRecords([
-                    'state'           => ['translate','state','state_str'],
-                    'created_at'      => ['time','Y-m-d H:i:s','created_at_str'],
+                    'state'      => ['translate','state','state_str'],
+                    'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
+                    'type'       => ['translate','url_type','type_str']
                 ],$list),
                 'total' => $model->where($where)->count()
             ]);
@@ -43,7 +45,9 @@ class NavController extends CommonController
         $rule = [
             'name'  => [[],true,false],
             'url'   => [[],true,false],
-            'sort'  => [['num']]
+            'sort'  => [['num']],
+            'type'  => [['eq' => [1,2]]],
+            'parm'  => []
         ];
         $data = beforeSave($model,$rule,['name']);
         if(!isset($_FILES['nav_upload']))
@@ -74,7 +78,9 @@ class NavController extends CommonController
                 'name'  => [],
                 'url'   => [[],false,true],
                 'state' => [['in'=>[1,2,3]]],
-                'sort'  => [['num']]
+                'sort'  => [['num']],
+                'type'  => [['eq' => [1,2]]],
+                'parm'  => []
             ];
             $data = beforeSave($model,$rule,['name']);
             $user = $model->where(['id'=>$data['id']])->find();

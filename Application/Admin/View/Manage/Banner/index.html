@@ -174,7 +174,7 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '标题','图片','位置','链接','排序','状态','创建时间','操作'],
+            colNames: [ '标题','图片','位置','链接','链接类型','排序','状态','创建时间','操作'],
             colModel: [
                 {name: 'title',align:'center'},
                 {name: 'img',align:'center',
@@ -184,6 +184,7 @@
                 },
                 {name: 'location_str',align:'center'},
                 {name: 'url',align:'center'},
+                {name: 'type_str',align:'center'},
                 {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {

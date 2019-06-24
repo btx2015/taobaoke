@@ -37,7 +37,6 @@ class Scheme
     const U_SIGN = 'tr_member_sign';
     const U_WITHDRAW = 'tr_member_withdraw';
     const U_PARTNER = 'tr_partners';
-    const U_LEVEL = 'tr_member_level';
 
     const PRODUCT = 'tr_product';
 

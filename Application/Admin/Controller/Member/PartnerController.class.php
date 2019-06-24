@@ -22,19 +22,19 @@ class PartnerController extends CommonController
             ],'a');
 
             $list = M(Scheme::U_PARTNER)->alias('a')
-                ->join('left join '.Scheme::USER.' b on a.member_id = b.level')
-                ->join('left join '.Scheme::U_LEVEL.' c on b.level = c.id')
-                ->field('a.*,b.username,b.name,b.phone,c.name as level_str')
+                ->join('left join '.Scheme::USER.' b on a.member_id = b.id')
+                ->field('a.*,b.username,b.name,b.phone,b.level')
                 ->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
                 'list' => handleRecords([
                     'state'      => ['translate','state','state_str'],
                     'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
-                    'rate'       => ['percent','','rate_str']
+                    'rate'       => ['percent','','rate_str'],
+                    'level'      => ['translate','member_level','level_str']
                 ],$list),
                 'total' =>M(Scheme::U_PARTNER)->alias('a')
-                    ->join('left join '.Scheme::USER.' b on a.member_id = b.level')
+                    ->join('left join '.Scheme::USER.' b on a.member_id = b.id')
                     ->where($where)->count()
             ]);
         }else{

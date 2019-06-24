@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-06-20 19:45:45
+Date: 2019-06-24 15:32:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,12 +32,14 @@ CREATE TABLE `tr_article` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_article
 -- ----------------------------
 INSERT INTO `tr_article` VALUES ('1', '4', '一万个美丽的未来', '花销Q', '', '&lt;p&gt;safsfsdfsfffs&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553424904.png&quot; title=&quot;1553424904.png&quot; alt=&quot;QQ截图20190111144433.png&quot;/&gt;&lt;/p&gt;', '99', '1', '0', '1553424906', '2019-03-24 18:57:06');
+INSERT INTO `tr_article` VALUES ('2', '1', 'ceshi', 'sfa', '', '&lt;p&gt;asdasda&lt;/p&gt;', '12', '2', '0', '1561354631', '2019-06-24 13:37:11');
+INSERT INTO `tr_article` VALUES ('3', '1', 'safsfsf', 'sfdasd', '', '&lt;p&gt;fsdafdsfsfs&lt;/p&gt;', '1', '2', '0', '1561354762', '2019-06-24 13:39:22');
 
 -- ----------------------------
 -- Table structure for tr_article_cate
@@ -534,7 +536,7 @@ CREATE TABLE `tr_manage_banner` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_manage_banner
@@ -549,6 +551,7 @@ INSERT INTO `tr_manage_banner` VALUES ('7', '轮播i图1', 'www.baidu.com', '/Pu
 INSERT INTO `tr_manage_banner` VALUES ('8', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
 INSERT INTO `tr_manage_banner` VALUES ('9', '轮播i图1', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '0', '1553156575', '2019-03-21 16:23:03');
 INSERT INTO `tr_manage_banner` VALUES ('10', '轮播i图12', 'www.baidu.com', '/Public/Upload/manage/banner/banner1.jpg', '', '1', '1', '', '12', '1553156575', '2019-03-24 09:58:16');
+INSERT INTO `tr_manage_banner` VALUES ('11', '鞋2222', 'asdadas', '/Uploads/banner/2019-06-24/5d106849566ba.jpg', 'index', '1', '2', '', '0', '1561356361', '2019-06-24 14:53:43');
 
 -- ----------------------------
 -- Table structure for tr_manage_faq
@@ -628,6 +631,8 @@ CREATE TABLE `tr_manage_nav` (
   `url` varchar(255) NOT NULL DEFAULT '' COMMENT '链接',
   `sort` tinyint(2) NOT NULL DEFAULT '0' COMMENT '排序',
   `state` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态',
+  `type` tinyint(1) NOT NULL DEFAULT '1',
+  `parm` varchar(255) NOT NULL DEFAULT '',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -636,7 +641,7 @@ CREATE TABLE `tr_manage_nav` (
 -- ----------------------------
 -- Records of tr_manage_nav
 -- ----------------------------
-INSERT INTO `tr_manage_nav` VALUES ('1', '今日特价', '/Uploads/nav/2019-03-24/5c9797e28b33d.png', 'http://www.iqiyi.com/v_19rr8sbot0.html#vfrm=2-4-0-1', '1', '1', '1553438690', '2019-03-24 22:46:37');
+INSERT INTO `tr_manage_nav` VALUES ('1', '今日特价', '/Uploads/nav/2019-03-24/5c9797e28b33d.png', 'http://www.iqiyi.com/v_19rr8sbot0.html#vfrm=2-4-0-1', '1', '1', '0', '', '1553438690', '2019-03-24 22:46:37');
 
 -- ----------------------------
 -- Table structure for tr_manage_notice
@@ -1127,7 +1132,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1560390753', '', '1560344364', '', '152', '0', '1548075651', '2019-06-04 21:25:43');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1561361287', '', '1561354658', '', '156', '0', '1548075651', '2019-06-04 21:25:43');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');

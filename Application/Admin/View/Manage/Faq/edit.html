@@ -1,6 +1,7 @@
 <include file="Public:header"/>
 <!-- Sweet Alert -->
 <link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<link href="__PUBLIC__/Admin/css/plugins/jasny/jasny-bootstrap.min.css" rel="stylesheet">
 <body>
 <div id="wrapper">
     <include file="Public:menu"/>
@@ -32,6 +33,21 @@
                                                     </if>
                                                 </volist>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label col-lg-1">文章主图</label>
+                                        <div class="fileinput fileinput-new input-group col-lg-5" data-provides="fileinput">
+                                            <div class="form-control" data-trigger="fileinput">
+                                                <i class="glyphicon glyphicon-file fileinput-exists"></i>
+                                                <span class="fileinput-filename"></span>
+                                            </div>
+                                            <span class="input-group-addon btn btn-default btn-file">
+                                                        <span class="fileinput-new">选择文件</span>
+                                                        <span class="fileinput-exists">替换</span>
+                                                        <input type="file" name="img_upload">
+                                                    </span>
+                                            <a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">清除</a>
                                         </div>
                                     </div>
                                     <div class="form-group">
@@ -72,6 +88,7 @@
 <script type="text/javascript" src="__PUBLIC__/Admin/ueditor/ueditor.config.js"></script>
 <!-- 编辑器源码文件 -->
 <script type="text/javascript" src="__PUBLIC__/Admin/ueditor/ueditor.all.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Admin/js/plugins/jasny/jasny-bootstrap.min.js"></script>
 <!-- 实例化编辑器 -->
 <script type="text/javascript">
     var ue = UE.getEditor('container');
@@ -81,12 +98,15 @@
     });
     var listUrl = "{:U('Manage/Faq/index')}";
     function save(){
-        var data = $('#save-form').serialize();
+        var formData = new FormData($("#save-form")[0]);
+        formData.append("file",$("#save-form")[0]);
         $.ajax({
             type:'POST',
             url:window.location,
-            data:data,
+            data:formData,
             dataType:'json',
+            contentType: false,
+            processData: false,
             success: function(res){
                 if(res.code !== 1){
                     swal({

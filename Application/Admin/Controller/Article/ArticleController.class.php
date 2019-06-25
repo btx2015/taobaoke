@@ -27,7 +27,7 @@ class ArticleController extends CommonController
 
             $model = M(self::T_ARTICLE);
             $list = $model->alias('a')
-                ->field('a.id,a.title,a.cate_id,a.author,a.state,a.sort,a.created_at,b.name')
+                ->field('a.id,a.title,a.cate_id,a.author,a.state,a.sort,a.created_at,a.img,b.name')
                 ->join('left join '.self::T_ARTICLE_CATE.' b on a.cate_id = b.id')
                 ->where($where)->page($pageNo,$pageSize)->select();
 

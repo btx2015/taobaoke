@@ -95,9 +95,14 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '标题','排序','状态','创建时间','操作'],
+            colNames: [ '标题','图片','排序','状态','创建时间','操作'],
             colModel: [
                 {name: 'title',align:'center'},
+                {name: 'img',align:'center',
+                    formatter: function (value, grid, rows, state) {
+                        return '<img src="'+rows.img+'" style="width: 50px;"/>';
+                    }
+                },
                 {name: 'sort',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {

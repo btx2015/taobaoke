@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-06-24 15:32:59
+Date: 2019-06-25 15:35:55
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -787,17 +787,19 @@ CREATE TABLE `tr_member_level` (
   `member_id` int(11) NOT NULL DEFAULT '0',
   `old_level` int(11) NOT NULL DEFAULT '1',
   `new_level` int(11) NOT NULL DEFAULT '2',
-  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1申请升级 2升级成功',
+  `state` tinyint(4) NOT NULL DEFAULT '1' COMMENT '1申请升级 2升级成功 0拒绝升级',
   `admin_id` int(11) NOT NULL DEFAULT '0',
   `up_time` int(11) NOT NULL DEFAULT '0' COMMENT '审核通过时间',
+  `note` text COMMENT '备注',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member_level
 -- ----------------------------
+INSERT INTO `tr_member_level` VALUES ('1', '1', '1', '2', '2', '1', '1561443166', null, '0', '2019-06-25 14:12:46');
 
 -- ----------------------------
 -- Table structure for tr_member_points
@@ -1132,7 +1134,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1561361287', '', '1561354658', '', '156', '0', '1548075651', '2019-06-04 21:25:43');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1561442474', '', '1561427464', '', '158', '0', '1548075651', '2019-06-04 21:25:43');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -1223,7 +1225,7 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=119 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
@@ -1329,6 +1331,8 @@ INSERT INTO `tr_sys_node` VALUES ('107', '商品更新', 'Goods/Item/edit', '105
 INSERT INTO `tr_sys_node` VALUES ('108', '商品下架', 'Goods/Item/del', '105', 'del', '7', '2', '1', '0', '2019-04-20 03:18:14');
 INSERT INTO `tr_sys_node` VALUES ('109', '每日任务', 'Manage/Task/index', '28', '1', '9', '1', '1', '0', '2019-05-10 10:01:30');
 INSERT INTO `tr_sys_node` VALUES ('110', '编辑', 'Manage/Task/edit', '109', 'edit', '8', '2', '1', '0', '2019-05-10 10:01:57');
+INSERT INTO `tr_sys_node` VALUES ('119', '会员升级', 'Member/Level/index', '16', '1', '0', '1', '1', '0', '2019-06-25 09:49:50');
+INSERT INTO `tr_sys_node` VALUES ('120', '审核', 'Member/Level/edit', '119', 'edit', '0', '2', '1', '0', '2019-06-25 09:50:30');
 INSERT INTO `tr_sys_node` VALUES ('113', '合伙人', 'Member/Partner/index', '16', '1', '0', '1', '1', '0', '2019-06-05 09:59:54');
 INSERT INTO `tr_sys_node` VALUES ('117', '添加', 'Member/Partner/add', '17', 'partner', '6', '2', '1', '0', '2019-06-12 21:38:10');
 INSERT INTO `tr_sys_node` VALUES ('115', '编辑', 'Member/Partner/edit', '113', 'edit', '8', '2', '1', '0', '2019-06-05 10:01:14');

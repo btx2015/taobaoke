@@ -4,11 +4,14 @@ namespace Admin\Controller\Manage;
 
 
 use Admin\Controller\CommonController;
+use Think\Upload;
 
 class GuideController extends CommonController
 {
 
     const T_GUIDE = 'tr_manage_guide';
+
+    const SAVE_PATH = '/guide_img/';
 
     public function index(){
         if(IS_POST){
@@ -43,6 +46,19 @@ class GuideController extends CommonController
                 'content' => []
             ];
             $data = beforeSave($model,$rule,['title']);
+            if(!isset($_FILES['img_upload']))
+                showError(10006,'请上传图片');
+            if(!isset($_FILES['img_upload']['size']) || !$_FILES['img_upload']['size'])
+                showError(10006,'请上传图片');
+            $upload = new Upload(); // 实例化上传类
+            $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+            $upload->saveName = uniqid();
+            $info = $upload->upload();
+            if(!$info)
+                showError(20002,$upload->getError());
+            foreach ($info as $v){
+                $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+            }
             $data['created_at'] = time();
             $insertId = $model->add($data);
             if(!$insertId)
@@ -63,10 +79,20 @@ class GuideController extends CommonController
                 'state'   => [['in'=>[1,2,3]]],
                 'content' => []
             ];
-            $data = beforeSave($model,$rule,['title']);
-            $cate = $model->where(['id'=>$data['id']])->find();
-            if(!$cate)
-                showError(20004);
+            $data = beforeSave($model,$rule,['id','title']);
+            if(isset($_FILES['img_upload'])){
+                if(!isset($_FILES['img_upload']['size']) || !$_FILES['img_upload']['size'])
+                    showError(10006,'请上传图片');
+                $upload = new Upload(); // 实例化上传类
+                $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+                $upload->saveName = uniqid();
+                $info = $upload->upload();
+                if(!$info)
+                    showError(20002,$upload->getError());
+                foreach ($info as $v){
+                    $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+                }
+            }
             if($model->save($data) === false)
                 showError(20002);
             returnResult();

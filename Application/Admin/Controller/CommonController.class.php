@@ -26,7 +26,7 @@ class CommonController extends Controller
                 if(IS_POST)
                     showError(10010);
                 else{
-                    unset($_SESSION['adminInfo']);
+//                    unset($_SESSION['adminInfo']);
                     $this->redirect('System/Public/login');
                 }
             }

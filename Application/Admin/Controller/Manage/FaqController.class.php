@@ -4,12 +4,15 @@
 namespace Admin\Controller\Manage;
 
 use Admin\Controller\CommonController;
+use Think\Upload;
 
 class FaqController extends CommonController
 {
     const T_FAQ = 'tr_manage_faq';
 
     const T_FAQ_CATE = 'tr_manage_faq_cate';
+
+    const SAVE_PATH = '/faq_img/';
 
     public function index(){
         if(IS_POST){
@@ -23,7 +26,7 @@ class FaqController extends CommonController
 
             $model = M(self::T_FAQ);
             $list = $model->alias('a')
-                ->field('a.id,a.title,a.cate_id,a.state,a.sort,a.created_at,b.name')
+                ->field('a.id,a.title,a.cate_id,a.state,a.sort,a.created_at,a.img,b.name')
                 ->join('left join '.self::T_FAQ_CATE.' b on a.cate_id = b.id')
                 ->where($where)->page($pageNo,$pageSize)->select();
 
@@ -53,6 +56,19 @@ class FaqController extends CommonController
                 'content' => []
             ];
             $data = beforeSave($model,$rule,['title']);
+            if(!isset($_FILES['img_upload']))
+                showError(10006,'请上传图片');
+            if(!isset($_FILES['img_upload']['size']) || !$_FILES['img_upload']['size'])
+                showError(10006,'请上传图片');
+            $upload = new Upload(); // 实例化上传类
+            $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+            $upload->saveName = uniqid();
+            $info = $upload->upload();
+            if(!$info)
+                showError(20002,$upload->getError());
+            foreach ($info as $v){
+                $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+            }
             $data['created_at'] = time();
             $insertId = $model->add($data);
             if(!$insertId)
@@ -78,10 +94,20 @@ class FaqController extends CommonController
                 'state'   => [['in'=>[1,2,3]]],
                 'content' => []
             ];
-            $data = beforeSave($model,$rule,['title']);
-            $cate = $model->where(['id'=>$data['id']])->find();
-            if(!$cate)
-                showError(20004);
+            $data = beforeSave($model,$rule,['id','title']);
+            if(isset($_FILES['img_upload'])){
+                if(!isset($_FILES['img_upload']['size']) || !$_FILES['img_upload']['size'])
+                    showError(10006,'请上传图片');
+                $upload = new Upload(); // 实例化上传类
+                $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+                $upload->saveName = uniqid();
+                $info = $upload->upload();
+                if(!$info)
+                    showError(20002,$upload->getError());
+                foreach ($info as $v){
+                    $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+                }
+            }
             if($model->save($data) === false)
                 showError(20002);
             returnResult();

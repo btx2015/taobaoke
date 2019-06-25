@@ -1,4 +1,5 @@
 <include file="Public:header"/>
+<link href="__PUBLIC__/Admin/css/plugins/datapicker/datepicker3.css" rel="stylesheet">
 <!-- Sweet Alert -->
 <link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
 <style type="text/css">
@@ -13,6 +14,52 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="ibox ">
+                        <!-- 筛选 start -->
+                        <div class="ibox-title">
+                            <div class="container-fluid">
+                                <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="username"
+                                                   placeholder="昵称" style="width: 100px">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" name="phone"
+                                                   placeholder="手机号" style="width: 150px">
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="level">
+                                                <option value="">等级</option>
+                                                <volist name="level" id="item" key="k">
+                                                    <option value="{k}">{$item}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <select class="form-control" name="state">
+                                                <option value="">状态</option>
+                                                <volist name="state" id="item" key="k">
+                                                    <option value="{k}">{$item}</option>
+                                                </volist>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" id="toolbar-datepicker" name="create_from" class="form-control"
+                                                   style="width: 180px;" placeholder="申请时间"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-search">查询
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- 筛选 end -->
                         <div class="ibox-content">
                             <!-- 表格 start -->
                             <div class="jqGrid_wrapper">
@@ -28,25 +75,41 @@
                                             <form class="form-horizontal" id="save-form">
                                                 <input type="hidden" name="id">
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">等级名称</label>
+                                                    <label class="control-label col-lg-2">姓名</label>
                                                     <div class="col-lg-10">
                                                         <input type="text" class="form-control" name="name">
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label class="control-label col-lg-2">分佣比例</label>
-                                                    <div class="col-lg-5">
-                                                        <div class="input-group m-b">
-                                                            <input type="text" class="form-control" name="rate">
-                                                            <span class="input-group-addon">%</span>
-                                                        </div>
+                                                    <label class="control-label col-lg-2">手机号</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="phone">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">原等级</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="old_level">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">新等级</label>
+                                                    <div class="col-lg-10">
+                                                        <input type="text" class="form-control" name="new_level">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-lg-2">备注</label>
+                                                    <div class="col-lg-10">
+                                                        <textarea class="form-control" name="note" style="resize: vertical"></textarea>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary" onclick="edit()">保存</button>
+                                            <button type="button" class="btn btn-danger" onclick="edits(0)">拒绝</button>
+                                            <button type="button" class="btn btn-primary" onclick="edits(1)">通过</button>
                                         </div>
                                     </div>
                                 </div>
@@ -62,6 +125,7 @@
 </div>
 <include file="Public:js"/>
 <include file="Public:methods"/>
+<script src="__PUBLIC__/Admin/js/plugins/datapicker/bootstrap-datepicker.js"></script>
 <!-- jqGrid -->
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
 <script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
@@ -83,31 +147,34 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '等级名称','分佣比例','状态','更新时间','操作'],
+            colNames: [ '用户名','手机号','姓名','微信号','用户级别','状态','申请时间','审核时间','审核人','审核'],
             colModel: [
+                {name: 'username',align:'center'},
+                {name: 'phone',align:'center'},
                 {name: 'name',align:'center'},
-                {name: 'rate_str',align:'center'},
+                {name: 'wx_nickname',align:'center'},
+                {name: 'level_str',align:'center'},
                 {name: 'state_str',align:'center',
                     formatter: function (value, grid, rows, state) {
-                        var status,op = '<button type="button" class="btn btn-xs';
-                        if(rows.state == 1){
+                        var op = '<button type="button" class="btn btn-xs';
+                        if(rows.state == 2){
                             op += ' btn-primary"';
-                            status = 2;
-                        }else{
+                        }else if(rows.state == 1){
                             op += ' btn-warning"';
-                            status = 1;
+                        }else{
+                            op += ' btn-danger"';
                         }
-                        if(editUrl)
-                            op += ' onclick="modify(' + rows.id + ','+ status +')";';
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
-                {name: 'updated_at',align:'center'},
-                {name: 'operate', index: 'operate',align:'center',
+                {name: 'created_at',align:'center'},
+                {name: 'up_time_str',align:'center'},
+                {name: 'admin_id_str',align:'center'},
+                {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
-                        if(editUrl)
-                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">编辑</button>&nbsp;';
+                        if(editUrl && rows.state === '1')
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="editOpen(\''+ rows.id+ '\');">审核</button>';
                         return op;
                     }
                 }
@@ -119,6 +186,46 @@
             }
         });
     });
+    function edits(type){
+        var data = {
+            id:$('#save-form input[name="id"]').val(),
+            state:0
+        };
+        if(type){
+            data.state = 2;
+        }
+        $.ajax({
+            type:'POST',
+            url:editUrl,
+            data:data,
+            dataType:'json',
+            success: function(res){
+                if(res.code !== 1){
+                    swal({
+                        title:"失败",
+                        text: res.code + res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }else{
+                    swal({
+                        title:"",
+                        text: "成功",
+                        type: "success",
+                        showConfirmButton:false,
+                        timer: 1000
+                    });
+                    $('#save-form')[0].reset();
+                    $('#save-modal').modal('hide');
+                    $("#table").jqGrid('setGridParam', {
+                        url : listUrl,
+                        datatype:'json',
+                        page : 1
+                    }).trigger("reloadGrid"); //重新载入
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

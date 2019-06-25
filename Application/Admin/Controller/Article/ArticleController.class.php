@@ -4,12 +4,15 @@
 namespace Admin\Controller\Article;
 
 use Admin\Controller\CommonController;
+use Think\Upload;
 
 class ArticleController extends CommonController
 {
     const T_ARTICLE = 'tr_article';
 
     const T_ARTICLE_CATE = 'tr_article_cate';
+
+    const SAVE_PATH = '/article_img/';
 
     public function index(){
         if(IS_POST){
@@ -56,6 +59,19 @@ class ArticleController extends CommonController
                 'content' => []
             ];
             $data = beforeSave($model,$rule,['title']);
+            if(!isset($_FILES['img_upload']))
+                showError(10006,'请上传图片');
+            if(!isset($_FILES['img_upload']['size']) || !$_FILES['img_upload']['size'])
+                showError(10006,'请上传图片');
+            $upload = new Upload(); // 实例化上传类
+            $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+            $upload->saveName = uniqid();
+            $info = $upload->upload();
+            if(!$info)
+                showError(20002,$upload->getError());
+            foreach ($info as $v){
+                $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+            }
             $data['created_at'] = time();
             $insertId = $model->add($data);
             if(!$insertId)
@@ -84,6 +100,19 @@ class ArticleController extends CommonController
                 'content' => []
             ];
             $data = beforeSave($model,$rule,['title']);
+            if(isset($_FILES['img_upload'])){
+                if(!isset($_FILES['img_upload']['size']) || !$_FILES['img_upload']['size'])
+                    showError(10006,'请上传图片');
+                $upload = new Upload(); // 实例化上传类
+                $upload->savePath = self::SAVE_PATH;// 设置原图上传目录
+                $upload->saveName = uniqid();
+                $info = $upload->upload();
+                if(!$info)
+                    showError(20002,$upload->getError());
+                foreach ($info as $v){
+                    $data['img'] = '/Uploads'.$v['savepath'].$v['savename'];
+                }
+            }
             $cate = $model->where(['id'=>$data['id']])->find();
             if(!$cate)
                 showError(20004);

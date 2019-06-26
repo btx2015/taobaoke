@@ -81,6 +81,7 @@ class MatchController extends CommonController
         $run = true;
         $page = 1;
         while($run){
+            $memberSpecials = $memberRelations = [];
             $orders = $model->field('id,special_id')
                 ->limit(self::LIMIT)->page($page)->where('state = 0')->select();
             if(!$orders){
@@ -88,24 +89,29 @@ class MatchController extends CommonController
                 echo 'No Matching Orders'.PHP_EOL;
                 break;
             }
+            $memberModel = M(Scheme::USER);
             $orderMatch += count($orders);
             $specialId = array_unique(array_column($orders,'special_id'));
-            $memberModel = M(Scheme::USER);
-            $memberSpecials = $memberModel->field('id,special_id')
-                ->where(['special_id' => ['in',$specialId]])->select();
-            if(!$memberSpecials){
-                writeLog('以下special_id未找到会员。'.json_encode($specialId),$log,'ERROR');
-                continue;
+            if($specialId){
+                $memberSpecials = $memberModel->field('id,special_id')
+                    ->where(['special_id' => ['in',$specialId]])->select();
+                if(!$memberSpecials){
+                    writeLog('以下special_id未找到会员。'.json_encode($specialId),$log,'ERROR');
+                    continue;
+                }
+                $memberSpecials = array_column($memberSpecials,'id','special_id');
             }
-            $memberSpecials = array_column($memberSpecials,'id','special_id');
+
             $relationId = array_unique(array_column($orders,'relation_id'));
-            $memberRelations = $memberModel->field('id,relation_id')
-                ->where(['relation_id' => ['in',$relationId]])->select();
-            if(!$memberRelations){
-                writeLog('以下special_id未找到会员。'.json_encode($relationId),$log,'ERROR');
-                continue;
+            if($relationId){
+                $memberRelations = $memberModel->field('id,relation_id')
+                    ->where(['relation_id' => ['in',$relationId]])->select();
+                if(!$memberRelations){
+                    writeLog('以下relation_id未找到会员。'.json_encode($relationId),$log,'ERROR');
+                    continue;
+                }
+                $memberRelations = array_column($memberRelations,'id','relation_id');
             }
-            $memberRelations = array_column($memberRelations,'id','relation_id');
 
             array_walk($orders,function(&$v)use($memberSpecials,$memberRelations,&$total){
                 if(isset($v['special_id']) && isset($memberSpecials[$v['special_id']])){
@@ -114,6 +120,7 @@ class MatchController extends CommonController
                     $v['member_id'] = $memberSpecials[$v['relation_id']];
                 }
                 if($v['member_id']){
+                    $v['state'] = 1;
                     $total ++;
                 }
             });

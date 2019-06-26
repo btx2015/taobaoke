@@ -49,6 +49,7 @@ commission_rate,create_time,earning_time,tk_status,tk3rd_type,tk3rd_pub_id,order
 subsidy_rate,subsidy_type,terminal_type,auction_category,site_id,site_name,adzone_id,adzone_name,alipay_total_price,
 total_commission_rate,total_commission_fee,subsidy_fee,relation_id,special_id,click_time
 columns;
+        $order_scene = isset($_GET['scene']) ? $_GET['scene'] : 3;
         $params = [
             'method' => 'taobao.tbk.order.get',
             'fields' => $fields,
@@ -57,7 +58,7 @@ columns;
             'page_size' => 100,
             'tk_status' => 1,
             'order_query_type' => 'create_time',
-            'order_scene' => 3
+            'order_scene' => $order_scene
         ];
         $total = $this->sync_order($params,$log);
         if($total === false)
@@ -78,6 +79,7 @@ columns;
         $fields = <<<columns
 tb_trade_id,total_commission_fee,total_commission_rate,earning_time,relation_id,special_id
 columns;
+        $order_scene = isset($_GET['scene']) ? $_GET['scene'] : 3;
         $params = [
             'method' => 'taobao.tbk.order.get',
             'fields' => $fields,
@@ -85,7 +87,7 @@ columns;
             'page_size' => 100,
             'tk_status' => 12,
             'order_query_type' => 'settle_time',
-            'order_scene' => 3
+            'order_scene' => $order_scene
         ];
         $log = 'order.settle';
         writeLog('订单同步开始',$log,'DEBUG');

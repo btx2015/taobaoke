@@ -41,7 +41,7 @@ class OrderController extends CommonController
             $startTime = date('Y-m-d H:i:s',$_GET['start']);
         }else{//2019-05-06 13:22:00   1557120120
             $time = strtotime(date('Y-m-d H:i'));
-            $startTime = date('Y-m-d H:i:s',$time) - self::PAY_PERIOD;
+            $startTime = date('Y-m-d H:i:s',$time - self::PAY_PERIOD);
         }
         $fields = <<<columns
 trade_parent_id,trade_id,num_iid,item_title,item_num,price,pay_price,seller_nick,seller_shop_title,commission,

@@ -112,14 +112,13 @@ class MatchController extends CommonController
                 }
                 $memberRelations = array_column($memberRelations,'id','relation_id');
             }
-
             array_walk($orders,function(&$v)use($memberSpecials,$memberRelations,&$total){
                 if(isset($v['special_id']) && isset($memberSpecials[$v['special_id']])){
-                    $v['member_id'] = $memberSpecials[$v['special_id']];
+                    $v['user_id'] = $memberSpecials[$v['special_id']];
                 }else if(isset($v['relation_id']) && isset($memberRelations[$v['relation_id']])){
-                    $v['member_id'] = $memberSpecials[$v['relation_id']];
+                    $v['user_id'] = $memberRelations[$v['relation_id']];
                 }
-                if($v['member_id']){
+                if($v['user_id']){
                     $v['state'] = 1;
                     $total ++;
                 }

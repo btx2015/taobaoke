@@ -260,14 +260,13 @@ class SettleController extends CommonController
             while(true){
                 echo $page.PHP_EOL;
                 $orders = $orderModel
-                    ->where(['member_id'=>$member['id'],'state' => 2])
+                    ->where(['member_id'=>$member['id'],'state' => 1])
                     ->limit(self::LIMIT)
                     ->page($page)
                     ->select();
                 if(!$orders){
                     writeLog($member['id'].'用户订单结算完成。',$log,'DEBUG');
                     echo 'No orders to settle'.PHP_EOL;
-                    S(self::SETTLE_LOCK,null);
                     break;
                 }
                 //遍历订单
@@ -312,6 +311,7 @@ class SettleController extends CommonController
         }
 
         M()->commit();
+        S(self::SETTLE_LOCK,null);
 
         writeLog('结算结束',$log,'DEBUG');
         echo 'Settlement Complete.'.PHP_EOL;

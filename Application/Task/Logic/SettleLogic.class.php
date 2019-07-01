@@ -9,17 +9,19 @@ class SettleLogic extends \Think\Model
 
     public $trueTableName = Scheme::SETTLE;
 
-    public function cal($objects,$rateInfo,$order){
+    public function cal($objects,$rateInfo,$order,$field = 'pub_share_pre_fee'){
         $amounts = [];
+        $preLevel = 0;
         foreach($objects as $object){
             $memberRate = 0;
             //顺位累加分佣比例
             foreach($rateInfo as $level => $rate){
-                if($object['level'] < $level)
-                    break;
                 $memberRate += $rate;
                 unset($rateInfo[$level]);
+                if($object['level'] - $preLevel < 2)
+                    break;
             }
+            $preLevel = $object['level'];
             if($object['id'] == $order['member_id']){
                 if(isset($order['special_id'])){
                     $type = 1;//自购分佣
@@ -33,7 +35,7 @@ class SettleLogic extends \Think\Model
                     $type = 4;//运营商分佣
                 }
             }
-            $amount = round($order['commission_fee'] * $memberRate,2);
+            $amount = round($order[$field] * $memberRate,2);
             $amounts[] = [
                 'type' => $type,
                 'member_id' => $object['id'],

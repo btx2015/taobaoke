@@ -83,6 +83,7 @@ class SettleController extends CommonController
             'created_at' => $time
         ];
         $rateInfo = json_decode($settle['rate_info'],true);
+        ksort($rateInfo);
 
         M()->startTrans();
         foreach($orderMembers as $orderMember){
@@ -233,7 +234,7 @@ class SettleController extends CommonController
         }
         $rate = M(Scheme::S_RATE)->where(['state'=>1])->select();
         $rateInfo = array_column($rate,'rate','id');
-
+        ksort($rateInfo);
         $time = time();
         $logic = D('Settle','Logic');
         $memberModel = M(Scheme::USER);
@@ -302,7 +303,7 @@ class SettleController extends CommonController
 
         //批量更新订单状态
         if($orderIds){
-            $res = $orderModel->where(['id' => ['in',$orderIds]])->setField('state',3);
+            $res = $orderModel->where(['id' => ['in',$orderIds]])->setField('state',2);
             if($res === false){
                 M()->rollback();
                 writeLog('订单状态修改失败',$log,'ERROR');

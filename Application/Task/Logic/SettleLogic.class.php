@@ -9,19 +9,24 @@ class SettleLogic extends \Think\Model
 
     public $trueTableName = Scheme::SETTLE;
 
+    /**
+     * @param array $objects 分佣对象 键值表示该对象分佣排序
+     * @param array $rateInfo 分佣比例
+     * @param array $order 订单信息
+     * @param string $field 分佣金额在订单中的字段名
+     * @return array 返回二位数组 包含每个分佣对象的分佣金额 等级 分佣类型
+     */
     public function cal($objects,$rateInfo,$order,$field = 'pub_share_pre_fee'){
         $amounts = [];
-        $preLevel = 0;
-        foreach($objects as $object){
+        foreach($objects as $key => $object){
             $memberRate = 0;
             //顺位累加分佣比例
             foreach($rateInfo as $level => $rate){
                 $memberRate += $rate;
                 unset($rateInfo[$level]);
-                if($object['level'] - $preLevel < 2)
+                if($key == $level)
                     break;
             }
-            $preLevel = $object['level'];
             if($object['id'] == $order['member_id']){
                 if(isset($order['special_id'])){
                     $type = 1;//自购分佣

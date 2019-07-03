@@ -11,12 +11,19 @@ class MatchController extends CommonController
 
     public function match_settle(){
         $log = 'match.settle';
+        $lock = S('match_settle_lock');
+        if($lock){
+            echo 'Matching Now!'.PHP_EOL;
+            writeLog('订单匹配中',$log,'DEBUG');
+            return false;
+        }
+        S('match_settle_lock',time());
         writeLog('开始匹配用户',$log,'DEBUG');
         echo 'Matching start'.PHP_EOL;
         $model = M(Scheme::S_ORDER);
         $orderMatch = $orderTotal = 0;//未匹配订单数量 = 匹配成功订单数量 = 0
-        $run = true;
         $page = 1;
+        $run = true;
         while($run){
             $total = 0;
             $orders = $model->field('id,special_id,relation_id')
@@ -49,7 +56,6 @@ class MatchController extends CommonController
                 $memberRelations = array_column($memberRelations,'id','relation_id');
             }
 
-
             array_walk($orders,function(&$v)use($memberSpecials,$memberRelations,&$total){
                 if(isset($v['special_id']) && isset($memberSpecials[$v['special_id']])){
                     $v['member_id'] = $memberSpecials[$v['special_id']];
@@ -79,6 +85,7 @@ class MatchController extends CommonController
             writeLog('匹配完成。未匹配订单：'.$orderMatch.'；匹配成功数量：'.$orderTotal,$log,'DEBUG');
             echo 'Matching Completed.Total:'.$orderMatch.';Success:'.$orderTotal.PHP_EOL;
         }
+        S('match_settle_lock',null);
         return $run;
     }
 
@@ -150,5 +157,9 @@ class MatchController extends CommonController
             echo 'Matching Completed.Total:'.$orderMatch.';Success:'.$orderTotal.PHP_EOL;
         }
         return $run;
+    }
+
+    public function unlock(){
+        S('match_settle_lock',null);
     }
 }

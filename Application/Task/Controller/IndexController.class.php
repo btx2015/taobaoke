@@ -5,6 +5,7 @@ namespace Task\Controller;
 class IndexController extends CommonController
 {
     public function index(){
-        echo "index";
+        S('match_settle_lock',time());
+        writeLog('start match','exec','DEBUG');
     }
 }

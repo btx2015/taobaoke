@@ -386,6 +386,7 @@ function saveAll($records,$tableName,$pk = 'id'){
  * @param string $message 日志内容
  * @param string $file 日志名称
  * @param string $level 日志等级
+ * @return bool
  */
 function writeLog($message = '',$file = 'debug',$level = 'DEBUG'){
     $path = APP_PATH.'Runtime/Logs/'.date('Ymd').'/';
@@ -397,5 +398,5 @@ function writeLog($message = '',$file = 'debug',$level = 'DEBUG'){
     }
     $des = $path.$file.'.log';
     $now = date('H:i:s');
-    error_log("[{$now}]"."{$message}\r\n",3,$des);
+    return error_log("[{$now}]"."{$message}\r\n",3,$des);
 }

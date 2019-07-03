@@ -51,29 +51,20 @@ class OrderController extends CommonController
         }
     }
 
-    public function add(){
+    public function edit(){
         if(IS_POST){
-            $rateJson = '';
-            $rateInfo = M(Scheme::S_RATE)->where(['id'=>1])->select();
-            if($rateInfo){
-                $rateInfo = array_column($rateInfo,'rate','id');
-                $rateJson = json_encode($rateInfo);
-            }
-            $model = M(Scheme::SETTLE);
-            $settle = [
-                'settlement_sn' => date('Ymd').uniqid(),
-                'rate_info' => $rateJson
-            ];
-            $res = $model->add($settle);
-            if(!$res){
-                showError('20001','结算单创建失败');
-            }
-        }else{
-            $phpPath = '/phpstudy/server/php/bin/';
-            $func = 'php cli.php index index';
-            $cmd = $phpPath.$func.' >/dev/null & 2>&1';
+            $cd = 'cd /phpstudy/www/trjh.com/ && ';
+            $phpPath = '/phpstudy/server/php/bin/php ';
+            $func = 'cli.php index index';
+            $cmd = $cd.$phpPath.$func.' >/dev/null & 2>&1';
             exec($cmd,$log,$state);
+            if($state != 0)
+                writeLog(json_encode($log),'exec','DEBUG');
+        }else{
+            if(S('match_settle_lock'))
+                showError(40001);
         }
+        returnResult();
     }
 
 }

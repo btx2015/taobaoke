@@ -113,9 +113,18 @@
             request(addUrl,"同步完成");
         });
         $('#toolbar-edit').click(function(){
-            $('#save-modal').modal('show');
-            $('#modal-text').text('数据匹配中，请耐心等待。。。');
-            request(editUrl,"匹配完成");
+            $.ajax({
+                type:'POST',
+                url:editUrl,
+                dataType:'json',
+                success: function(res){
+                    if(res.code == 1){
+                        $('#save-modal').modal('show');
+                        $('#modal-text').text('数据匹配中，请耐心等待。。。');
+                        request(editUrl,"匹配完成");
+                    }
+                }
+            });
         });
         $('#toolbar-search').click(reload);
         $('#toolbar-reset').click(function(){
@@ -167,18 +176,20 @@
             url:url,
             dataType:'json',
             success: function(res){
-                if(res.code !== 1){
+                if(res.code == 1){
                     $('#save-modal').modal('hide');
                     swal({
                         title:"",
                         text: text,
                         type: "success",
                         showConfirmButton:false,
-                        timer: 1000
+                        timer: 2000
                     });
                     reload()
                 }else{
-                    request(url,text)
+                    setTimeout(function(){
+                        request(url,text)
+                    },3000);
                 }
             }
         });

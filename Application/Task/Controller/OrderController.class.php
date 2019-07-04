@@ -36,7 +36,6 @@ class OrderController extends CommonController
     public function sync_pay(){
         $log = 'order.pay';
         writeLog('订单同步开始',$log,'DEBUG');
-
         if(isset($_GET['start'])){
             $startTime = date('Y-m-d H:i:s',$_GET['start']);
         }else{//2019-05-06 13:22:00   1557120120
@@ -63,6 +62,7 @@ columns;
         $total = $this->sync_order($params,$log);
         if($total === false)
             return false;
+
         $info = '订单同步完成。同步订单数量：'.$total;
         writeLog($info,$log,'DEBUG');
         echo 'complete. total:'.$total.PHP_EOL;
@@ -74,6 +74,7 @@ columns;
      * @return bool
      */
     public function sync_settle(){
+        S('sync_settle_lock',time());
         $startTime = isset($_GET['start']) ? $_GET['start'] : strtotime(date('Y-m-01', strtotime('-1 month')));
         $endTime = isset($_GET['end']) ? $_GET['end'] : strtotime(date('Y-m-01'));
         $fields = <<<columns
@@ -107,6 +108,7 @@ columns;
         }
 
         $info = '订单同步完成。同步订单数量：'.$total;
+        S('sync_settle_lock',null);
         writeLog($info,$log,'DEBUG');
         echo 'complete. total:'.$total.PHP_EOL;
         return true;

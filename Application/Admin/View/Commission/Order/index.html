@@ -108,9 +108,18 @@
             $('#table').setGridWidth(width);
         });
         $('#toolbar-add').click(function(){
-            $('#save-modal').modal('show');
-            $('#modal-text').text('同步订单中，请耐心等待。。。');
-            request(addUrl,"同步完成");
+            $.ajax({
+                type:'POST',
+                url:addUrl,
+                dataType:'json',
+                success: function(res){
+                    if(res.code == 1){
+                        $('#save-modal').modal('show');
+                        $('#modal-text').text('同步订单中，请耐心等待。。。');
+                        request(addUrl,"同步完成");
+                    }
+                }
+            });
         });
         $('#toolbar-edit').click(function(){
             $.ajax({

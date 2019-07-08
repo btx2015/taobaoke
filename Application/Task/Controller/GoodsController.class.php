@@ -2,8 +2,6 @@
 
 namespace Task\Controller;
 
-use Think\Log;
-
 class GoodsController extends CommonController
 {
 
@@ -16,6 +14,7 @@ class GoodsController extends CommonController
     const DEL_URL = 'v2.api.haodanku.com/get_down_items';
 
     private function api_request($url,$params){
+        $log = 'items.request';
         $params['apikey'] = 'jifenbao';
         foreach($params as $name => $value){
             $url .= '/'.$name.'/'.$value;
@@ -23,18 +22,19 @@ class GoodsController extends CommonController
         $res = curlRequest($url,$params,'GET');
         $result = json_decode($res,true);
         if(!isset($result['code']) || !isset($result['data'])){
-            Log::record('好单库接口请求失败，接口：'.$url.'；返回结果：'.$res,'ERR');
+            writeLog('好单库接口请求失败，接口：'.$url.'；返回结果：'.$res,$log,'ERROR');
             exit();
         }
         if($result['code'] != 1){
-            Log::record('好单库接口请求错误，接口：'.$url.'；错误码：'.$result['code'].'；错误信息：'.$result['msg'],'ERR');
+            writeLog('好单库接口请求错误，接口：'.$url.'；错误码：'.$result['code'].'；错误信息：'.$result['msg'],$log,'ERROR');
             $result['data'] = [];
         }
         return $result;
     }
 
     public function add_goods(){
-        Log::record('商品上新开始','DEBUG');
+        $log = 'items.add';
+        writeLog('商品上新开始',$log,'DEBUG');
         $pageNo = 1;
         while(true){
             echo $pageNo.PHP_EOL;
@@ -48,12 +48,13 @@ class GoodsController extends CommonController
             $this->add_data($data['data']);
             $pageNo = $data['min_id'];
         }
-        Log::record('商品上新结束','DEBUG');
+        writeLog('商品上新结束',$log,'DEBUG');
         die('create success'.PHP_EOL);
     }
 
     public function update_goods(){
-        Log::record('商品更新开始','DEBUG');
+        $log = 'items.update';
+        writeLog('商品更新开始',$log,'DEBUG');
         $pageNo = 1;
         $row = 0;
         while(true){
@@ -68,12 +69,13 @@ class GoodsController extends CommonController
             $row += $this->update_data($data['data']);
             $pageNo = $data['min_id'];
         }
-        Log::record('商品更新结束','DEBUG');
+        writeLog('商品更新结束',$log,'DEBUG');
         die('update success, total:'.$row.PHP_EOL);
     }
 
     public function delete_goods(){
-        Log::record('商品失效开始','DEBUG');
+        $log = 'items.update';
+        writeLog('商品失效开始',$log,'DEBUG');
         $res = 0;
         $end = date('H',time());
         if($end){
@@ -86,7 +88,7 @@ class GoodsController extends CommonController
                 $res = $this->delete_data($data['data']);
             }
         }
-        Log::record('商品失效结束','DEBUG');
+        writeLog('商品失效结束',$log,'DEBUG');
         die('delete success, total:'.$res.PHP_EOL);
     }
 
@@ -98,23 +100,28 @@ class GoodsController extends CommonController
         });
         $insertId = $model->addAll($data);
         if(!$insertId){
-            Log::record('商品数据添加失败，原因：'.$insertId,'ERR');
+            $log = 'items.add';
+            writeLog('商品数据添加失败，原因：'.$insertId,$log,'ERROR');
             exit('create error');
         }
         return true;
     }
 
     private function update_data($data){
+        $log = 'items.update';
+        $id = json_encode(array_column($data,'product_id'));
+        writeLog('商品数据更新 product_id:'.$id,$log,'DEBUG');
         $res = saveAll($data,self::T_ITEM,'product_id');
         if($res === false){
-            Log::record('商品数据更新失败','ERR');
+            writeLog('商品数据更新失败。',$log,'ERROR');
             exit('update error');
         }
         return $res;
     }
 
     private function delete_data($data){
-        $remove = [];
+        $log = 'items.delete';
+        $remove = $id = [];
         foreach($data as $v){
             $remove[] = [
                 'itemid' => $v['itemid'],
@@ -122,10 +129,13 @@ class GoodsController extends CommonController
                 'down_time' => $v['down_time'],
                 'state' => 0
             ];
+            $id[] = $v['itemid'];
         }
+        writeLog('商品失效 itemid:'.$id,$log,'DEBUG');
         $res = saveAll($data,self::T_ITEM,'itemid');
         if($res === false){
-            Log::record('商品失效更新失败','ERR');
+            $log = 'items.delete';
+            writeLog('商品失效更新失败。',$log,'ERROR');
             exit('create error');
         }
         return $res;

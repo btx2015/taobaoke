@@ -150,9 +150,10 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '订单编号','佣金金额','状态','会员','一级推荐人','二级推荐人','渠道'],
+            colNames: [ '订单编号','会员','佣金金额','状态','下单时间'],
             colModel: [
-                {name: 'order_sn',align:'center'},
+                {name: 'trade_id',align:'center'},
+                {name: 'member_id_str',align:'center'},
                 {name: 'commission_fee',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
@@ -167,10 +168,7 @@
                         return op + '">' + rows.state_str + '</button>';
                     }
                 },
-                {name: 'user_id_str',align:'center'},
-                {name: 'referee_id_str',align:'center'},
-                {name: 'grand_id_str',align:'center'},
-                {name: 'channel_id_str',align:'center'}
+                {name: 'create_time',align:'center'},
             ],
             pager: "#pager",
             jsonReader:{

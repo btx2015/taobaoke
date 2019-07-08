@@ -13,6 +13,8 @@ class GoodsController extends CommonController
 
     const DEL_URL = 'v2.api.haodanku.com/get_down_items';
 
+    const SUPPLY_URL = 'v2.api.haodanku.com/timing_items';
+
     private function api_request($url,$params){
         $log = 'items.request';
         $params['apikey'] = 'jifenbao';
@@ -32,6 +34,37 @@ class GoodsController extends CommonController
         return $result;
     }
 
+    public function times_goods(){
+        $log = 'items.times';
+        writeLog('商品定时拉取开始',$log,'DEBUG');
+        $total = 0;
+        $end = date('H',time());
+        $minId = 1;
+        if($end){
+            while(true){
+                echo 'mid_id:'.$minId.PHP_EOL;
+                $start = (int)$end - 1;
+                $data = $this->api_request(self::SUPPLY_URL,[
+                    'start'  => $start,
+                    'end'    => $end,
+                    'min_id' => $minId,
+                    'back'   => 500
+                ]);
+                if(empty($data['data']))
+                    break;
+                $res = $this->add_data($data['data'],$log);
+                if($res){
+                    $total += count($data['data']);
+                }else{
+                    writeLog('商品定时拉取数据添加失败。数据：'.json_encode($data['data']),$log,'ERROR');
+                }
+                $minId = $data['min_id'];
+            }
+        }
+        writeLog('商品定时拉取开始结束',$log,'DEBUG');
+        die('add success, total:'.$total.PHP_EOL);
+    }
+
     public function add_goods(){
         $log = 'items.add';
         writeLog('商品上新开始',$log,'DEBUG');
@@ -45,7 +78,7 @@ class GoodsController extends CommonController
             ]);
             if(empty($data['data']))
                 break;
-            $this->add_data($data['data']);
+            $this->add_data($data['data'], $log);
             $pageNo = $data['min_id'];
         }
         writeLog('商品上新结束',$log,'DEBUG');
@@ -92,7 +125,7 @@ class GoodsController extends CommonController
         die('delete success, total:'.$res.PHP_EOL);
     }
 
-    private function add_data($data){
+    private function add_data($data,$log = 'items.add'){
         $model = M(self::T_ITEM);
         $time = time();
         array_walk($data,function(&$v)use($time){
@@ -100,7 +133,6 @@ class GoodsController extends CommonController
         });
         $insertId = $model->addAll($data);
         if(!$insertId){
-            $log = 'items.add';
             writeLog('商品数据添加失败，原因：'.$insertId,$log,'ERROR');
             exit('create error');
         }
@@ -131,7 +163,7 @@ class GoodsController extends CommonController
             ];
             $id[] = $v['itemid'];
         }
-        writeLog('商品失效 itemid:'.$id,$log,'DEBUG');
+        writeLog('商品失效 itemid:'.json_encode($id),$log,'DEBUG');
         $res = saveAll($data,self::T_ITEM,'itemid');
         if($res === false){
             $log = 'items.delete';

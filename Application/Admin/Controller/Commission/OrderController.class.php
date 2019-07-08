@@ -20,16 +20,11 @@ class OrderController extends CommonController
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ],false);
             $list = $model->where($where)->page($pageNo,$pageSize)->order('state asc')->select();
-            $members = $channels = [];
+            $members = [];
             if($list){
-                $memberId = [];
-                $fields = ['user_id','referee_id','grand_id'];
-                foreach($fields as $v){
-                    $memberId = array_merge($memberId,array_filter(array_unique(array_column($list,$v)),function($var){
-                        return $var ? 1 : 0;
-                    }));
-                }
-                $memberId = array_unique($memberId);
+                $memberId = array_filter(array_unique(array_column($list,'member_id')),function($var){
+                    return $var ? 1 : 0;
+                });
                 if($memberId){
                     $members = M(Scheme::USER)->field('id,username')->where(['id' => ['in',$memberId]])->select();
                     if($members){
@@ -39,9 +34,7 @@ class OrderController extends CommonController
             }
             returnResult([
                 'list' => handleRecords([
-                    'user_id'    => ['array_walk',$members,'user_id_str'],
-                    'referee_id' => ['array_walk',$members,'referee_id_str'],
-                    'grand_id'   => ['array_walk',$members,'grand_id_str'],
+                    'member_id'  => ['array_walk',$members,'member_id_str'],
                     'state'      => ['translate','order_state','state_str'],
                 ],$list),
                 'total' => $model->where($where)->count()
@@ -55,13 +48,13 @@ class OrderController extends CommonController
         if(IS_POST){
             $cd = 'cd /phpstudy/www/trjh.com/ && ';
             $phpPath = '/phpstudy/server/php/bin/php ';
-            $func = 'cli.php Order/sync_pay';
+            $func = 'cli.php Order/sync_settle';
             $cmd = $cd.$phpPath.$func.' >/dev/null & 2>&1';
             exec($cmd,$log,$state);
             if($state != 0)
                 writeLog(json_encode($log),'exec','ERROR');
         }else{
-            if(S('sync_pay_lock'))
+            if(S('sync_settle_lock'))
                 showError(40001);
         }
         returnResult();

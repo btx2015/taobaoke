@@ -357,6 +357,11 @@ function curlRequest($url,$params,$type = 'POST',$timeout = 5){
     $result = curl_exec($ch);
     $curl_error = curl_error($ch);
     curl_close($ch);
+    if($curl_error){
+        writeLog('url:'.$url.';params:'.json_encode($params).';error:'.$curl_error,'curl','ERROR');
+    }else{
+        writeLog('url:'.$url.';params:'.json_encode($params).';result:'.json_encode($result),'curl','DEBUG');
+    }
     return $result;
 }
 

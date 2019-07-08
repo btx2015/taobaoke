@@ -58,34 +58,8 @@
                                 <div id="pager"></div>
                             </div>
                             <!-- 表格 end -->
-                            <!-- 添加框 start -->
-                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content animated fadeIn">
-                                        <div class="modal-body">
-                                            <form class="form-horizontal" id="save-form">
-                                                <div class="form-group">
-                                                    <label class="control-label col-lg-2">渠道</label>
-                                                    <div class="col-lg-10">
-                                                        <select name="id" class="form-control">
-                                                            <volist name="channels" id="item">
-                                                                <option value="{$item.id}">{$item.name}</option>
-                                                            </volist>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-white" data-dismiss="modal">取消</button>
-                                            <button type="button" class="btn btn-primary" onclick="save()">保存</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 添加框 end -->
 
-                            <div class="modal inmodal" id="settle-modal" tabindex="-1" role="dialog"
+                            <div class="modal inmodal" id="save-modal" tabindex="-1" role="dialog"
                                  data-backdrop="static" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content animated fadeIn">
@@ -130,12 +104,34 @@
             $('#table').setGridWidth(width);
         });
         $('#toolbar-create').click(function(){
-            $('#save-modal').modal('show');
-        });
-        $('#toolbar-edit').click(function(){
-            $('#save-modal').modal('show');
-            $('#modal-text').text('数据匹配中，请耐心等待。。。');
-            request(editUrl,"匹配完成");
+            $.ajax({
+                type:'POST',
+                url:addUrl,
+                dataType:'json',
+                success: function(res){
+                    if(res.code !== 1){
+                        swal({
+                            title:"失败",
+                            text: res.code + res.msg,
+                            type: "error",
+                            confirmButtonText: "确认"
+                        });
+                    }else{
+                        swal({
+                            title:"",
+                            text: "成功",
+                            type: "success",
+                            showConfirmButton:false,
+                            timer: 1000
+                        });
+                        $("#table").jqGrid('setGridParam', {
+                            url : listUrl,
+                            datatype:'json',
+                            page : 1
+                        }).trigger("reloadGrid"); //重新载入
+                    }
+                }
+            });
         });
         $('#toolbar-search').click(reload);
         $('#toolbar-reset').click(function(){
@@ -176,11 +172,11 @@
                 {name: 'operate', index: 'operate',width: 120,align:'center',
                     formatter: function (value, grid, rows, state) {
                         var op = '';
-                        if(settleUrl && rows.state === '1')
+                        if(settleUrl && rows.state === '0' || rows.state === '4')
                             op += '<button type="button" class="btn btn-warning btn-xs" onclick="settle(\''+ rows.id+ '\');">结算</button>&nbsp;';
-                        if(payUrl && rows.state === '2')
+                        if(payUrl && rows.state === '2' || rows.state === '7')
                             op += '<button type="button" class="btn btn-danger btn-xs" onclick="pay(\''+ rows.id+ '\');">发放</button>&nbsp;';
-                        if(detailUrl && rows.state !== '1')
+                        if(detailUrl && rows.state !== '0' && rows.state !== '1' && rows.state !== '4')
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="detailOpen(\''+ rows.id+ '\');">明细</button>&nbsp;';
                         return op;
                     }
@@ -202,48 +198,15 @@
             page : 1
         }).trigger("reloadGrid"); //重新载入
     }
-    function save(){
-        $.ajax({
-            type:'POST',
-            url:addUrl,
-            data:$('#save-form').serialize(),
-            dataType:'json',
-            success: function(res){
-                if(res.code !== 1){
-                    swal({
-                        title:"失败",
-                        text: res.code + res.msg,
-                        type: "error",
-                        confirmButtonText: "确认"
-                    });
-                }else{
-                    swal({
-                        title:"",
-                        text: "成功",
-                        type: "success",
-                        showConfirmButton:false,
-                        timer: 1000
-                    });
-                    $('#save-form')[0].reset();
-                    $('#save-modal').modal('hide');
-                    $("#table").jqGrid('setGridParam', {
-                        url : listUrl,
-                        datatype:'json',
-                        page : 1
-                    }).trigger("reloadGrid"); //重新载入
-                }
-            }
-        });
-    }
     function request(url,id,text){
         $.ajax({
-            type:'POST',
+            type:'GET',
             url:url,
             data:{id:id},
             dataType:'json',
             success: function(res){
-                if(res.code !== 1){
-                    $('#settle-modal').modal('hide');
+                if(res.code == 1){
+                    $('#save-modal').modal('hide');
                     swal({
                         title:"",
                         text: text,
@@ -252,21 +215,67 @@
                         timer: 1000
                     });
                     reload()
+                }else if(res.code == 40003 || res.code == 40005){
+                    $('#save-modal').modal('hide');
+                    swal({
+                        title:"",
+                        text: res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
                 }else{
-                    request(url,id,text)
+                    setTimeout(function(){
+                        request(url,id,text)
+                    },3000);
                 }
             }
         });
     }
     function settle(id){
-        $('#settle-modal').modal('show');
         $('#modal-text').text('佣金结算中，请耐心等待。。。');
-        request(settleUrl,id,'结算完成')
+        $('#save-modal').modal('show');
+        $.ajax({
+            type:'POST',
+            url:settleUrl,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code == 1){
+                    request(settleUrl,id,"结算完成");
+                }else{
+                    $('#save-modal').modal('hide');
+                    swal({
+                        title:"",
+                        text: res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }
+            }
+        });
     }
     function pay(id){
-        $('#settle-modal').modal('show');
         $('#modal-text').text('佣金发放中，请耐心等待。。。');
-        request(payUrl,id,'发放完成')
+        $('#save-modal').modal('show');
+        $.ajax({
+            type:'POST',
+            url:payUrl,
+            data:{id:id},
+            dataType:'json',
+            success: function(res){
+                if(res.code == 1){
+                    request(payUrl,id,"发放完成");
+                }else{
+                    $('#save-modal').modal('hide');
+                    swal({
+                        title:"",
+                        text: res.msg,
+                        type: "error",
+                        confirmButtonText: "确认"
+                    });
+                }
+            }
+        });
     }
     function detailOpen(id){
         if(detailUrl){

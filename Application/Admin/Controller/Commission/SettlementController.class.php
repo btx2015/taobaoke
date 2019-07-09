@@ -9,13 +9,15 @@ class SettlementController extends CommonController
 {
 
     public function index(){
+        $state = C('translate')['settle_state'];
         if(IS_POST){
+            $state = array_keys($state);
             $model = M(Scheme::SETTLE);
             list($where,$pageNo,$pageSize) = before_query([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
                 'settle_sn'   => [[],false,true,['like','settlement_sn']],
-                'state'       => [['in'=>[1,2,3]],false,true,['eq','state']],
+                'state'       => [['in'=>$state],false,false,['eq','state']],
                 'create_from' => [['time'],false,true,['egt','created_at']],
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ],false);
@@ -30,6 +32,7 @@ class SettlementController extends CommonController
                 'total' => $model->where($where)->count()
             ]);
         }else{
+            $this->assign('state',$state);
             $this->display();
         }
     }
@@ -67,10 +70,8 @@ class SettlementController extends CommonController
             if(!$res){
                 showError(20001);
             }
-            $cd = 'cd /phpstudy/www/trjh.com/ && ';
-            $phpPath = '/phpstudy/server/php/bin/php ';
-            $func = 'cli.php Settle/settle/id'.$id;
-            $cmd = $cd.$phpPath.$func.' >/dev/null & 2>&1';
+
+            $cmd = C('CLI_CMD').' Settle/settle/id/'.$id.' >/dev/null & 2>&1';
             exec($cmd,$log,$state);
             if($state != 0)
                 writeLog(json_encode($log),'exec','ERROR');
@@ -100,10 +101,14 @@ class SettlementController extends CommonController
             $settle = $settleModel->where(['id' => $id,'state'=> 2])->find();
             if(!$settle)
                 showError(20000,'结算单不存在');
-            $cd = 'cd /phpstudy/www/trjh.com/ && ';
-            $phpPath = '/phpstudy/server/php/bin/php ';
-            $func = 'cli.php Pay/pay/id/'.$id;
-            $cmd = $cd.$phpPath.$func.' >/dev/null & 2>&1';
+            $res = $settleModel->where(['id' => $id])->save([
+                'pay_time' => time(),
+                'state' => 5
+            ]);
+            if(!$res){
+                showError(20001);
+            }
+            $cmd = C('CLI_CMD').' Pay/pay/id/'.$id.' >/dev/null & 2>&1';
             exec($cmd,$log,$state);
             if($state != 0)
                 writeLog(json_encode($log),'exec','ERROR');
@@ -129,32 +134,32 @@ class SettlementController extends CommonController
             list($where,$pageNo,$pageSize) = before_query([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
-                'settle_id'   => [['num'],true],
-                'type'        => [['in' => [1,2]],false,true],
-                'create_from' => [['time'],false,true,['egt','created_at']],
-                'create_to'   => [['time'],false,true,['elt','created_at']],
-            ]);
-
-            $list = M(Scheme::S_DETAIL)->where($where)->page($pageNo,$pageSize)->select();
-            $orders = $members = [];
-            if($list){
-                $userId = array_unique(array_column($list,'member_id'));
-                $members = M(Scheme::USER)->field('id,username')->where(['id'=>['in',$userId]])->select();
-                $members = array_column($members,'username','id');
-                $orderId = array_unique(array_column($list,'order_id'));
-                $orders = M(Scheme::S_ORDER)->field('id,trade_id')->where(['id'=>['in',$orderId]])->select();
-                $orders = array_column($orders,'trade_id','id');
-            }
+                'settle_id'   => [[],false,true,['eq','a.settle_id']],
+                'order_id'    => [[],false,true,['eq','a.order_id']],
+                'member_id'   => [[],false,true,['eq','a.member_id']],
+                'settlement_sn' => [[],false,true,['eq','s.settlement_sn']],
+                'trade_id'    => [[],false,true,['eq','o.trade_id']],
+                'username'    => [[],false,true,['eq','u.username']],
+                'type'        => [['in' => [1,2,3,4]]],
+                'state'       => [['in' => [1,2]]],
+                'create_from' => [['time'],false,true,['egt','a.created_at']],
+                'create_to'   => [['time'],false,true,['elt','a.created_at']],
+            ],'a');
+            $model = M(Scheme::S_DETAIL);
+            $list = $model->alias('a')
+                ->field('a.*,s.settlement_sn,o.trade_id,u.username,u.phone')
+                ->join('left join '.Scheme::SETTLE.' s on a.settle_id = s.id')
+                ->join('left join '.Scheme::S_ORDER.' o on a.order_id = o.id')
+                ->join('left join '.Scheme::USER.' u on a.member_id = u.id')
+                ->where($where)->page($pageNo,$pageSize)->select();
 
             returnResult([
                 'list' => handleRecords([
-                    'member_id'    => ['array_walk',$members,'member_id_str'],
-                    'trade_id'   => ['array_walk',$orders,'trade_id_str'],
                     'state'      => ['translate','settle_detail_state','state_str'],
                     'type'       => ['translate','settle_type','type_str'],
                     'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
                 ],$list),
-                'total' =>M(Scheme::S_DETAIL)->where($where)->count()
+                'total' => $model->alias('a')->where($where)->count()
             ]);
         }else{
             $id = I('get.id');

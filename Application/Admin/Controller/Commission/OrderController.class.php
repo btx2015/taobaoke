@@ -45,33 +45,25 @@ class OrderController extends CommonController
     }
 
     public function add(){
+        if(S('sync_settle_lock'))
+            showError(40001);
         if(IS_POST){
-            $cd = 'cd /phpstudy/www/trjh.com/ && ';
-            $phpPath = '/phpstudy/server/php/bin/php ';
-            $func = 'cli.php Order/sync_settle';
-            $cmd = $cd.$phpPath.$func.' >/dev/null & 2>&1';
+            $cmd = C('CLI_CMD').' Order/sync_settle >/dev/null & 2>&1';
             exec($cmd,$log,$state);
             if($state != 0)
                 writeLog(json_encode($log),'exec','ERROR');
-        }else{
-            if(S('sync_settle_lock'))
-                showError(40001);
         }
         returnResult();
     }
 
     public function edit(){
+        if(S('match_settle_lock'))
+            showError(40001);
         if(IS_POST){
-            $cd = 'cd /phpstudy/www/trjh.com/ && ';
-            $phpPath = '/phpstudy/server/php/bin/php ';
-            $func = 'cli.php Match/match_settle';
-            $cmd = $cd.$phpPath.$func.' >/dev/null & 2>&1';
+            $cmd = C('CLI_CMD').' Match/match_settle >/dev/null & 2>&1';
             exec($cmd,$log,$state);
             if($state != 0)
                 writeLog(json_encode($log),'exec','ERROR');
-        }else{
-            if(S('match_settle_lock'))
-                showError(40001);
         }
         returnResult();
     }

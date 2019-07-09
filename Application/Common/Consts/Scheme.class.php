@@ -52,4 +52,6 @@ class Scheme
     const SYS_BASIC = 'tr_sys_basic';
     const SYS_NODE = 'tr_sys_node';
     const SYS_ROLE = 'tr_sys_role';
+
+    const STAT = 'tr_stat';
 }

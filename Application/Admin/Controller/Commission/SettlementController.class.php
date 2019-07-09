@@ -167,4 +167,42 @@ class SettlementController extends CommonController
             $this->display();
         }
     }
+
+    public function partner(){
+        if(IS_POST){
+            $id = I('post.id');
+            if(!$id)
+                showError(10006);
+            $settleModel = M(Scheme::SETTLE);
+            $settle = $settleModel->where(['id' => $id,'state' => 2])->find();
+            if(!$settle)
+                showError(20004,'结算单不存在');
+            $res = M(Scheme::P_SETTLE)->add([
+                'settle_id' => $id,
+                'created_at' => time()
+            ]);
+            if(!$res){
+                showError(20001);
+            }
+
+            $cmd = C('CLI_CMD').' Settle/settle_partner/id/'.$id.' >/dev/null & 2>&1';
+            exec($cmd,$log,$state);
+            if($state != 0)
+                writeLog(json_encode($log),'exec','ERROR');
+        }else{
+            $id = I('get.id');
+            if(!$id)
+                showError(10006);
+            $settleModel = M(Scheme::P_SETTLE);
+            $settle = $settleModel->where(['id' => $id])->find();
+            if(!$settle)
+                showError(20004,'结算单不存在');
+            if($settle['state'] == 1){
+                showError(40002);//结算中
+            }else if($settle['state'] == 4){
+                showError(40003);//结算失败
+            }
+        }
+        returnResult();
+    }
 }

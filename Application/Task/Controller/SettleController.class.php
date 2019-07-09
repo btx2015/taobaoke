@@ -319,4 +319,92 @@ class SettleController extends CommonController
 
         return true;
     }
+
+    public function settle_partner(){
+        $log = 'partner.settle';
+        echo 'settle start'.PHP_EOL;
+        writeLog('开始结算',$log,'DEBUG');
+
+        $id = $_GET['id'];
+        if(!$id){
+            writeLog('结算单ID不存在',$log,'ERROR');
+            die('Settle ID is not exits!'.PHP_EOL);
+        }
+
+        $settle = M(Scheme::SETTLE)->where(['id'=>$id,'state'=>2])->find();
+        if(!$settle){
+            writeLog('结算单不存在',$log,'ERROR');
+            die('Settle is not exits!'.PHP_EOL);
+        }
+
+        $partners = M(Scheme::PARTNER)->where(['state'=>1])->select();
+        if(!$partners){
+            writeLog('暂无合伙人',$log,'ERROR');
+            die('no partners!'.PHP_EOL);
+        }
+
+        $time = time();
+        $flows = $update = [];
+        $totalIncome = $totalAmount = $partnerNum = 0;
+        $model = M(Scheme::S_DETAIL);
+        foreach($partners as $partner){
+            $income = $model->where([
+                'settle_id' => $id,
+                'partner_id' => $partner['id']
+            ])->sum('amount');
+            if(!$income)
+                continue;
+            $totalIncome += $income;
+            $amount = round($income * $partner['rate']);
+            $totalAmount += $amount;
+            $flows[] = [
+                'member_id' => $partner['member_id'],
+                'settle_id' => $id,
+                'amount' => $amount,
+                'income' => $income,
+                'rate' => $partner['rate'],
+                'created_at' => $time
+            ];
+
+            $update[] = [
+                'id' => $partner['id'],
+                'total_income' => $partner['total_income'] + $amount
+            ];
+        }
+
+        if($flows){
+            $partnerNum = count($flows);
+            M()->startTrans();
+            $res = M(Scheme::P_FLOW)->add($flows);
+            if(!$res){
+                M()->rollback();
+                echo 'partner fund flow create failed'.PHP_EOL;
+                writeLog('分佣明细创建失败',$log,'ERROR');
+            }
+            $res = saveAll($update,Scheme::PARTNER);
+            if(!$res){
+                M()->rollback();
+                echo 'partner income update failed'.PHP_EOL;
+                writeLog('合伙人累计收入更新失败',$log,'ERROR');
+            }
+            $res = M(Scheme::P_SETTLE)->where(['settle_id'=>$id])->save([
+                'partner_num' => $partnerNum,
+                'amount' => $totalAmount,
+                'income' => $totalIncome,
+                'state' => 2
+            ]);
+            if(!$res){
+                M()->rollback();
+                echo 'partner settle update failed'.PHP_EOL;
+                writeLog('合伙人结算单更新失败',$log,'ERROR');
+            }
+            M()->commit();
+            echo 'Success!total:'.$partnerNum.PHP_EOL;
+        }else{
+            echo 'no fund flows'.PHP_EOL;
+        }
+        echo 'settle end'.PHP_EOL;
+        writeLog('分佣结束',$log,'DEBUG');
+        return true;
+    }
 }

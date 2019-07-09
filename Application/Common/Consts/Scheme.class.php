@@ -36,7 +36,6 @@ class Scheme
     const U_POINTS = 'tr_member_points';
     const U_SIGN = 'tr_member_sign';
     const U_WITHDRAW = 'tr_member_withdraw';
-    const U_PARTNER = 'tr_partners';
     const U_LEVEL = 'tr_member_level';
 
     const PRODUCT = 'tr_product';
@@ -54,4 +53,8 @@ class Scheme
     const SYS_ROLE = 'tr_sys_role';
 
     const STAT = 'tr_stat';
+
+    const PARTNER = 'tr_partners';
+    const P_SETTLE = 'tr_partner_settle';
+    const P_FLOW = 'tr_partner_flow';
 }

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50553
 File Encoding         : 65001
 
-Date: 2019-06-25 15:35:55
+Date: 2019-07-10 16:57:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -32,14 +32,15 @@ CREATE TABLE `tr_article` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_article
 -- ----------------------------
-INSERT INTO `tr_article` VALUES ('1', '4', '一万个美丽的未来', '花销Q', '', '&lt;p&gt;safsfsdfsfffs&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553424904.png&quot; title=&quot;1553424904.png&quot; alt=&quot;QQ截图20190111144433.png&quot;/&gt;&lt;/p&gt;', '99', '1', '0', '1553424906', '2019-03-24 18:57:06');
-INSERT INTO `tr_article` VALUES ('2', '1', 'ceshi', 'sfa', '', '&lt;p&gt;asdasda&lt;/p&gt;', '12', '2', '0', '1561354631', '2019-06-24 13:37:11');
-INSERT INTO `tr_article` VALUES ('3', '1', 'safsfsf', 'sfdasd', '', '&lt;p&gt;fsdafdsfsfs&lt;/p&gt;', '1', '2', '0', '1561354762', '2019-06-24 13:39:22');
+INSERT INTO `tr_article` VALUES ('1', '4', '一万个美丽的未来', '花销Q', '1', '&lt;p&gt;safsfsdfsfffs&lt;img src=&quot;/ueditor/php/upload/image/20190324/1553424904.png&quot; title=&quot;1553424904.png&quot; alt=&quot;QQ截图20190111144433.png&quot;/&gt;&lt;/p&gt;', '99', '1', '0', '1553424906', '2019-06-25 18:46:58');
+INSERT INTO `tr_article` VALUES ('2', '1', 'ceshi', 'sfa', '1', '&lt;p&gt;asdasda&lt;/p&gt;', '12', '2', '0', '1561354631', '2019-06-25 18:46:56');
+INSERT INTO `tr_article` VALUES ('3', '1', 'safsfsf', 'sfdasd', '1', '&lt;p&gt;fsdafdsfsfs&lt;/p&gt;', '1', '2', '0', '1561354762', '2019-06-25 18:46:55');
+INSERT INTO `tr_article` VALUES ('4', '1', 'asdasd ', 'adsda', '/Uploads/article_img/2019-06-25/5d11dfb4da5aa.jpg', '&lt;p&gt;asdadas&lt;/p&gt;', '12', '2', '0', '1561452468', '2019-06-25 16:47:48');
 
 -- ----------------------------
 -- Table structure for tr_article_cate
@@ -190,13 +191,27 @@ CREATE TABLE `tr_commission` (
   `alimama_share_fee` varchar(20) NOT NULL DEFAULT '0' COMMENT '技术服务费=结算金额*收入比率*技术服务费率。推广者赚取佣金后支付给阿里妈妈的技术服务费用',
   `item_img` varchar(255) NOT NULL DEFAULT '' COMMENT '商品图片',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_commission
 -- ----------------------------
-INSERT INTO `tr_commission` VALUES ('4', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '12', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.00', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '2', '1', '1557997213', '2019-05-16 19:49:34', '', '', '', '0', '0', '0', '0', '');
-INSERT INTO `tr_commission` VALUES ('10', '435762977170011041', '435762977170011041', '577087679869', '车门防撞条汽车门边防撞条防撞贴防擦条汽车防刮条通用型隐形装饰', '1', '8.20', '2.90', '西曼雷特车品旗舰店', '西曼雷特车品旗舰店', '0.35', '1.0000', '2019-05-06 13:22:53', '2019-05-16 16:23:24', '3', '', '', '天猫', '0.1200', '0.35', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '2.90', '0.00', '0.1200', '0.00', '2019-05-06 13:22:10', '', '558178813', '0', '0', '1558084466', '2019-05-17 17:14:26', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('12', '504593984237542270', '504593984237542270', '580398164028', '常吃掌记掌心脆干脆面方便面干吃面混装90后怀旧休闲零食整箱批发', '1', '12.00', '0.00', '三只小熊食品专营店', '三只小熊食品专营店', '0.00', '1.0000', '2019-06-26 12:12:14', '', '12', '', '', '天猫', '0.3000', '2.07', '0.0000', '1', '2', '食品-零食/特产', '391700292', '', '108697100321', '', '6.90', '0.00', '0.3000', '0.00', '2019-06-26 12:11:39', '', '2143645485', '21', '2', '1561522501', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('13', '504593984237542270', '504593984237542270', '580398164028', '常吃掌记掌心脆干脆面方便面干吃面混装90后怀旧休闲零食整箱批发', '1', '12.00', '0.00', '三只小熊食品专营店', '三只小熊食品专营店', '0.00', '1.0000', '2019-06-26 12:12:14', '', '12', '', '', '天猫', '0.3000', '2.07', '0.0000', '1', '2', '食品-零食/特产', '391700292', '', '108697100321', '', '6.90', '0.00', '0.3000', '0.00', '2019-06-26 12:11:39', '', '558178813', '1', '2', '1561522472', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('14', '506035296535505116', '506035296535505116', '592658805260', '3瓶|红石榴防晒霜喷雾SPF50+脖子变美白防水紫外线面部男女一抹白', '1', '76.90', '0.00', '鑫牌一号', '小美护肤TB专柜', '0.00', '1.0000', '2019-06-27 14:55:00', '', '12', '', '', '淘宝', '0.1000', '3.19', '0.0000', '1', '2', '美妆-美容护肤', '391700292', '', '108697100321', '', '31.90', '0.00', '0.1000', '0.00', '2019-06-27 14:54:30', '', '2140442961', '20', '2', '1561618801', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('15', '508244867116549507', '508244867116549507', '4629835786', '舒客舒克声波电动牙刷软毛成人防水家用电动牙刷充电自动牙刷G22', '1', '209.00', '0.00', '舒客官方旗舰店', '舒客官方旗舰店', '0.00', '1.0000', '2019-06-28 14:32:32', '', '12', '', '', '天猫', '0.2000', '19.80', '0.0000', '1', '2', '美容美体仪器', '391700292', '', '108697100321', '', '99.00', '0.00', '0.2000', '0.00', '2019-06-28 13:57:41', '', '2140458761', '19', '2', '1561703701', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('16', '507371552175505116', '507371552175505116', '592696623251', '爱威康测胃幽门螺旋杆菌检测试纸试剂医用口臭胃痛胃病HP快速检测', '1', '68.00', '0.00', '澳凯信医疗器械专营店', '澳凯信医疗器械专营店', '0.00', '1.0000', '2019-06-28 16:00:10', '', '12', '', '', '天猫', '0.2000', '1.96', '0.0000', '1', '2', 'OTC药品/医疗器械', '391700292', '', '108697100321', '', '9.80', '0.00', '0.2000', '0.00', '2019-06-28 15:59:01', '', '2140442961', '20', '2', '1561709101', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('18', '508803746401194632', '508803746401194632', '565290850993', '冰凉贴降温神器解暑防暑降暑冰贴夏天学生可爱手机散热贴清凉喷雾', '1', '5.10', '0.00', 'sen270239784', '九玺冰凉贴', '0.00', '1.0000', '2019-06-29 09:18:38', '', '12', '', '', '淘宝', '0.2000', '0.36', '0.0000', '1', '2', '居家日用', '391700292', '', '108697500236', '', '1.80', '0.00', '0.2000', '0.00', '2019-06-29 09:18:17', '2193292517', '', '51', '2', '1561779720', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('19', '509920899386182545', '509920899386182545', '567778813973', '儿童凉鞋男童鞋子韩版宝宝女童小童软底中大童沙滩鞋2019夏季新款', '1', '228.00', '0.00', '米修服饰专营店', '米修服饰专营店', '0.00', '1.0000', '2019-06-29 19:35:59', '', '12', '', '', '天猫', '0.0504', '3.48', '0.0000', '1', '2', '母婴-童鞋', '391700292', '', '108697100321', '', '69.00', '0.00', '0.0504', '0.00', '2019-06-29 19:35:14', '', '2191048587', '72', '2', '1561808402', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('20', '510752640025182545', '510752640025182545', '586123511590', '【带收纳箱】大娃娃套装女孩公主洋娃娃儿童过家家玩具别墅屋', '1', '188.74', '0.00', '无敌小先锋2', '特惠大商场', '0.00', '1.0000', '2019-07-01 07:17:07', '', '12', '', '', '淘宝', '0.3001', '44.64', '0.0000', '1', '2', '母婴-玩具', '391700292', '', '108697100321', '', '148.74', '0.00', '0.3001', '0.00', '2019-07-01 07:14:47', '', '2191048587', '72', '2', '1561936801', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('21', '287032391100742887', '287032391100742887', '590084304040', '垃圾袋家用手提式加厚黑色一次性小号大号拉圾塑料袋抽绳自动收口', '1', '9.90', '0.00', '多家宜旗舰店', '多家宜旗舰店', '0.00', '1.0000', '2019-07-01 13:53:19', '', '12', '', '', '天猫', '0.2000', '0.78', '0.0000', '1', '2', '家庭/个人清洁工具', '391700292', '', '108697100321', '', '3.90', '0.00', '0.2000', '0.00', '2019-07-01 13:52:39', '', '2196050367', '64', '2', '1561960501', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('22', '511328256574739004', '511328256574739004', '584466588447', '车载手机支架汽车用吸盘式万能通用型导航支驾支撑夹车内车上卡扣', '1', '129.00', '0.00', 'bshtir旗舰店', 'bshtir旗舰店', '0.00', '1.0000', '2019-07-01 14:14:11', '', '12', '', '', '天猫', '0.1000', '2.50', '0.0000', '1', '2', '汽车用品', '391700292', '', '108697100321', '', '25.00', '0.00', '0.1000', '0.00', '2019-07-01 14:12:57', '', '2179791050', '43', '2', '1561961702', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('23', '512424513106505116', '512424513106505116', '596191804936', '男士短袖t恤夏季韩版潮男装运动休闲宽松套装加肥加大码胖子夏装', '1', '109.00', '0.00', '尔奇时尚馆', '尔奇时尚馆', '0.00', '1.0000', '2019-07-01 22:36:14', '', '12', '', '', '淘宝', '0.0500', '4.95', '0.0000', '1', '2', '男装', '391700292', '', '108697100321', '', '99.00', '0.00', '0.0500', '0.00', '2019-07-01 22:35:06', '', '2140442961', '20', '2', '1561992002', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('24', '512778144856739004', '512778144856739004', '596567705113', 'viniya本色抽纸批发整箱家庭装家用实惠装加厚纸巾卫生纸抽餐巾纸', '1', '59.90', '0.00', 'viniya旗舰店', 'viniya旗舰店', '0.00', '1.0000', '2019-07-02 14:03:17', '', '12', '', '', '天猫', '0.1300', '1.16', '0.0000', '1', '2', '洗护用品', '391700292', '', '108697100321', '', '8.90', '0.00', '0.1300', '0.00', '2019-07-02 14:02:54', '', '2179791050', '43', '2', '1562047501', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('25', '512776736861739004', '512776736861739004', '596567705113', 'viniya本色抽纸批发整箱家庭装家用实惠装加厚纸巾卫生纸抽餐巾纸', '1', '59.90', '0.00', 'viniya旗舰店', 'viniya旗舰店', '0.00', '1.0000', '2019-07-02 14:02:18', '', '12', '', '', '天猫', '0.1300', '1.16', '0.0000', '1', '2', '洗护用品', '391700292', '', '108697100321', '', '8.90', '0.00', '0.1300', '0.00', '2019-07-02 14:01:17', '', '2179791050', '43', '2', '1562047501', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('26', '515065794929912978', '515065794929912978', '546142431184', '网红泰迪狗窝可拆洗夏季猫窝四季通用中小型犬宠物垫夏天凉窝用品', '1', '30.00', '0.00', '许哒少', '狗狗之家工厂店', '0.00', '1.0000', '2019-07-03 15:12:40', '', '12', '', '', '淘宝', '0.0664', '1.25', '0.0000', '1', '2', '宠物用品', '391700292', '', '108697100321', '', '18.90', '0.00', '0.0664', '0.00', '2019-07-03 15:10:23', '', '2198124383', '90', '2', '1562138102', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('27', '515974018569140120', '515974018569140120', '579575817658', '舒克舒客宝贝婴儿湿巾纸巾婴幼儿新生宝宝手口专用无香80抽5包', '1', '84.50', '0.00', 'sakykids舒客宝贝旗舰店', 'sakykids舒客宝贝旗舰店', '0.00', '1.0000', '2019-07-04 09:31:16', '', '12', '', '', '天猫', '0.3000', '3.87', '0.0000', '1', '2', '母婴-尿片洗护', '391700292', '', '108697100321', '', '12.90', '0.00', '0.3000', '0.00', '2019-07-04 09:30:48', '', '2196041510', '26', '2', '1562204101', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
+INSERT INTO `tr_commission` VALUES ('28', '515986722712140120', '515986722712140120', '588841405371', '王麻子菜刀家用切片刀厨师专用锋利不锈钢切菜刀切肉切片厨房刀具', '1', '200.00', '0.00', '厨房用具特卖', '中华老字号王麻子厨房用具特卖店', '0.00', '1.0000', '2019-07-04 09:41:54', '', '12', '', '', '淘宝', '0.2000', '23.00', '0.0000', '1', '2', '厨房/烹饪用具', '391700292', '', '108697100321', '', '115.00', '0.00', '0.2000', '0.00', '2019-07-04 09:39:39', '', '2196041510', '26', '2', '1562204701', '2019-07-04 11:00:07', '', '', '', '0', '0', '0', '0', '');
 
 -- ----------------------------
 -- Table structure for tr_commission_detail
@@ -213,13 +228,48 @@ CREATE TABLE `tr_commission_detail` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=245 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_commission_detail
 -- ----------------------------
-INSERT INTO `tr_commission_detail` VALUES ('7', '1', '2', '1', '0', '1.00', '推荐分佣', '1554985575', '2019-04-11 20:26:22');
-INSERT INTO `tr_commission_detail` VALUES ('8', '1', '1', '2', '0', '8.00', '分享下单成功分佣', '1554985575', '2019-04-11 20:26:22');
+INSERT INTO `tr_commission_detail` VALUES ('208', '12', '1', '21', '0', '1.04', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('209', '12', '4', '1', '0', '0.75', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('210', '13', '1', '1', '0', '1.78', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('211', '14', '1', '20', '0', '1.60', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('212', '14', '4', '1', '0', '1.15', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('213', '16', '1', '20', '0', '0.98', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('214', '16', '4', '1', '0', '0.71', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('215', '23', '1', '20', '0', '2.48', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('216', '23', '4', '1', '0', '1.78', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('217', '15', '1', '19', '0', '9.90', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('218', '15', '4', '1', '0', '7.13', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('219', '18', '1', '51', '0', '0.18', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('220', '18', '4', '1', '0', '0.13', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('221', '19', '1', '72', '0', '1.74', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('222', '19', '3', '52', '0', '0.35', '推荐分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('223', '19', '4', '1', '0', '0.90', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('224', '20', '1', '72', '0', '22.32', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('225', '20', '3', '52', '0', '4.46', '推荐分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('226', '20', '4', '1', '0', '11.61', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('227', '21', '1', '64', '0', '0.39', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('228', '21', '4', '22', '0', '0.22', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('229', '21', '4', '1', '0', '0.06', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('230', '22', '1', '43', '0', '1.25', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('231', '22', '3', '33', '0', '0.25', '推荐分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('232', '22', '4', '1', '0', '0.65', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('233', '24', '1', '43', '0', '0.58', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('234', '24', '3', '33', '0', '0.12', '推荐分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('235', '24', '4', '1', '0', '0.30', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('236', '25', '1', '43', '0', '0.58', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('237', '25', '3', '33', '0', '0.12', '推荐分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('238', '25', '4', '1', '0', '0.30', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('239', '26', '1', '90', '0', '0.63', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('240', '26', '4', '1', '0', '0.45', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('241', '27', '1', '26', '0', '1.94', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('242', '27', '4', '1', '0', '1.39', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('243', '28', '1', '26', '0', '11.50', '自购分佣', '1562209207', '2019-07-04 11:00:07');
+INSERT INTO `tr_commission_detail` VALUES ('244', '28', '4', '1', '0', '8.28', '运营商分佣', '1562209207', '2019-07-04 11:00:07');
 
 -- ----------------------------
 -- Table structure for tr_commission_v1
@@ -371,11 +421,12 @@ CREATE TABLE `tr_goods` (
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_goods
 -- ----------------------------
+INSERT INTO `tr_goods` VALUES ('1', '65875', '', '', '', '0', '0', '0', '', '0.00', '0.00', '0.00', '0', '', '', '0', '101', '1', '0', '0', '0', '0', '1', '0', '0', '0', '0', '2019-06-28 17:20:09');
 
 -- ----------------------------
 -- Table structure for tr_goods_attr
@@ -481,7 +532,7 @@ CREATE TABLE `tr_items` (
   `is_brand` tinyint(1) DEFAULT '0' COMMENT '是否为品牌产品（1是）',
   `is_live` tinyint(1) DEFAULT '0' COMMENT '是否为直播（1是）',
   `guide_article` varchar(255) DEFAULT '' COMMENT '推广导购文案',
-  `videoid` int(11) DEFAULT '0' COMMENT '商品视频ID（id大于0的为有视频单，视频拼接地址http://cloud.video.taobao.com/play/u/1/p/1/e/6/t/1/+videoid+.mp4）',
+  `videoid` varchar(255) DEFAULT '0' COMMENT '商品视频ID（id大于0的为有视频单，视频拼接地址http://cloud.video.taobao.com/play/u/1/p/1/e/6/t/1/+videoid+.mp4）',
   `activity_type` varchar(255) DEFAULT '' COMMENT '活动类型：',
   `planlink` varchar(255) DEFAULT '' COMMENT '营销计划链接',
   `userid` bigint(20) DEFAULT '0' COMMENT '店主的userid',
@@ -684,8 +735,7 @@ CREATE TABLE `tr_member` (
   `last_login_ip` varchar(20) NOT NULL DEFAULT '' COMMENT '上次登陆ip',
   `login_num` int(11) NOT NULL DEFAULT '0' COMMENT '登陆次数',
   `channel_id` int(11) NOT NULL DEFAULT '1' COMMENT '顶级运营商id',
-  `special_id` varchar(255) NOT NULL DEFAULT '0' COMMENT '淘宝会员ID',
-  `relation_id` varchar(50) NOT NULL DEFAULT '',
+  `special_id` varchar(255) DEFAULT NULL COMMENT '淘宝会员ID',
   `level` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户等级 0普通用户',
   `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '注册时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -703,14 +753,89 @@ CREATE TABLE `tr_member` (
   `referee_map` longtext COMMENT '推荐关系 推荐人id逗号分隔',
   `partner_id` int(11) NOT NULL DEFAULT '0' COMMENT '合伙人id',
   `referee_count` int(11) NOT NULL DEFAULT '0' COMMENT '推荐会员数量',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+  `relation_id` varchar(20) DEFAULT NULL,
+  `invitecode` varchar(10) DEFAULT NULL,
+  `zfbaccount` varchar(255) DEFAULT NULL,
+  `zfbname` varchar(255) DEFAULT NULL,
+  `isvip` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `aadd` (`invitecode`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_member
 -- ----------------------------
-INSERT INTO `tr_member` VALUES ('1', 'admin', 'b1d1ab72336885719b522a1920d56e5c', '13588272939', '0', '超级管理员', '1', '', '0', '0', '', '0', '', '0', '1', '0', '', '3', '1552908886', '2019-03-18 19:34:46', '3.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', null, '0', '0');
-INSERT INTO `tr_member` VALUES ('2', 'ceshi', '8198eee1cc2c105377e09ddb5df4709e', '13588272727', '1', '', '1', '', '0', '0', '', '0', '', '0', '1', '558178813', '', '2', '1554609771', '2019-04-07 12:02:51', '24.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '1', '2', '0');
+INSERT INTO `tr_member` VALUES ('1', '小唐人', 'fcea920f7412b5da7be0cf42b8c93759', '13252513125', '0', 'QVRU8J+Slw==', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erJ9rkvNTsdMDGpecgGF4lI55FclTHHwG5AibFzpDeiadzdANFl3pqQvHgGmHuxm0AJ4IYMRcTKibNpQ/132', '0', '0', '', '0', '', '0', '1', '558178813', '4', '1554609771', '2019-04-07 12:02:51', '9.00', '0.00', '0.00', '0.00', '0.00', '0', 'oksW41Fbb7y93NM2bk_12QRgBSW4', 'oDTwV5h4i4jpiYLVqevPes7_Nhno', 'QVRU8J+Slw==', '800', '0.00', '0', '0', '0', '131227256', '7U49ZP7T', '13252513125', '李野', '1');
+INSERT INTO `tr_member` VALUES ('17', '18643817922', 'c3ae6c112e21d7052a3c4b9b8c9ab5b4', '18643817922', '1', 'QVRU', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83erJ9rkvNTsdMDGpecgGF4lI55FclTHHwG5AibFzpDeiadzdANFl3pqQvHgGmHuxm0AJ4IYMRcTKibNpQ/132', '0', '0', '', '0', '', '0', '1', null, '1', '1557894068', '2019-05-15 12:21:08', '0.00', '0.00', '0.00', '0.00', '0.00', '2', 'oksW41Fbb7y93NM2bk_12QRgBSW4', 'oDTwV5h4i4jpiYLVqevPes7_Nhno', 'QVRU8J+Slw==', '0', '0.00', '1', '0', '0', null, 'J2S42N9V', null, null, '1');
+INSERT INTO `tr_member` VALUES ('18', '15604387921', '6a071a6ae678bfe94aad3c4305c35f09', '15604387921', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1557896697', '2019-05-15 13:04:57', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', null, '3LVZ4PCD', null, null, '1');
+INSERT INTO `tr_member` VALUES ('19', '16643122007', '8ea0db8ea227becc4f1b7b5ec502a2d2', '16643122007', '1', '6ams5p6X', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/SMMMianhenTTh8WRtugibXRoeJvUcsBlsEwSjCWTPjaqzBgS6S5ibia3h4FWnmTdRw7iariaxWBiat8M1gLId7BRu69DQ/132', '0', '0', '', '0', '', '0', '1', '2140458761', '1', '1557990206', '2019-05-16 15:03:26', '0.00', '0.00', '0.00', '0.00', '0.00', '0', 'oksW41CXk5T55UNTn4jG9HTDjgjk', 'oDTwV5oPC-qYCBqrfNrou3e-O-HM', '6ams5p6X', '375', '0.00', '1', '0', '0', '2140458758', '55555678', null, null, '1');
+INSERT INTO `tr_member` VALUES ('20', '18166884184', '1017a6b302e354c2d7df06f107025421', '18166884184', '1', '5aSP5pel5b6u6aOO', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEIRxRbh6qmdqicjp0QiaRJtaibibEVRrQng1EHNQwDaIGlxXILGvyl0qtfiadkia8rtHOGu3W7iaHRghhCVQ/132', '0', '0', '', '0', '', '0', '1', '2140442961', '1', '1557990443', '2019-05-16 15:07:23', '0.00', '0.00', '0.00', '0.00', '0.00', '0', 'oksW41FF-hvXuFR0ezAV-5edflsM', 'oDTwV5kYGZnJD8tXhTBPnA9q2j84', '5aSP5pel5b6u6aOO', '0', '0.00', '1', '0', '0', '2140442956', 'FFRJHPPT', null, null, '1');
+INSERT INTO `tr_member` VALUES ('21', '13251751120', '0a17cba0f32524363d17bb13e80e6dca', '13251751120', '1', '5ZWK5ZOI', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2143645485', '1', '1557990477', '2019-05-16 15:07:57', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '1', '0', '0', '2143645481', 'NLZ6V3RF', null, null, '1');
+INSERT INTO `tr_member` VALUES ('22', '13674353777', '96eab8f0d5f33020460a334fb7e2f7bc', '13674353777', '1', '5pyq6K6+572u5pi156ew', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoQib0mX7mibnxxMczicJgicUZ28psfiaShFo6mVDdhHHEgIj8cZD3ibJicUEqmdZ5XW2dQSp2qaajQCq3WQ/132', '0', '0', '', '0', '', '0', '1', null, '3', '1557994849', '2019-05-16 16:20:49', '0.00', '0.00', '0.00', '0.00', '0.00', '0', 'oksW41IUUjK1ItAtSU6_FXz7j4LI', 'oDTwV5gR_o5ug9dU6ssjU4QclQW8', '5ZSQ5Lq66IGa5oOgLS3lkajpgJo=', '150', '0.00', '1', '0', '0', null, 'F4AJ4XTP', null, null, '1');
+INSERT INTO `tr_member` VALUES ('23', '15500345366', 'e976ce13054045695045e22b38b5b644', '15500345366', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1558746313', '2019-05-25 09:05:13', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '1', '0', '0', null, 'DRBGGT85', null, null, '1');
+INSERT INTO `tr_member` VALUES ('24', '17031947777', 'd04682b829575065fb29a97e7f3abd79', '17031947777', '22', '56ul5aSn5a6d', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2193877310', '3', '1558763579', '2019-05-25 13:52:59', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '275', '0.00', '1,22', '0', '0', '2193877308', '3HHZPXPR', '', '', '1');
+INSERT INTO `tr_member` VALUES ('25', '15248332223', 'cf47c4e5a5b8f855c5cb08b08d03c654', '15248332223', '1', '772e', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/x39v5UMzFw3gyb8O0CNk8VfFF9ZlVq7AJ2tU6FVZKQOHGKfhtVYXhyLfMVgbh3o1DibrJEbsbTPleb9picju0WjQ/132', '0', '0', '', '0', '', '0', '1', '2138013066', '1', '1558944545', '2019-05-27 16:09:05', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41Hv8zgiPi6oOoj2nKGsLTro', 'oDTwV5mztQSvu_4pLpLJMnLVbWVs', '772e', '50', '0.00', '1', '0', '0', '2138013063', 'TB3T63DP', '15248332223', '姜鑫', '1');
+INSERT INTO `tr_member` VALUES ('26', '18686611623', '7b2d7d9034cce3b65128f29a144d944b', '18686611623', '1', '5Zu95bqG', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eqmASShoEn0CibnJVXVndCfRB7eDbhJOfOScHSSNCKZ8qxMQHaEL7oQiasL3RvvyfW3zWtF4fAttG4g/132', '0', '0', '', '0', '', '0', '1', '2196041510', '1', '1559006422', '2019-05-28 09:20:22', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41DJNfBR7hIAj7qNlMf3LVEw', 'oDTwV5rYkb_QCaHVyMpscn93oyS0', '5Zu95bqG', '300', '0.00', '1', '0', '0', '2196041504', 'EUJYGM86', null, null, '1');
+INSERT INTO `tr_member` VALUES ('27', '13504412117', 'd3943427b51e5bf9a93b991a1a06a8e6', '13504412117', '20', '8J+RhENhbmR5', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEIeAkj2wUBrxszeNBITLVBB3RtnuSRDB69eDYtbnHpwDttibqhyC9ggw4E3Qrf1j5n4OPKeVIKTS6A/132', '0', '0', '', '0', '', '0', '1', '2190646041', '1', '1559117256', '2019-05-29 16:07:36', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41DqPXIxVq6UxVnKvhLSXc-E', 'oDTwV5kHPkX7jJX1eso_CmHDP7Ko', '8J+RhENhbmR5', '0', '0.00', '1,20', '0', '0', '2190646037', 'K77R8DGM', null, null, '1');
+INSERT INTO `tr_member` VALUES ('28', '13756708912', '85eb5bdc860e9055560461d10a92a60d', '13756708912', '1', '77yf77yf', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLHbq1qLCJ6UUE3dibQgvu1TPQ7GupUsRIGDGPRiaGgqibhJn1FAOP714QeRMV9JaCATGxVXsx1bZib6g/132', '0', '0', '', '0', '', '0', '1', null, '1', '1559199690', '2019-05-30 15:01:30', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41GPNMhXjKk8ifX7NyjdmQ0A', 'oDTwV5s9lyhZjIAzjZZQch9HCSms', '77yf77yf', '0', '0.00', '1', '0', '0', null, '7WGHY2X2', null, null, '1');
+INSERT INTO `tr_member` VALUES ('29', '18543142194', '1c52bbf58a62576188744095de101f4d', '18543142194', '25', '5LiA', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1559488331', '2019-06-02 23:12:11', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,25', '0', '0', null, '47UTGRUT', null, null, '1');
+INSERT INTO `tr_member` VALUES ('30', '18643530012', 'a71365743120c4de3581a41ed2d3174b', '18643530012', '22', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1559631174', '2019-06-04 14:52:54', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,22', '0', '0', null, 'YCYFDD28', null, null, '1');
+INSERT INTO `tr_member` VALUES ('31', '13433938624', 'ed4f0b3d58ae4cde6493c1ecaf81b09d', '13433938624', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1559891390', '2019-06-07 15:09:50', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '1', '0', '0', null, 'R686K2FX', null, null, '1');
+INSERT INTO `tr_member` VALUES ('32', '13664339379', '89c85e2a8a1d95b1a25adbfca026b0a0', '13664339379', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2194696696', '1', '1560128087', '2019-06-10 08:54:47', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', '2194696690', '2KF5R3L4', null, null, '1');
+INSERT INTO `tr_member` VALUES ('33', '18143640088', '6f05d1294b458ee4395a61ca2e02da32', '18143640088', '1', '5LuO6Imv5Li2', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83epv7MYr8RRIC3KkFUMRAv7g7dROf7dib96nI77bXKGmicXKY1FAaCjyuXFicHtGoCp4w319OSCArzK6g/132', '0', '0', '', '0', '', '0', '1', '2191427979', '1', '1560128100', '2019-06-10 08:55:00', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41ExfvrbgaeXUuFUsPEz0aFQ', 'oDTwV5hjiHvyv53KYlNO6E8nD3Yo', '5LuO6Imv5Li2', '100', '0.00', '1', '0', '0', '2191427977', 'ALB9SA7Z', null, null, '1');
+INSERT INTO `tr_member` VALUES ('34', '15663880865', '5f088106ad1c46958f5c36c46b9cd704', '15663880865', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2193283437', '1', '1560128320', '2019-06-10 08:58:40', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', '2193283434', 'YDRCH4UH', null, null, '1');
+INSERT INTO `tr_member` VALUES ('35', '13252635672', 'eb1416a32aa1570b753c306e3912c0b6', '13252635672', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1560128542', '2019-06-10 09:02:22', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', null, '3HHAT7HX', null, null, '1');
+INSERT INTO `tr_member` VALUES ('36', '13654374524', '53cf0b77136fd618d517e730b4fbd663', '13654374524', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2192585693', '1', '1560128776', '2019-06-10 09:06:16', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', '2192585691', 'Z6GR4RMM', null, null, '1');
+INSERT INTO `tr_member` VALUES ('37', '17304376959', '6184a65498542f13843c93af2163a13a', '17304376959', '1', '6Zi/5ouJ6JW+', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2191420915', '1', '1560129172', '2019-06-10 09:12:52', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', '2191420909', 'ZEUUM5VV', null, null, '1');
+INSERT INTO `tr_member` VALUES ('38', '15764366485', '8c22975734bbaa7d926a697110c7198f', '15764366485', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2161488126', '1', '1560130071', '2019-06-10 09:27:51', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', '2161488125', 'G5DVM3J4', null, null, '1');
+INSERT INTO `tr_member` VALUES ('39', '15304410167', 'd0970714757783e6cf17b26fb8e2298f', '15304410167', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2192550346', '1', '1560138158', '2019-06-10 11:42:38', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '50', '0.00', '1', '0', '0', '2192550343', 'EKNYPKFG', null, null, '1');
+INSERT INTO `tr_member` VALUES ('40', '13596103232', 'f2364dba50fd0e907cb9a064b83a52eb', '13596103232', '25', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2194933306', '1', '1560172770', '2019-06-10 21:19:30', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,25', '0', '0', '2194933302', 'ZEUU5VKR', null, null, '1');
+INSERT INTO `tr_member` VALUES ('41', '13304331135', '76468df52774ce0a63df3cf900f083e7', '13304331135', '33', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1560860671', '2019-06-18 20:24:31', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,33', '0', '0', null, 'EW8DCPSS', null, null, '1');
+INSERT INTO `tr_member` VALUES ('42', '15904423657', 'cc8b293e16e48c9806eafd2be1d82661', '15904423657', '1', '5pyq', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1560911127', '2019-06-19 10:25:27', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', null, '3HH8ECM4', null, null, '1');
+INSERT INTO `tr_member` VALUES ('43', '17519489789', '06227411adaf0d2dffec099a60aaeba7', '17519489789', '33', '5ZOI5Za95oiR5piv5rSL5rSL5ZCW', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83er72mm32Os8uQ4upbrczVZRicibQJutiaGzrxTyHsfTPEmYbENx81bXmnEUqyOKiaJyh251rM2eorlLPg/132', '0', '0', '', '0', '', '0', '1', '2179791050', '1', '1560920447', '2019-06-19 13:00:47', '0.00', '0.00', '0.00', '0.00', '0.00', '2', 'oksW41JHynxsjL50Lp8C4-QCc85s', 'oDTwV5mxCvhWE2s85ZsLulXIDV4g', '5ZOI5Za95oiR5piv5rSL5rSL5ZCW', '100', '0.00', '1,33', '0', '0', '2179791043', '3LVK72TS', null, null, '1');
+INSERT INTO `tr_member` VALUES ('51', '18643817921', 'c3ae6c112e21d7052a3c4b9b8c9ab5b4', '18643817921', '1', '8J+MpA==', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLRr6Okgge2KuOr9PN4bNI0qMfAoHkk9XnM5wEUxVPbZE5fmMwAKlncF6sHxZpb5WXSgG7ISKl5RQ/132', '0', '0', '', '0', '', '0', '1', '2193292520', '1', '1561344798', '2019-06-24 10:53:18', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41LFUThHPxRjIQOG08mCHNF0', 'oDTwV5i5LXflvKBH4Eht9ILKFnG4', '8J+MpA==', '0', '0.00', '1', '0', '0', '2193292517', 'R68473YX', null, null, '1');
+INSERT INTO `tr_member` VALUES ('52', '18343502777', '1f398457ba1ca4666e81415841785e87', '18343502777', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2191048587', '1', '1561540675', '2019-06-26 17:17:55', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '100', '0.00', '1', '0', '0', '2191048585', 'F4AVZARE', null, null, '1');
+INSERT INTO `tr_member` VALUES ('53', '18604359298', '0631469aa47516eb2e03a5b227ffdce3', '18604359298', '24', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561607616', '2019-06-27 11:53:36', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,22,24', '0', '0', null, 'RBN4E9GH', null, null, '1');
+INSERT INTO `tr_member` VALUES ('54', '13258856066', 'a2d6d404b0032cfe04484e87d8aca6d8', '13258856066', '24', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561620122', '2019-06-27 15:22:02', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,22,24', '0', '0', null, '8GTPVPVU', null, null, '1');
+INSERT INTO `tr_member` VALUES ('55', '13074332667', 'f04f04520b1aed2c9ec1aa7e4a887474', '13074332667', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2191424979', '1', '1561625500', '2019-06-27 16:51:40', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1', '0', '0', '2191424975', '49ZGKRNN', null, null, '1');
+INSERT INTO `tr_member` VALUES ('56', '17504403657', '5f820c65f2fc791fc64b441e233a9b68', '17504403657', '19', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561635908', '2019-06-27 19:45:08', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,19', '0', '0', null, 'K77Z73RZ', null, null, '1');
+INSERT INTO `tr_member` VALUES ('57', '15567752989', 'bb0947ce41a0b672b5bf5c3f040c2c82', '15567752989', '19', '5oKg5oKg', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2192411699', '1', '1561636100', '2019-06-27 19:48:20', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,19', '0', '0', '2192411697', 'VZRZLMMZ', null, null, '1');
+INSERT INTO `tr_member` VALUES ('58', '13756134811', 'c4fd812ce50ef51e95fbeaa303ae1bde', '13756134811', '24', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561692485', '2019-06-28 11:28:05', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '175', '0.00', '1,22,24', '0', '0', null, 'DT6LHP2A', null, null, '1');
+INSERT INTO `tr_member` VALUES ('59', '13756461797', 'fd9ef13a99fe359670c419917ed4b582', '13756461797', '19', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561698600', '2019-06-28 13:10:00', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,19', '0', '0', null, 'VZRZVA5M', null, null, '1');
+INSERT INTO `tr_member` VALUES ('60', '18626772050', 'bfee443ec87c45bf1bef012fd9e8a769', '18626772050', '19', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561699016', '2019-06-28 13:16:56', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,19', '0', '0', null, 'ALBSCE6M', null, null, '1');
+INSERT INTO `tr_member` VALUES ('61', '15144088353', '39d69f167897585dbdd1d3cd5ab62782', '15144088353', '24', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561701177', '2019-06-28 13:52:57', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,22,24', '0', '0', null, '49ZG5BDD', null, null, '1');
+INSERT INTO `tr_member` VALUES ('62', '15584346987', 'b32047c7606fda6281b5d9990e72e359', '15584346987', '25', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561704370', '2019-06-28 14:46:10', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,25', '0', '0', null, 'NRGU9Y9L', null, null, '1');
+INSERT INTO `tr_member` VALUES ('63', '13159682571', '90211df95cc7c2f3a02e48e191b6ffb2', '13159682571', '39', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561707026', '2019-06-28 15:30:26', '0.00', '0.00', '0.00', '0.00', '0.00', '2', '', '', '', '0', '0.00', '1,39', '0', '0', null, 'W89987JL', null, null, '1');
+INSERT INTO `tr_member` VALUES ('64', '15164451234', '7dad8d7737afdf0f7590590f78acf67b', '15164451234', '22', 'QS7ukJggTXIuVyDujK4=', '1', 'http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJsYN1GsKpe0oYDZUl3ZOdtWVLdEo6raqpfDjvbIT1siaCHnMc80CeLA9hBEqcJNat0c5A2hqriaczQ/132', '0', '0', '', '0', '', '0', '1', '2196050367', '1', '1561716386', '2019-06-28 18:06:26', '0.00', '0.00', '0.00', '0.00', '0.00', '1', 'oksW41KUPzdJTz9XIfC9GKFU_nw8', 'oDTwV5qsEkDZqM9q7Kx00SxKBB4I', 'QS7ukJggTXIuVyDujK4=', '0', '0.00', '1,22', '0', '0', '2196050361', 'EW8U5A3R', '15164451234', '魏群富', '1');
+INSERT INTO `tr_member` VALUES ('65', '13578986802', 'eb65737c0554c0b11d4ab2dffadccf9d', '13578986802', '19', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561719991', '2019-06-28 19:06:31', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,19', '0', '0', null, 'M8K8ADA4', null, null, '1');
+INSERT INTO `tr_member` VALUES ('66', '18626590186', '990b9e86ab13e555bf501878a270289f', '18626590186', '58', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561720597', '2019-06-28 19:16:37', '0.00', '0.00', '0.00', '0.00', '0.00', '24', '', '', '', '50', '0.00', '1,22,24,58', '0', '0', null, 'GNF4MYY3', null, null, '1');
+INSERT INTO `tr_member` VALUES ('67', '18543550768', '1e16ac1d13839830adf99af164238d55', '18543550768', '58', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2192796920', '1', '1561720650', '2019-06-28 19:17:30', '0.00', '0.00', '0.00', '0.00', '0.00', '24', '', '', '', '0', '0.00', '1,22,24,58', '0', '0', '2192796917', 'G5D3D8U2', null, null, '1');
+INSERT INTO `tr_member` VALUES ('68', '18626592698', 'e3b87a48d90a0df0ecbdfe9f49f0e059', '18626592698', '66', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561722081', '2019-06-28 19:41:21', '0.00', '0.00', '0.00', '0.00', '0.00', '58', '', '', '', '0', '0.00', '1,22,24,58,66', '0', '0', null, '3LVMTDKP', null, null, '1');
+INSERT INTO `tr_member` VALUES ('69', '15004435351', '3ab86a9e49bf499b00ce2f0a0abcd70f', '15004435351', '19', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561724378', '2019-06-28 20:19:38', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '50', '0.00', '1,19', '0', '0', null, 'TB3GTJGU', null, null, '1');
+INSERT INTO `tr_member` VALUES ('70', '15886066718', 'c14d78133b3a8986e5221e2ed1584f23', '15886066718', '69', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561781199', '2019-06-29 12:06:39', '0.00', '0.00', '0.00', '0.00', '0.00', '19', '', '', '', '0', '0.00', '1,19,69', '0', '0', null, 'GNF427XC', null, null, '1');
+INSERT INTO `tr_member` VALUES ('71', '18643501110', '72ecd4bff914cb13d3d8041c85815084', '18643501110', '1', '56ul56ul', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2196807620', '1', '1561794787', '2019-06-29 15:53:07', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '0,1', '0', '0', '2196807618', 'KN9AJ5KE', '18643501110', '佟颖楠', '1');
+INSERT INTO `tr_member` VALUES ('72', '13943094564', '3229ca99e44490e706e27dd961515679', '13943094564', '52', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2191048587', '1', '1561807633', '2019-06-29 19:27:13', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,52', '0', '0', '2191048585', 'CA4YE8YW', null, null, '0');
+INSERT INTO `tr_member` VALUES ('73', '15604456735', 'dbcfc5ac08cf3f25382abdf597d22b15', '15604456735', '19', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561810061', '2019-06-29 20:07:41', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,19', '0', '0', null, 'MCWKH2ZF', null, null, '0');
+INSERT INTO `tr_member` VALUES ('74', '15164450772', '1ff4d260951d21b5824dad88f180b398', '15164450772', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561939338', '2019-07-01 08:02:18', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '100', '0.00', '0,1', '0', '0', null, 'VZRZRJB2', null, null, '0');
+INSERT INTO `tr_member` VALUES ('75', '18643507858', 'e879bd0375b73e4a1ff79e9cf670afaf', '18643507858', '22', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561959034', '2019-07-01 13:30:34', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,22', '0', '0', null, 'R68Y8F7U', null, null, '1');
+INSERT INTO `tr_member` VALUES ('76', '13353211308', '344484d8bafbe2bfc5108416725b5b4f', '13353211308', '74', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2196815839', '1', '1561986275', '2019-07-01 21:04:35', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '0,1,74', '0', '0', '2196815832', 'D3H7HDKE', null, null, '0');
+INSERT INTO `tr_member` VALUES ('77', '18804381987', '3692d8d14a8500964f732b4d9fd7d88b', '18804381987', '74', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1561986383', '2019-07-01 21:06:23', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '0,1,74', '0', '0', null, 'UUM3S92C', null, null, '0');
+INSERT INTO `tr_member` VALUES ('78', '17790002666', 'e88194e2c18f0ea1ad82b5afbbae32af', '17790002666', '52', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2196860649', '1', '1562032064', '2019-07-02 09:47:44', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,52', '0', '0', '2196860646', 'G5D6R6XH', null, null, '1');
+INSERT INTO `tr_member` VALUES ('79', '18343136048', '5ea26e429ec0d6088fc3cc943294addb', '18343136048', '58', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562044851', '2019-07-02 13:20:51', '0.00', '0.00', '0.00', '0.00', '0.00', '24', '', '', '', '0', '0.00', '1,22,24,58', '0', '0', null, 'KHSEJLF7', null, null, '0');
+INSERT INTO `tr_member` VALUES ('80', '13578924402', '9208ff08bbcf96b20e973bb24399ebec', '13578924402', '33', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562061858', '2019-07-02 18:04:18', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,33', '0', '0', null, 'K25ZMNPR', null, null, '1');
+INSERT INTO `tr_member` VALUES ('81', '15004389887', '1d91b08994e33437279f230a8bb1f67d', '15004389887', '1', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '558178813', '1', '1562115526', '2019-07-03 08:58:46', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '0', '0.00', '0,1', '0', '0', '558166503', 'EUJRFZG8', null, null, '0');
+INSERT INTO `tr_member` VALUES ('82', '13331466668', '0b411cfe103dd620764f4161e1aa8a44', '13331466668', '22', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2198412532', '1', '1562118529', '2019-07-03 09:48:49', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,22', '0', '0', '2198412530', 'M8K8WXBP', null, null, '0');
+INSERT INTO `tr_member` VALUES ('83', '13578631024', 'b16dd20ea4722f078a83db11c5597803', '13578631024', '26', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562124637', '2019-07-03 11:30:37', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,26', '0', '0', null, 'FZW78F29', null, null, '0');
+INSERT INTO `tr_member` VALUES ('84', '15500041713', '8643821949ce1ac393590cc60a60a97c', '15500041713', '26', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2197992748', '1', '1562124672', '2019-07-03 11:31:12', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '100', '0.00', '1,26', '0', '0', '2197992746', 'VZRAPABH', null, null, '1');
+INSERT INTO `tr_member` VALUES ('85', '17808080877', 'ceea9d6ede0f426bca4ed52fa52b2721', '17808080877', '26', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562124677', '2019-07-03 11:31:17', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,26', '0', '0', null, 'R68YTCBA', null, null, '1');
+INSERT INTO `tr_member` VALUES ('86', '15543000524', 'baea5b1c24beb0bb60be10104d0885e0', '15543000524', '26', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562125524', '2019-07-03 11:45:24', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,26', '0', '0', null, '47UFXL8V', null, null, '1');
+INSERT INTO `tr_member` VALUES ('87', '13214460231', '97956e6eef935666acd1e821e1c966d8', '13214460231', '26', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562125669', '2019-07-03 11:47:49', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '1,26', '0', '0', null, 'JP3UVMTA', null, null, '1');
+INSERT INTO `tr_member` VALUES ('88', '18612300063', '9cc43c3fa451fa919acfb68e143b5e9d', '18612300063', '84', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562130863', '2019-07-03 13:14:23', '0.00', '0.00', '0.00', '0.00', '0.00', '26', '', '', '', '0', '0.00', '1,26,84', '0', '0', null, 'MCWK2EFC', null, null, '1');
+INSERT INTO `tr_member` VALUES ('89', '15590549577', '2a8cc9a33e7faedc00cbd4a628a18477', '15590549577', '84', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562131769', '2019-07-03 13:29:29', '0.00', '0.00', '0.00', '0.00', '0.00', '26', '', '', '', '0', '0.00', '1,26,84', '0', '0', null, 'TS5JKJ5D', null, null, '1');
+INSERT INTO `tr_member` VALUES ('90', '18304356599', '537fdc3cb235f68043f3483d4666bcf3', '18304356599', '1', '5YWs54i15piv5Y+q6LKT', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', '2198124383', '1', '1562135218', '2019-07-03 14:26:58', '0.00', '0.00', '0.00', '0.00', '0.00', '0', '', '', '', '50', '0.00', '0,1', '0', '0', '2198124377', 'JV5NZE3L', 'sun8757@sina.com', '孙微', '0');
+INSERT INTO `tr_member` VALUES ('91', '18604398086', '98bd85f9c200eac90705ad30df0ef320', '18604398086', '90', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562140752', '2019-07-03 15:59:12', '0.00', '0.00', '0.00', '0.00', '0.00', '1', '', '', '', '0', '0.00', '0,1,90', '0', '0', null, '64NT46RJ', null, null, '0');
+INSERT INTO `tr_member` VALUES ('92', '18946516558', '0b38743c6ed60eead3f273a48ed0cad1', '18946516558', '43', 'TFk=', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562152707', '2019-07-03 19:18:27', '0.00', '0.00', '0.00', '0.00', '0.00', '33', '', '', '', '0', '0.00', '1,33,43', '0', '0', null, 'RSJDZEYE', null, null, '0');
+INSERT INTO `tr_member` VALUES ('93', '15044435633', 'bb3fe093917d5cdbbb4e85f30715e59a', '15044435633', '43', '5pyq6K6+572u5pi156ew', '1', 'http://jx.tangrenjuhui.com/Public/Tb/img/logo.png', '0', '0', '', '0', '', '0', '1', null, '1', '1562205591', '2019-07-04 09:59:51', '0.00', '0.00', '0.00', '0.00', '0.00', '33', '', '', '', '0', '0.00', '1,33,43', '0', '0', null, '3LVMUWB4', null, null, '0');
 
 -- ----------------------------
 -- Table structure for tr_member_account
@@ -895,14 +1020,35 @@ CREATE TABLE `tr_partner_flow` (
   `amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '收入',
   `income` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '合伙人所在分支结算总收入',
   `rate` float(10,4) NOT NULL DEFAULT '0.0000',
-  `order_id` longblob NOT NULL,
   `created_at` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_partner_flow
 -- ----------------------------
+INSERT INTO `tr_partner_flow` VALUES ('1', '1', '1', '10.00', '100.00', '0.1000', '0');
+
+-- ----------------------------
+-- Table structure for tr_partner_settlement
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_partner_settlement`;
+CREATE TABLE `tr_partner_settlement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `settle_id` int(11) NOT NULL DEFAULT '0',
+  `partner_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣合伙人数量',
+  `income` decimal(14,2) NOT NULL DEFAULT '0.00' COMMENT '总收入',
+  `amount` decimal(14,2) NOT NULL DEFAULT '0.00' COMMENT '实际结算金额',
+  `state` tinyint(4) NOT NULL DEFAULT '0',
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_partner_settlement
+-- ----------------------------
+INSERT INTO `tr_partner_settlement` VALUES ('1', '1', '0', '0.00', '0.00', '2', '1562744611', '2019-07-10 16:15:05');
 
 -- ----------------------------
 -- Table structure for tr_product
@@ -948,18 +1094,20 @@ CREATE TABLE `tr_settlement` (
   `pay_amount` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '发放金额',
   `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '参与分佣会员总数量',
   `rate_info` varchar(255) NOT NULL DEFAULT '0.0000' COMMENT '分佣比例json',
-  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0取消结算发放 1发起结算 2结算成功 3已发放 4结算失败 5发放失败',
+  `state` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0发起结算 1匹配成功 2结算成功  4结算失败 5已发放 6发放成功 7 发放失败',
   `settle_time` int(11) NOT NULL DEFAULT '0' COMMENT '结算时间',
   `pay_time` int(11) NOT NULL DEFAULT '0' COMMENT '发放时间',
   `created_at` int(11) NOT NULL DEFAULT '0',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_settlement
 -- ----------------------------
-INSERT INTO `tr_settlement` VALUES ('1', '20190411192803', '100.00', '78.00', '2', '{\"1\":\"0.5000\",\"2\":\"0.1000\",\"3\":\"0.1800\",\"4\":\"0.0800\"}', '2', '1560338760', '0', '1554982083', '2019-06-12 19:26:00');
+INSERT INTO `tr_settlement` VALUES ('1', '20190411192803', '100.00', '78.00', '2', '{\"1\":\"0.5000\",\"2\":\"0.1000\",\"3\":\"0.1800\",\"4\":\"0.0800\"}', '6', '1562584935', '1562637779', '1554982083', '2019-07-09 10:03:08');
+INSERT INTO `tr_settlement` VALUES ('2', '20190708191314', '0.00', '0.00', '0', '{\"4\":\"0.0800\",\"3\":\"0.1800\",\"2\":\"0.1000\",\"1\":\"0.5000\"}', '1', '1562585528', '0', '1562584394', '2019-07-08 19:32:08');
+INSERT INTO `tr_settlement` VALUES ('3', '20190709095934', '0.00', '0.00', '0', '{\"4\":\"0.0800\",\"3\":\"0.1800\",\"2\":\"0.1000\",\"1\":\"0.5000\"}', '0', '0', '0', '1562637574', '2019-07-09 09:59:34');
 
 -- ----------------------------
 -- Table structure for tr_settlement_detail
@@ -984,7 +1132,7 @@ CREATE TABLE `tr_settlement_detail` (
 -- ----------------------------
 -- Records of tr_settlement_detail
 -- ----------------------------
-INSERT INTO `tr_settlement_detail` VALUES ('36', '1', '1', '2', '2', '60.00', '1', '0', '自购分佣', '1', '1560338760', '2019-06-12 19:26:00');
+INSERT INTO `tr_settlement_detail` VALUES ('36', '1', '1', '17', '2', '60.00', '1', '0', '自购分佣', '1', '1560338760', '2019-07-08 15:45:10');
 INSERT INTO `tr_settlement_detail` VALUES ('37', '1', '4', '1', '3', '18.00', '1', '0', '运营商分佣', '1', '1560338760', '2019-06-12 19:26:00');
 
 -- ----------------------------
@@ -1008,7 +1156,7 @@ CREATE TABLE `tr_settlement_order` (
 -- ----------------------------
 -- Records of tr_settlement_order
 -- ----------------------------
-INSERT INTO `tr_settlement_order` VALUES ('1', 'order20190321143212', '', 'x123456', '100.00', '3', '2', '', '0', '2019-06-12 19:26:00');
+INSERT INTO `tr_settlement_order` VALUES ('1', 'order20190321143212', '', 'x123456', '100.00', '3', '17', '2019-06-26 12:12:14', '0', '2019-07-08 14:55:32');
 
 -- ----------------------------
 -- Table structure for tr_settlement_pay
@@ -1108,6 +1256,28 @@ CREATE TABLE `tr_spec_item` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for tr_stat
+-- ----------------------------
+DROP TABLE IF EXISTS `tr_stat`;
+CREATE TABLE `tr_stat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_num` int(11) NOT NULL DEFAULT '0' COMMENT '付款订单数量',
+  `member_num` int(11) NOT NULL DEFAULT '0' COMMENT '新增用户数量',
+  `service_num` int(11) NOT NULL DEFAULT '0' COMMENT '新增运营商数量',
+  `pre_commission` decimal(14,2) NOT NULL DEFAULT '0.00' COMMENT '预估佣金',
+  `withdraw_amount` decimal(14,2) NOT NULL,
+  `created_at` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of tr_stat
+-- ----------------------------
+INSERT INTO `tr_stat` VALUES ('1', '0', '0', '0', '0.00', '0.00', '1562656257');
+INSERT INTO `tr_stat` VALUES ('2', '0', '0', '0', '100.00', '0.00', '1562656383');
+INSERT INTO `tr_stat` VALUES ('3', '0', '0', '0', '0.00', '0.00', '1562656542');
+
+-- ----------------------------
 -- Table structure for tr_sys_admin
 -- ----------------------------
 DROP TABLE IF EXISTS `tr_sys_admin`;
@@ -1134,7 +1304,7 @@ CREATE TABLE `tr_sys_admin` (
 -- ----------------------------
 -- Records of tr_sys_admin
 -- ----------------------------
-INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1561442474', '', '1561427464', '', '158', '0', '1548075651', '2019-06-04 21:25:43');
+INSERT INTO `tr_sys_admin` VALUES ('1', 'admin', 'd93a5def7511da3d0f2d171d9c344e91', '13588272727', '超级管理员', '132@qq.com', '1', '1', '1562743174', '', '1562726886', '', '205', '0', '1548075651', '2019-06-04 21:25:43');
 INSERT INTO `tr_sys_admin` VALUES ('2', 'ceshi', '123', '13588272727', '', '123@qq.com', '2', '1', '0', '', '0', '', '0', '0', '1548075651', '2019-03-15 15:35:57');
 INSERT INTO `tr_sys_admin` VALUES ('3', 'btx', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '3', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:40');
 INSERT INTO `tr_sys_admin` VALUES ('4', 'btxs', '10470c3b4b1fed12c3baac014be15fac', '', 'xgh', '', '2', '2', '1548075651', '', '1548075651', '', '0', '0', '1548075651', '2019-03-15 15:33:36');
@@ -1225,7 +1395,7 @@ CREATE TABLE `tr_sys_node` (
   `created_at` int(11) DEFAULT '0' COMMENT '创建时间',
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=121 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=126 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of tr_sys_node
@@ -1334,9 +1504,14 @@ INSERT INTO `tr_sys_node` VALUES ('110', '编辑', 'Manage/Task/edit', '109', 'e
 INSERT INTO `tr_sys_node` VALUES ('119', '会员升级', 'Member/Level/index', '16', '1', '0', '1', '1', '0', '2019-06-25 09:49:50');
 INSERT INTO `tr_sys_node` VALUES ('120', '审核', 'Member/Level/edit', '119', 'edit', '0', '2', '1', '0', '2019-06-25 09:50:30');
 INSERT INTO `tr_sys_node` VALUES ('113', '合伙人', 'Member/Partner/index', '16', '1', '0', '1', '1', '0', '2019-06-05 09:59:54');
-INSERT INTO `tr_sys_node` VALUES ('117', '添加', 'Member/Partner/add', '17', 'partner', '6', '2', '1', '0', '2019-06-12 21:38:10');
+INSERT INTO `tr_sys_node` VALUES ('117', '添加', 'Member/Partner/add', '17', 'add', '6', '2', '1', '0', '2019-07-10 10:40:32');
 INSERT INTO `tr_sys_node` VALUES ('115', '编辑', 'Member/Partner/edit', '113', 'edit', '8', '2', '1', '0', '2019-06-05 10:01:14');
 INSERT INTO `tr_sys_node` VALUES ('116', '删除', 'Member/Partner/del', '113', 'del', '7', '2', '1', '0', '2019-06-05 10:01:20');
+INSERT INTO `tr_sys_node` VALUES ('121', '统计管理', '', '0', '1', '0', '1', '1', '0', '2019-07-09 13:48:38');
+INSERT INTO `tr_sys_node` VALUES ('122', '每日统计', 'Stat/Index/index', '121', '1', '9', '1', '1', '0', '2019-07-09 13:49:42');
+INSERT INTO `tr_sys_node` VALUES ('123', '合伙人', 'Commission/Settlement/Partner', '95', 'partner', '0', '2', '1', '0', '2019-07-10 10:42:35');
+INSERT INTO `tr_sys_node` VALUES ('124', '合伙人', 'Commission/Partner/index', '94', '1', '0', '1', '1', '0', '2019-07-10 10:41:35');
+INSERT INTO `tr_sys_node` VALUES ('125', '结算明细', 'Commission/Partner/detail', '124', 'detail', '0', '2', '1', '0', '2019-07-10 10:42:34');
 
 -- ----------------------------
 -- Table structure for tr_sys_role

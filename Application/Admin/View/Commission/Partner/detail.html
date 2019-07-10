@@ -1,0 +1,92 @@
+<include file="Public:header"/>
+<!-- Sweet Alert -->
+<link href="__PUBLIC__/Admin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+<style type="text/css">
+    .ui-jqgrid tr.jqgrow td { white-space: normal !important; height:auto; }
+</style>
+<body>
+<div id="wrapper">
+    <include file="Public:menu"/>
+    <div id="page-wrapper" class="gray-bg">
+        <include file="Public:nav"/>
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="ibox ">
+                        <!-- 筛选 start -->
+                        <div class="ibox-title">
+                            <div class="container-fluid">
+                                <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <input type="hidden" name="settle_id" value="{$settleId}">
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <input type="text" name="username" class="form-control"
+                                                   style="width: 180px;" placeholder="昵称"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
+                                            </button>
+                                        </div>
+                                        <div class="form-group">
+                                            <button class="btn btn-sm btn-primary" id="toolbar-search">查询
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- 筛选 end -->
+                        <div class="ibox-content">
+                            <!-- 表格 start -->
+                            <div class="jqGrid_wrapper">
+                                <table id="table"></table>
+                                <div id="pager"></div>
+                            </div>
+                            <!-- 表格 end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <include file="Public:footer"/>
+    </div>
+</div>
+<include file="Public:js"/>
+<include file="Public:methods"/>
+<!-- jqGrid -->
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/i18n/grid.locale-en.js"></script>
+<script src="__PUBLIC__/Admin/js/plugins/jqGrid/jquery.jqGrid.min.js"></script>
+<script>
+    var listUrl = window.location;
+    $(document).ready(function () {
+        var height = $(window).height();
+        $("#table").jqGrid({
+            url:listUrl,
+            postData:$('#toolbar-form').serialize(),
+            mtype: 'POST',
+            datatype: "json",
+            autowidth: true,
+            shrinkToFit: true,
+            viewrecords: true,
+            hidegrid: false,
+            height: height - 250,
+            rowNum: 15,
+            rowList: [15, 30],
+            colNames: [ '合伙人','总收入','实际收入','分佣比例','结算时间'],
+            colModel: [
+                {name: 'username',align:'center'},
+                {name: 'income',align:'center'},
+                {name: 'amount',align:'center'},
+                {name: 'rate_str',align:'center'},
+                {name: 'created_at',align:'center'}
+            ],
+            pager: "#pager",
+            jsonReader:{
+                root:"data.list",
+                records:"data.total"
+            }
+        });
+    });
+</script>
+</body>
+</html>

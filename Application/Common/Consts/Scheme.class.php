@@ -55,6 +55,6 @@ class Scheme
     const STAT = 'tr_stat';
 
     const PARTNER = 'tr_partners';
-    const P_SETTLE = 'tr_partner_settle';
+    const P_SETTLE = 'tr_partner_settlement';
     const P_FLOW = 'tr_partner_flow';
 }

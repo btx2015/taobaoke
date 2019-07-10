@@ -371,7 +371,7 @@ class SettleController extends CommonController
                 'total_income' => $partner['total_income'] + $amount
             ];
         }
-
+        $run = true;
         if($flows){
             $partnerNum = count($flows);
             M()->startTrans();
@@ -380,12 +380,14 @@ class SettleController extends CommonController
                 M()->rollback();
                 echo 'partner fund flow create failed'.PHP_EOL;
                 writeLog('分佣明细创建失败',$log,'ERROR');
+                $run = false;
             }
             $res = saveAll($update,Scheme::PARTNER);
             if(!$res){
                 M()->rollback();
                 echo 'partner income update failed'.PHP_EOL;
                 writeLog('合伙人累计收入更新失败',$log,'ERROR');
+                $run = false;
             }
             $res = M(Scheme::P_SETTLE)->where(['settle_id'=>$id])->save([
                 'partner_num' => $partnerNum,
@@ -397,11 +399,19 @@ class SettleController extends CommonController
                 M()->rollback();
                 echo 'partner settle update failed'.PHP_EOL;
                 writeLog('合伙人结算单更新失败',$log,'ERROR');
+                $run = false;
             }
-            M()->commit();
-            echo 'Success!total:'.$partnerNum.PHP_EOL;
         }else{
             echo 'no fund flows'.PHP_EOL;
+        }
+        if($run){
+            echo 'Success!total:'.$partnerNum.PHP_EOL;
+            M()->commit();
+        }else{
+            echo 'Settle Failed!'.PHP_EOL;
+            $res = M(Scheme::P_SETTLE)->where(['settle_id'=>$id])->setField('state',4);
+            if(!$res)
+                writeLog('合伙人结算单失败状态更新失败',$log,'ERROR');
         }
         echo 'settle end'.PHP_EOL;
         writeLog('分佣结束',$log,'DEBUG');

@@ -22,9 +22,17 @@ class SettlementController extends CommonController
                 'create_to'   => [['time'],false,true,['elt','created_at']],
             ],false);
             $list = $model->where($where)->page($pageNo,$pageSize)->select();
-
+            $partner = [];
+            if($list){
+                $ids = array_column($list,'id');
+                $partner = M(Scheme::P_SETTLE)->where(['settle_id'=>['in',$ids]])->select();
+                if($partner){
+                    $partner = array_column($partner,'state','id');
+                }
+            }
             returnResult([
                 'list' => handleRecords([
+                    'id'          => ['array_walk',$partner,'status'],
                     'state'       => ['translate','settle_state','state_str'],
                     'settle_time' => ['time','Y-m-d H:i:s','settle_time_str'],
                     'pay_time'    => ['time','Y-m-d H:i:s','pay_time_str'],
@@ -174,11 +182,12 @@ class SettlementController extends CommonController
             if(!$id)
                 showError(10006);
             $settleModel = M(Scheme::SETTLE);
-            $settle = $settleModel->where(['id' => $id,'state' => 2])->find();
+            $settle = $settleModel->where(['id' => $id,'state' => ['not in',[0,1]]])->find();
             if(!$settle)
                 showError(20004,'结算单不存在');
             $res = M(Scheme::P_SETTLE)->add([
                 'settle_id' => $id,
+                'state' => 1,
                 'created_at' => time()
             ]);
             if(!$res){
@@ -194,7 +203,7 @@ class SettlementController extends CommonController
             if(!$id)
                 showError(10006);
             $settleModel = M(Scheme::P_SETTLE);
-            $settle = $settleModel->where(['id' => $id])->find();
+            $settle = $settleModel->where(['settle_id' => $id])->find();
             if(!$settle)
                 showError(20004,'结算单不存在');
             if($settle['state'] == 1){

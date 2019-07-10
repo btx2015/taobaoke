@@ -21,7 +21,7 @@ class PartnerController extends CommonController
                 'create_to'   => [['time'],false,true,['elt','a.created_at']],
             ],'a');
 
-            $list = M(Scheme::U_PARTNER)->alias('a')
+            $list = M(Scheme::PARTNER)->alias('a')
                 ->join('left join '.Scheme::USER.' b on a.member_id = b.id')
                 ->field('a.*,b.username,b.name,b.phone,b.level')
                 ->where($where)->page($pageNo,$pageSize)->select();
@@ -33,7 +33,7 @@ class PartnerController extends CommonController
                     'rate'       => ['percent','','rate_str'],
                     'level'      => ['translate','member_level','level_str']
                 ],$list),
-                'total' =>M(Scheme::U_PARTNER)->alias('a')
+                'total' =>M(Scheme::PARTNER)->alias('a')
                     ->join('left join '.Scheme::USER.' b on a.member_id = b.id')
                     ->where($where)->count()
             ]);
@@ -43,7 +43,7 @@ class PartnerController extends CommonController
     }
 
     public function add(){
-        $model = M(Scheme::U_PARTNER);
+        $model = M(Scheme::PARTNER);
         $rule = [
             'member_id' => [['num'],true],
         ];
@@ -77,7 +77,7 @@ class PartnerController extends CommonController
     }
 
     public function edit(){
-        $model = M(Scheme::U_PARTNER);
+        $model = M(Scheme::PARTNER);
         if(IS_POST){
             $rule = [
                 'id'        => [['num'],true],
@@ -104,7 +104,7 @@ class PartnerController extends CommonController
         if(!is_array($data))
             showError(10006);//参数错误
 
-        $model = M(Scheme::U_PARTNER);
+        $model = M(Scheme::PARTNER);
         $res = $model->where(['id'=>['in',$data['id']]])->setField('state',3);
         if($res === false)
             showError(20002);

@@ -26,7 +26,7 @@ class DetailController extends CommonController
             ],'a');
             $model = M(Scheme::S_DETAIL);
             $list = $model->alias('a')
-                ->field('a.*,s.settlement_sn,o.trade_id,u.username,u.phone')
+                ->field('a.*,s.settlement_sn,o.trade_id,u.username,u.phone,u.level')
                 ->join('left join '.Scheme::SETTLE.' s on a.settle_id = s.id')
                 ->join('left join '.Scheme::S_ORDER.' o on a.order_id = o.id')
                 ->join('left join '.Scheme::USER.' u on a.member_id = u.id')
@@ -35,6 +35,7 @@ class DetailController extends CommonController
             returnResult([
                 'list' => handleRecords([
                     'state'      => ['translate','settle_detail_state','state_str'],
+                    'level'      => ['translate','member_level','level_str'],
                     'type'       => ['translate','settle_type','type_str'],
                     'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
                 ],$list),

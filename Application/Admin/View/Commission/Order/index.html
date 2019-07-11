@@ -21,7 +21,7 @@
                                     <div class="row">
                                         <div class="form-group">
                                             <input type="text" class="form-control" name="order_sn"
-                                                   placeholder="订单编号" style="width: 100px">
+                                                   placeholder="订单编号" style="width: 200px">
                                         </div>
                                         <div class="form-group">
                                             <select class="form-control" name="state">
@@ -154,7 +154,7 @@
             colModel: [
                 {name: 'trade_id',align:'center'},
                 {name: 'member_id_str',align:'center'},
-                {name: 'commission_fee',align:'center'},
+                {name: 'total_commission_fee',align:'center'},
                 {name: 'state_str',align:'center',width:60,
                     formatter: function (value, grid, rows, state) {
                         var op = '<button type="button" class="btn btn-xs';

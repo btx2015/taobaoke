@@ -72,24 +72,14 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '分佣订单','用户','分佣金额','分佣类型','备注','状态'],
+            colNames: [ '分佣订单','用户','手机号','用户等级','分佣金额','分佣类型'],
             colModel: [
                 {name: 'trade_id',align:'center'},
                 {name: 'username',align:'center'},
+                {name: 'phone',align:'center'},
+                {name: 'level_str',align:'center'},
                 {name: 'amount',align:'center'},
-                {name: 'type_str',align:'center'},
-                {name: 'descr',align:'center'},
-                {name: 'state_str',align:'center',width:60,
-                    formatter: function (value, grid, rows, state) {
-                        var op = '<button type="button" class="btn btn-xs';
-                        if(rows.state == 1){
-                            op += ' btn-warning"';
-                        }else{
-                            op += ' btn-primary"';
-                        }
-                        return op + '">' + rows.state_str + '</button>';
-                    }
-                }
+                {name: 'type_str',align:'center'}
             ],
             pager: "#pager",
             jsonReader:{

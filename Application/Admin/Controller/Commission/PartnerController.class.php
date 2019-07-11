@@ -43,7 +43,7 @@ class PartnerController extends CommonController
             list($where,$pageNo,$pageSize) = before_query([
                 'page'        => [['num'],1],
                 'rows'        => [['num'],10],
-                'id'          => [['num'],false,true,['eq','a.id']],
+                'settle_id'   => [['num'],false,true,['eq','a.settle_id']],
                 'username'    => [[],false,true,['like','u.username']],
             ]);
             $model = M(Scheme::P_FLOW);
@@ -61,6 +61,8 @@ class PartnerController extends CommonController
                     ->where($where)->count()
             ]);
         }else{
+            $id = I('get.id');
+            $this->assign('settleId',$id);
             $this->display();
         }
     }

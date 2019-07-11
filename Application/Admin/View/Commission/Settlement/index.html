@@ -98,6 +98,7 @@
     var payUrl = "{:U($buttonData['pay']['path'])}";
     var detailUrl = "{:U($buttonData['detail']['path'])}";
     var partnerUrl = "{:U($buttonData['partner']['path'])}";
+    var statUrl = "{:U($buttonData['stat']['path'])}";
     $(document).ready(function () {
         var height = $(window).height();
         $(window).bind('resize', function () {
@@ -177,10 +178,12 @@
                             op += '<button type="button" class="btn btn-warning btn-xs" onclick="settle(\''+ rows.id+ '\');">结算</button>&nbsp;';
                         if(payUrl && (rows.state === '2' || rows.state === '7'))
                             op += '<button type="button" class="btn btn-danger btn-xs" onclick="pay(\''+ rows.id+ '\');">发放</button>&nbsp;';
-                        if(partnerUrl && rows.state === '2' && (rows.status === '-' || rows.status === '0'))
+                        if(partnerUrl && rows.state >= 2  && (rows.status === '-' || rows.status === '0'))
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="partner(\''+ rows.id+ '\');">合伙人</button>&nbsp;';
-                        if(detailUrl && rows.state !== '0' && rows.state !== '1' && rows.state !== '4')
+                        if(detailUrl && rows.state !== '0' && rows.state !== '1' && rows.state !== '4'){
+                            op += '<button type="button" class="btn btn-primary btn-xs" onclick="statOpen(\''+ rows.id+ '\');">分佣汇总</button>&nbsp;';
                             op += '<button type="button" class="btn btn-primary btn-xs" onclick="detailOpen(\''+ rows.id+ '\');">明细</button>&nbsp;';
+                        }
                         return op;
                     }
                 }
@@ -283,6 +286,11 @@
     function detailOpen(id){
         if(detailUrl){
             window.location.href = detailUrl + '?id=' +id
+        }
+    }
+    function statOpen(id){
+        if(statUrl){
+            window.location.href = statUrl + '?id=' +id
         }
     }
     function partner(id){

@@ -17,37 +17,11 @@
                         <div class="ibox-title">
                             <div class="container-fluid">
                                 <form class="form-inline" id="toolbar-form" onsubmit="return false;">
+                                    <input type="hidden" name="settle_id" value="{$settleId}">
                                     <div class="row">
                                         <div class="form-group">
-                                            <input type="text" name="settle_id" class="form-control"
-                                                   style="width: 180px;" placeholder="结算编号"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" name="order_id" class="form-control"
-                                                   style="width: 180px;" placeholder="分佣单号"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" name="user_id" class="form-control"
-                                                   style="width: 100px;" placeholder="用户名"/>
-                                        </div>
-                                        <div class="form-group">
-                                            <select name="type" class="form-control">
-                                                <option value="">类型</option>
-                                                <option value="1">分享分佣</option>
-                                                <option value="2">一级推荐分佣</option>
-                                                <option value="3">二级推荐分佣</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <select name="state" class="form-control">
-                                                <option value="">状态</option>
-                                                <option value="1">未发放</option>
-                                                <option value="2">已发放</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="text" id="toolbar-datepicker" name="create_from" class="form-control"
-                                                   style="width: 180px;" placeholder="时间"/>
+                                            <input type="text" name="username" class="form-control"
+                                                   style="width: 180px;" placeholder="昵称"/>
                                         </div>
                                         <div class="form-group">
                                             <button class="btn btn-sm btn-primary" id="toolbar-reset">重置
@@ -98,14 +72,23 @@
             height: height - 250,
             rowNum: 15,
             rowList: [15, 30],
-            colNames: [ '结算编号','分佣订单','用户','用户等级','分佣金额','分佣类型'],
+            colNames: [ '用户','手机号','用户等级','分佣金额','状态'],
             colModel: [
-                {name: 'settlement_sn',align:'center'},
-                {name: 'trade_id',align:'center'},
                 {name: 'username',align:'center'},
+                {name: 'phone',align:'center'},
                 {name: 'level_str',align:'center'},
                 {name: 'amount',align:'center'},
-                {name: 'type_str',align:'center'}
+                {name: 'state_str',align:'center',width:70,
+                    formatter: function (value, grid, rows, state) {
+                        var op = '<button type="button" class="btn btn-xs';
+                        if(rows.state == 1){
+                            op += ' btn-success"';
+                        }else{
+                            op += ' btn-primary"';
+                        }
+                        return op + '">' + rows.state_str + '</button>';
+                    }
+                },
             ],
             pager: "#pager",
             jsonReader:{

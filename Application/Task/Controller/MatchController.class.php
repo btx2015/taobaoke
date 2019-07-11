@@ -25,9 +25,10 @@ class MatchController extends CommonController
         $page = 1;
         $run = true;
         while($run){
+            echo 'page:'.$page.PHP_EOL;
             $total = 0;
             $orders = $model->field('id,special_id,relation_id')
-                ->limit(self::LIMIT)->page($page)->where('state = 0')->select();
+                ->limit(self::LIMIT)->page($page)->where('state = 1')->select();
             if(!$orders){
                 writeLog('暂无未匹配的订单',$log,'DEBUG');
                 echo 'No Matching Orders'.PHP_EOL;
@@ -63,7 +64,7 @@ class MatchController extends CommonController
                     $v['member_id'] = $memberSpecials[$v['relation_id']];
                 }
                 if($v['member_id']){
-                    $v['state'] = 1;
+                    $v['state'] = 2;
                     $total ++;
                 }
             });

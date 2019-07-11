@@ -118,10 +118,10 @@ class SettleController extends CommonController
                 //遍历订单
                 foreach($orders as $order){
                     $orderIds[] = $order['id'];
-                    $totalAmount += $order['commission_fee'];
+                    $totalAmount += $order['total_commission_fee'];
                     //获取分佣对象 计算佣金
                     $objects = $logic->getObjects($member,$refereeInfo,$order,$levelUp);
-                    $amounts = $logic->cal($objects,$rateInfo,$order);
+                    $amounts = $logic->cal($objects,$rateInfo,$order,'total_commission_fee');
                     $detail = [
                         'settle_id'  => $insertId,
                         'order_id'   => $order['id'],
@@ -331,7 +331,7 @@ class SettleController extends CommonController
             die('Settle ID is not exits!'.PHP_EOL);
         }
 
-        $settle = M(Scheme::SETTLE)->where(['id'=>$id,'state'=>2])->find();
+        $settle = M(Scheme::SETTLE)->where(['id'=>$id,'state'=>['in',[2,5,6,7]]])->find();
         if(!$settle){
             writeLog('结算单不存在',$log,'ERROR');
             die('Settle is not exits!'.PHP_EOL);
@@ -375,14 +375,14 @@ class SettleController extends CommonController
         if($flows){
             $partnerNum = count($flows);
             M()->startTrans();
-            $res = M(Scheme::P_FLOW)->add($flows);
+            $res = M(Scheme::P_FLOW)->addALL($flows);
             if(!$res){
                 M()->rollback();
                 echo 'partner fund flow create failed'.PHP_EOL;
                 writeLog('分佣明细创建失败',$log,'ERROR');
                 $run = false;
             }
-            $res = saveAll($update,Scheme::PARTNER);
+            $res = saveAll($update,Scheme::PARTNER,'id');
             if(!$res){
                 M()->rollback();
                 echo 'partner income update failed'.PHP_EOL;

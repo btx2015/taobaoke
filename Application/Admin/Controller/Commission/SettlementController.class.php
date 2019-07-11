@@ -155,7 +155,7 @@ class SettlementController extends CommonController
             ],'a');
             $model = M(Scheme::S_DETAIL);
             $list = $model->alias('a')
-                ->field('a.*,s.settlement_sn,o.trade_id,u.username,u.phone')
+                ->field('a.*,s.settlement_sn,o.trade_id,u.username,u.phone,u.level')
                 ->join('left join '.Scheme::SETTLE.' s on a.settle_id = s.id')
                 ->join('left join '.Scheme::S_ORDER.' o on a.order_id = o.id')
                 ->join('left join '.Scheme::USER.' u on a.member_id = u.id')
@@ -165,6 +165,7 @@ class SettlementController extends CommonController
                 'list' => handleRecords([
                     'state'      => ['translate','settle_detail_state','state_str'],
                     'type'       => ['translate','settle_type','type_str'],
+                    'level'      => ['translate','member_level','level_str'],
                     'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
                 ],$list),
                 'total' => $model->alias('a')->where($where)->count()
@@ -213,5 +214,37 @@ class SettlementController extends CommonController
             }
         }
         returnResult();
+    }
+
+    public function stat(){
+        if(IS_POST){
+            list($where,$pageNo,$pageSize) = before_query([
+                'page'        => [['num'],1],
+                'rows'        => [['num'],10],
+                'settle_id'   => [[],false,true,['eq','a.settle_id']],
+                'username'    => [[],false,true,['eq','u.username']]
+            ],'a');
+            $model = M(Scheme::S_PAY);
+            $list = $model->alias('a')
+                ->field('a.*,u.username,u.phone,u.level')
+                ->join('left join '.Scheme::USER.' u on a.member_id = u.id')
+                ->where($where)->page($pageNo,$pageSize)->select();
+            returnResult([
+                'list' => handleRecords([
+                    'state'      => ['translate','settle_detail_state','state_str'],
+                    'level'      => ['translate','member_level','level_str'],
+                    'created_at' => ['time','Y-m-d H:i:s','created_at_str'],
+                ],$list),
+                'total' => $model->alias('a')
+                    ->join('left join '.Scheme::USER.' u on a.member_id = u.id')
+                    ->where($where)->count()
+            ]);
+        }else{
+            $id = I('get.id');
+            $this->assign('settleId',$id);
+            $this->display();
+        }
+
+
     }
 }

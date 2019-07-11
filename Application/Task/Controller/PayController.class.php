@@ -34,46 +34,47 @@ class PayController extends CommonController
         }
         writeLog('结算单'.$id.'开始发放','pay','DEBUG');
         try{
-            $detailModel = M(Scheme::S_DETAIL);
+            $payModel = M(Scheme::S_PAY);
             $memberModel = M(Scheme::USER);
-            $memberInfo = $detailId = $flow = [];
+            $memberInfo = $payId = $flow = [];
             $run = true;
             $page = 1;
             M()->startTrans();
             while($run){
                 echo 'Page:'.$page.PHP_EOL;
-                $details = $detailModel->where([
+                $payInfo = $payModel->where([
                     'settle_id' => $id,
                     'state' => 1
                 ])->limit(self::LIMIT)->page($page)->select();
-                if(!$details){
-                    writeLog('暂无结算详情','pay','DEBUG');
+                if(!$payInfo){
+                    echo 'No PayInfo!'.$page.PHP_EOL;
+                    writeLog('暂无支付信息','pay','DEBUG');
                     break;
                 }
                 //获取用户信息
-                $memberId = array_unique(array_column($details,'user_id'));
+                $memberId = array_unique(array_column($payInfo,'member_id'));
                 $members = $memberModel->field('id,available_fund')->where(['id' => ['in',$memberId]])->select();
                 $members = array_column($members,null,'id');
                 //生成用户资金信息和用户资金明细
                 $flow = [];
                 //计算佣金
-                foreach($details as $k => $detail){
-                    if(isset($members[$detail['user_id']])){
-                        if(isset($memberInfo[$detail['user_id']])){
-                            $memberInfo[$detail['user_id']]['available_fund'] += $detail['amount'];
-                            $memberInfo[$detail['user_id']]['last_settle'] += $detail['amount'];
+                foreach($payInfo as $k => $detail){
+                    if(isset($members[$detail['member_id']])){
+                        if(isset($memberInfo[$detail['member_id']])){
+                            $memberInfo[$detail['member_id']]['available_fund'] += $detail['amount'];
+                            $memberInfo[$detail['member_id']]['last_settle'] += $detail['amount'];
                         }else{
-                            $members[$detail['user_id']]['available_fund'] += $detail['amount'];
-                            $members[$detail['user_id']]['last_settle'] = $detail['amount'];
-                            $memberInfo[$detail['user_id']] = $members[$detail['user_id']];
+                            $members[$detail['member_id']]['available_fund'] += $detail['amount'];
+                            $members[$detail['member_id']]['last_settle'] = $detail['amount'];
+                            $memberInfo[$detail['member_id']] = $members[$detail['member_id']];
                         }
                     }else{
-                        unset($details[$k]);
+                        unset($payInfo[$k]);
                         continue;
                     }
                 }
 
-                $detailId = array_merge($detailId,array_column($details,'id'));
+                $payId = array_merge($payId,array_column($payInfo,'id'));
                 $page ++;
             }
 
@@ -108,29 +109,19 @@ class PayController extends CommonController
                 }
             }
             //修改分佣明细状态
-            if($run && $detailId){
+            if($run && $payId){
                 writeLog('修改分佣明细状态','pay','DEBUG');
-                $res = $detailModel->where(['id'=>['in',$detailId]])->setField('state',2);
+                $res = $payModel->where(['id'=>['in',$payId]])->setField('state',2);
                 if(!$res) {
                     $run = false;
                     writeLog('分佣明细状态修改失败','pay','ERROR');
-                }
-            }
-            //发放渠道收入
-            if($run){
-                writeLog('发放渠道收入','pay','DEBUG');
-                $res = M(Scheme::CHANNEL)->where(['id'=>$settle['channel_id']])
-                    ->setInc('total_income',$settle['real_amount']);
-                if(!$res){
-                    $run = false;
-                    writeLog('渠道总收入更新失败','pay','ERROR');
                 }
             }
             //修改结算单状态
             if($run){
                 writeLog('修改结算单状态','pay','DEBUG');
                 $res = $settleModel->where(['id' => $id])->save([
-                    'state' => 4,'pay_time' => time()
+                    'state' => 6,'pay_time' => time()
                 ]);
                 if(!$res){
                     $run = false;
@@ -140,6 +131,7 @@ class PayController extends CommonController
             if($run){
                 M()->commit();
                 writeLog('发放完成','pay','DEBUG');
+                echo 'Pay complete'.PHP_EOL;
             }else{
                 M()->rollback();
                 writeLog('发放失败','pay','DEBUG');
@@ -149,6 +141,7 @@ class PayController extends CommonController
             return $run;
         }catch (Exception $exception){
             writeLog('佣金发放异常。原因：'.$exception->getMessage(),'pay','ERROR');
+            S(self::PAY_LOCK,null);
             return false;
         }
     }
@@ -158,10 +151,11 @@ class PayController extends CommonController
         writeLog('结算单'.$settle_id.'佣金发放失败','pay','ERROR');
         //发放失败
         $res = $settleModel->where(['id' => $settle_id])->save([
-            'state' => 5,'pay_time' => time()
+            'state' => 7,'pay_time' => time()
         ]);
         if(!$res){
             writeLog('结算单状态修改失败','pay','ERROR');
         }
+        echo 'Pay Failed'.PHP_EOL;
     }
 }

@@ -53,10 +53,10 @@ class GoodsController extends CommonController
                 if(empty($data['data']))
                     break;
                 $res = $this->add_data($data['data'],$log);
-                if($res){
-                    $total += count($data['data']);
-                }else{
+                if($res === false){
                     writeLog('商品定时拉取数据添加失败。数据：'.json_encode($data['data']),$log,'ERROR');
+                }else{
+                    $total += $res;
                 }
                 $minId = $data['min_id'];
             }
@@ -69,6 +69,7 @@ class GoodsController extends CommonController
         $log = 'items.add';
         writeLog('商品上新开始',$log,'DEBUG');
         $pageNo = 1;
+        $total = 0;
         while(true){
             echo $pageNo.PHP_EOL;
             $data = $this->api_request(self::ADD_URL,[
@@ -78,11 +79,14 @@ class GoodsController extends CommonController
             ]);
             if(empty($data['data']))
                 break;
-            $this->add_data($data['data'], $log);
+            $res = $this->add_data($data['data'], $log);
+            if($res !== false){
+                $total += $res;
+            }
             $pageNo = $data['min_id'];
         }
-        writeLog('商品上新结束',$log,'DEBUG');
-        die('create success'.PHP_EOL);
+        writeLog('商品上新结束，上新'.$total.'条商品',$log,'DEBUG');
+        die('create success! Total:'.$total.PHP_EOL);
     }
 
     public function update_goods(){
@@ -127,16 +131,26 @@ class GoodsController extends CommonController
 
     private function add_data($data,$log = 'items.add'){
         $model = M(self::T_ITEM);
+        $productIds = array_column($data,'product_id');
+        $items = $model->field('product_id')->where(['product_id'=>['in',$productIds]])->select();
+        if($items)
+            $items = array_column($items,'product_id');
         $time = time();
-        array_walk($data,function(&$v)use($time){
-            $v['created_at'] = $time;
-        });
-        $insertId = $model->addAll($data);
-        if(!$insertId){
-            writeLog('商品数据添加失败，原因：'.$insertId,$log,'ERROR');
-            exit('create error');
+        foreach($data as $k => $v){
+            if(in_array($v['product_id'],$items))
+                unset($data[$k]);
+            else
+                $v['created_at'] = $time;
         }
-        return true;
+        if($data){
+            $insertId = $model->addAll($data);
+            if(!$insertId){
+                writeLog('商品数据添加失败，原因：'.$insertId,$log,'ERROR');
+                echo 'create error'.PHP_EOL;
+                return false;
+            }
+        }
+        return count($data);
     }
 
     private function update_data($data){

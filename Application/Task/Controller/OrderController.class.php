@@ -74,9 +74,17 @@ columns;
      * @return bool
      */
     public function sync_settle(){
-        S('sync_settle_lock',time());
-        $startTime = isset($_GET['start']) ? $_GET['start'] : strtotime(date('Y-m-01', strtotime('-1 month')));
-        $endTime = isset($_GET['end']) ? $_GET['end'] : strtotime(date('Y-m-01'));
+        $time = time();
+        S('sync_settle_lock',$time);
+        if(isset($_GET['start'])){
+            $startTime = $_GET['start'];
+        }else{
+            $startTime = M(Scheme::SETTLE)->where(['state'=>['egt',2]])->order('created_at desc')->getField('created_at');
+        }
+//        $startTime = M(Scheme::SETTLE)->where(['state'=>['egt',2]])->order('created_at desc')->getField('created_at');
+//        $startTime = isset($_GET['start']) ? $_GET['start'] : strtotime(date('Y-m-01', strtotime('-1 month')));
+//        $endTime = isset($_GET['end']) ? $_GET['end'] : strtotime(date('Y-m-01'));
+        $endTime = isset($_GET['end']) ? $_GET['end'] : $time;
         $fields = <<<columns
 tb_trade_id,total_commission_fee,total_commission_rate,earning_time,relation_id,special_id
 columns;

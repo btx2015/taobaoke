@@ -61,11 +61,13 @@ class MatchController extends CommonController
                 if(isset($v['special_id']) && isset($memberSpecials[$v['special_id']])){
                     $v['member_id'] = $memberSpecials[$v['special_id']];
                 }else if(isset($v['relation_id']) && isset($memberRelations[$v['relation_id']])){
-                    $v['member_id'] = $memberSpecials[$v['relation_id']];
+                    $v['member_id'] = $memberRelations[$v['relation_id']];
                 }
                 if($v['member_id']){
                     $v['state'] = 2;
                     $total ++;
+                }else{
+                    $v['member_id'] = $v['state'] = 0;
                 }
             });
 
@@ -110,7 +112,9 @@ class MatchController extends CommonController
             }
             $memberModel = M(Scheme::USER);
             $orderMatch += count($orders);
-            $specialId = array_unique(array_column($orders,'special_id'));
+            $specialId = array_filter(array_unique(array_column($orders,'special_id')),function($val){
+                return $val ? 1 : 0;
+            });
             if($specialId){
                 $memberSpecials = $memberModel->field('id,special_id')
                     ->where(['special_id' => ['in',$specialId]])->select();
@@ -120,7 +124,9 @@ class MatchController extends CommonController
                 $memberSpecials = array_column($memberSpecials,'id','special_id');
             }
 
-            $relationId = array_unique(array_column($orders,'relation_id'));
+            $relationId = array_filter(array_unique(array_column($orders,'relation_id')),function($val){
+                return $val ? 1 : 0;
+            });
             if($relationId){
                 $memberRelations = $memberModel->field('id,relation_id')
                     ->where(['relation_id' => ['in',$relationId]])->select();
@@ -138,6 +144,8 @@ class MatchController extends CommonController
                 if($v['member_id']){
                     $v['state'] = 1;
                     $total ++;
+                }else{
+                    $v['member_id'] = $v['state'] = 0;
                 }
             });
             if($total){

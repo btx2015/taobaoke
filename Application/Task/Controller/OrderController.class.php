@@ -59,7 +59,7 @@ columns;
             'order_query_type' => 'create_time',
             'order_scene' => $order_scene
         ];
-        $total = $this->sync_order($params,$log);
+        $total = $this->sync_order($params,$log,Scheme::COMMISSION);
         if($total === false)
             return false;
 
@@ -86,7 +86,7 @@ columns;
 //        $endTime = isset($_GET['end']) ? $_GET['end'] : strtotime(date('Y-m-01'));
         $endTime = isset($_GET['end']) ? $_GET['end'] : $time;
         $fields = <<<columns
-tb_trade_id,total_commission_fee,total_commission_rate,earning_time,relation_id,special_id
+tb_trade_id,total_commission_fee,total_commission_rate,earning_time,relation_id,special_id,create_time
 columns;
         $order_scene = isset($_GET['scene']) ? $_GET['scene'] : 3;
         $params = [
@@ -94,19 +94,19 @@ columns;
             'fields' => $fields,
             'span' => self::SETTLE_PERIOD,
             'page_size' => 100,
-            'tk_status' => 12,
-            'order_query_type' => 'settle_time',
+            'tk_status' => 3,
+            'order_query_type' => 'create_time',
             'order_scene' => $order_scene
         ];
         $log = 'order.settle';
         writeLog('订单同步开始',$log,'DEBUG');
         echo 'sync start'.PHP_EOL;
         $total = 0;
-        while($startTime <= $endTime){
+        while($startTime < $endTime){
             $params['start_time'] = date('Y-m-d H:i:s',$startTime);
             writeLog('开始同步'.$params['start_time'].'的订单',$log,'DEBUG');
             echo $params['start_time'].PHP_EOL;
-            $res = $this->sync_order($params,$log);
+            $res = $this->sync_order($params,$log,Scheme::S_ORDER);
             if($res === false){
                 break;
             }else{
@@ -122,7 +122,7 @@ columns;
         return true;
     }
 
-    private function sync_order($params,$log = 'order'){
+    private function sync_order($params,$log = 'order',$scheme){
         $pageNo = 1;
         $total = 0;
         $run = true;
@@ -143,7 +143,7 @@ columns;
                 if(empty($data)){
                     break;
                 }else{
-                    $insertId = $this->add_data($data);
+                    $insertId = $this->add_data($data,$scheme);
                     if(!$insertId){
                         $error = '订单保存失败。请求参数：'.json_encode($params);
                         writeLog($error,$log,'ERROR');
@@ -161,8 +161,8 @@ columns;
         return $run ? $total : false;
     }
 
-    private function add_data($data){
-        $model = M(Scheme::COMMISSION);
+    private function add_data($data,$scheme){
+        $model = M($scheme);
         $time = time();
         array_walk($data,function(&$v) use($time){
             $v['created_at'] = $time;

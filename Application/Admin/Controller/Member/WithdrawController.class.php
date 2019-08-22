@@ -4,6 +4,7 @@ namespace Admin\Controller\Member;
 
 
 use Admin\Controller\CommonController;
+use Common\Consts\Scheme;
 
 class WithdrawController extends CommonController
 {
@@ -71,6 +72,8 @@ class WithdrawController extends CommonController
                 showError(10006,'请填写拒绝理由');
 
             $where = 'id='.$update['id'];
+
+            M()->startTrans();
             $record = $model->where($where)->find();
             if(!$record || $record['state'] != 1)
                 showError(20004);
@@ -78,10 +81,38 @@ class WithdrawController extends CommonController
             $update['admin_id'] = $_SESSION['adminInfo']['id'];
             $update['audit_time'] = time();
 
+            $memberModel = M(Scheme::USER);
+
+            $member = $memberModel->where(['id' => $record['user_id']])->find();
+            if(!$member){
+                M()->rollback();
+                showError(20004,'用户不存在');
+            }
+            if($update['state'] == 3){
+                $memberUpdate = [
+                    'available_fund' => $member['available_fund'] + $record['amount'],
+                    'frozen_withdraw' => $member['frozen_withdraw'] - $record['amount'],
+                ];
+            }else{
+                $memberUpdate = [
+                    'frozen_withdraw' => $member['frozen_withdraw'] - $record['amount'],
+                ];
+            }
+
+
             $res = $model->where($where)->save($update);
 
-            if(!$res)
+            if(!$res){
+                M()->rollback();
                 showError(20002,'审核失败');
+            }
+
+            $res = $memberModel->where(['id' => $record['user_id']])->save($memberUpdate);
+            if(!$res){
+                M()->rollback();
+                showError(20002,'审核失败');
+            }
+            M()->commit();
             returnResult();
         }else{
             $id = I('get.id');

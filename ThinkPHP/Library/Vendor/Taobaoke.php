@@ -41,6 +41,32 @@ class Taobaoke
         }
     }
 
+    /**
+     * @param array $params
+     * @return array
+     */
+    public function request_v2(array $params){
+        $params = array_merge([
+            'app_key' => $this->appKey,
+            'sign_method' => 'md5',
+            'timestamp' => date('Y-m-d H:i:s',time()),
+            'format' => 'json',
+            'v' => '2.0',
+        ],$params);
+        $params['sign'] = $this->sign($params);
+
+        $res = curlRequest(self::API_URL,$params);
+        $result = json_decode($res,true,512,JSON_BIGINT_AS_STRING);
+        if(isset($result['error_response']) || !isset($result['tbk_order_details_get_response'])){
+            return [
+                'result' => 'N',
+                'msg' => $res
+            ];
+        }else{
+            return $result;
+        }
+    }
+
     private function sign($params){
         ksort($params);
         $string = '';

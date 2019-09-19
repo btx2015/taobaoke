@@ -144,6 +144,8 @@ class OrdersController extends CommonController
         $model = M($scheme);
         $time = time();
         array_walk($data,function(&$v) use($time){
+            $v['num_iid'] = $v['item_id'];
+            $v['create_time'] = $v['tk_create_time'];
             $v['created_at'] = $time;
         });
         $insertId = $model->addAll($data);
